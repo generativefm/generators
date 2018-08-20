@@ -1,0 +1,23 @@
+{
+  "name": "@generative-music/piece-aisatsana",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/generative-music/piece-aisatsana.git"
+  },
+  "author": "Alex Bainter <alexbainter+github@gmail.com> (https://alexbainter.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/generative-music/piece-aisatsana/issues"
+  },
+  "homepage": "https://github.com/generative-music/piece-aisatsana#readme",
+  "devDependencies": {
+    "eslint": "^5.4.0",
+    "eslint-config-metalex9": "^0.2.0"
+  }
+}
