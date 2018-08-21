@@ -10,6 +10,9 @@
     "type": "git",
     "url": "git+https://github.com/generative-music/piece-aisatsana.git"
   },
+  "files": [
+    "lib"
+  ],
   "author": "Alex Bainter <alexbainter+github@gmail.com> (https://alexbainter.com)",
   "license": "MIT",
   "bugs": {
@@ -19,5 +22,8 @@
   "devDependencies": {
     "eslint": "^5.4.0",
     "eslint-config-metalex9": "^0.2.0"
+  },
+  "dependencies": {
+    "markov-chains": "^1.0.2"
   }
 }
