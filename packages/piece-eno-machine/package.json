@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint \".\"",
+    "ci": "npm run lint",
+    "preversion": "npm run ci",
+    "postverison": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
@@ -19,5 +23,9 @@
   "devDependencies": {
     "eslint": "^5.4.0",
     "eslint-config-metalex9": "^0.2.0"
+  },
+  "dependencies": {
+    "random-number": "0.0.9",
+    "tonal": "^1.1.3"
   }
 }
