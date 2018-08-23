@@ -10,6 +10,9 @@
     "preversion": "npm run ci",
     "postverison": "git push && git push --tags"
   },
+  "files": [
+    "lib"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/generative-music/piece-eno-machine.git"
