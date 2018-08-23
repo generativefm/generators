@@ -8,7 +8,7 @@
     "lint": "eslint \".\"",
     "ci": "npm run lint",
     "preversion": "npm run ci",
-    "postverison": "git push && git push --tags"
+    "postversion": "git push && git push --tags"
   },
   "files": [
     "lib"
