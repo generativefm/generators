@@ -1,0 +1,23 @@
+{
+  "name": "@generative-music/piece-eno-machine",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/generative-music/piece-eno-machine.git"
+  },
+  "author": "Alex Bainter <alexbainter+github@gmail.com> (http://alexbainter.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/generative-music/piece-eno-machine/issues"
+  },
+  "homepage": "https://github.com/generative-music/piece-eno-machine#readme",
+  "devDependencies": {
+    "eslint": "^5.4.0",
+    "eslint-config-metalex9": "^0.2.0"
+  }
+}
