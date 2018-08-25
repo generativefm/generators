@@ -1,0 +1,35 @@
+{
+  "name": "@generative-music/piece-sevenths",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint \".\"",
+    "ci": "npm run lint",
+    "preversion": "npm run ci",
+    "postversion": "git push && git push --tags"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/generative-music/piece-sevenths.git"
+  },
+  "files": [
+    "lib"
+  ],
+  "author": "Alex Bainter <alexbainter+github@gmail.com> (http://alexbainter.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/generative-music/piece-sevenths/issues"
+  },
+  "homepage": "https://github.com/generative-music/piece-sevenths#readme",
+  "devDependencies": {
+    "eslint": "^5.4.0",
+    "eslint-config-metalex9": "^0.3.0"
+  },
+  "dependencies": {
+    "pick-random": "^2.0.0",
+    "random-number": "0.0.9",
+    "tonal": "^1.1.3"
+  }
+}
