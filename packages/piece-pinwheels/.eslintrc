@@ -1,0 +1,7 @@
+{
+  "extends": "metalex9",
+  "env": {
+    "es6": true,
+    "node": true
+  }
+}

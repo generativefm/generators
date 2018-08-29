@@ -1,0 +1,28 @@
+{
+  "name": "@generative-music/piece-pinwheels",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/generative-music/piece-pinwheels.git"
+  },
+  "author": "Alex Bainter <alexbainter+github@gmail.com> (http://alexbainter.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/generative-music/piece-pinwheels/issues"
+  },
+  "homepage": "https://github.com/generative-music/piece-pinwheels#readme",
+  "devDependencies": {
+    "eslint": "^5.4.0",
+    "eslint-config-metalex9": "^0.3.0"
+  },
+  "dependencies": {
+    "pick-random": "^2.0.0",
+    "random-number": "0.0.9",
+    "tonal": "^1.1.3"
+  }
+}
