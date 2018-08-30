@@ -23,6 +23,7 @@
   "dependencies": {
     "pick-random": "^2.0.0",
     "random-number": "0.0.9",
+    "shuffle-array": "^1.0.1",
     "tonal": "^1.1.3"
   }
 }
