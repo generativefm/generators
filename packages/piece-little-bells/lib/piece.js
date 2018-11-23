@@ -3,7 +3,6 @@
 const { Chord } = require('tonal');
 
 const PITCH_CLASSES = ['F', 'F', 'G', 'G#', 'A', 'A#', 'B'];
-
 const BASE_P_TO_PLAY = 0.1;
 const MODULO_DIVISOR_ONE = 4;
 const MODULO_DIVISOR_TWO = 2;
