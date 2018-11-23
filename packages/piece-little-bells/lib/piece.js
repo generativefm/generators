@@ -12,9 +12,6 @@ const HIGHER_INTERVAL_TIME = 20;
 const INTERVAL_DELAY_MAX = 5;
 const INTERVAL_DELAY_MULTIPLIER = 2;
 
-const pitchClass =
-  PITCH_CLASSES[Math.floor(Math.random() * PITCH_CLASSES.length)];
-
 const makeChordInterval = ({ time, instrument }) => (tonic, interval) => {
   time.createInterval(
     () => {
@@ -31,7 +28,9 @@ const makeChordInterval = ({ time, instrument }) => (tonic, interval) => {
           const noteIndex = Math.floor(Math.random() * notes.length);
           const note = notes[noteIndex];
           notes.splice(noteIndex, 1);
-          instrument.attack(note, beat);
+          time.createTimeout(() => {
+            instrument.attack(note);
+          }, beat);
           playedNotes += 1;
         }
         beat += 1;
@@ -41,6 +40,9 @@ const makeChordInterval = ({ time, instrument }) => (tonic, interval) => {
     Math.floor(Math.random() * INTERVAL_DELAY_MAX) * INTERVAL_DELAY_MULTIPLIER
   );
 };
+
+const pitchClass =
+  PITCH_CLASSES[Math.floor(Math.random() * PITCH_CLASSES.length)];
 
 const piece = ({ time, instruments }) => {
   const [instrument] = instruments;
