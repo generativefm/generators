@@ -1,0 +1,31 @@
+{
+  "name": "@generative-music/piece-little-bells",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "tonal": "^2.1.2"
+  },
+  "devDependencies": {
+    "eslint": "^5.9.0",
+    "eslint-config-metalex9": "^0.3.0",
+    "prettier": "^1.15.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "files": [
+    "lib",
+    "config"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/generative-music/piece-little-bells.git"
+  },
+  "author": "Alex Bainter <alexbainter+github@gmail.com> (https://alexbainter.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/generative-music/piece-little-bells/issues"
+  },
+  "homepage": "https://github.com/generative-music/piece-little-bells#readme"
+}
