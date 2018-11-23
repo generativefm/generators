@@ -1,0 +1,28 @@
+{
+  "name": "@generative-music/piece-meditation",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "files": [
+    "lib",
+    "config"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/generative-music/piece-meditation.git"
+  },
+  "author": "Alex Bainter <alexbainter+github@gmail.com> (https://alexbainter.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/generative-music/piece-meditation/issues"
+  },
+  "homepage": "https://github.com/generative-music/piece-meditation#readme",
+  "devDependencies": {
+    "eslint": "^5.9.0",
+    "eslint-config-metalex9": "^0.3.0",
+    "prettier": "^1.15.2"
+  }
+}
