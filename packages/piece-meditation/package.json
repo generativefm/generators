@@ -24,5 +24,8 @@
     "eslint": "^5.9.0",
     "eslint-config-metalex9": "^0.3.0",
     "prettier": "^1.15.2"
+  },
+  "dependencies": {
+    "tonal": "^2.1.2"
   }
 }
