@@ -1,0 +1,7 @@
+{
+  "piece": "./dist/piece.js",
+  "image": "./image.png",
+  "title": "aisatsana (generative remix)",
+  "id": "aisatsana",
+  "artistId": "alex-bainter"
+}
