@@ -18,7 +18,9 @@
     "url": "git+https://github.com/generative-music/piece-aisatsana.git"
   },
   "files": [
-    "lib"
+    "dist",
+    "image.png",
+    "generative-fm.manifest.json"
   ],
   "author": "Alex Bainter <alexbainter+github@gmail.com> (https://alexbainter.com)",
   "license": "MIT",
