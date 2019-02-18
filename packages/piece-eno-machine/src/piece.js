@@ -1,6 +1,7 @@
 import { Chord, Array } from 'tonal';
 import randomNumber from 'random-number';
 import fetchSpecFile from '@generative-music/samples.generative.fm/browser-client';
+import Tone from 'tone';
 
 const OCTAVES = [3, 4, 5];
 const MIN_REPEAT_S = 20;
@@ -12,10 +13,6 @@ const NOTES = Array.rotate(1, Chord.notes('DbM9')).reduce(
   []
 );
 
-const piece = ({ time, instruments }) => {
-  const [instrument] = instruments;
-};
-
 const getPiano = (samplesSpec, format) =>
   new Promise(resolve => {
     const piano = new Tone.Sampler(
@@ -26,18 +23,27 @@ const getPiano = (samplesSpec, format) =>
     );
   });
 
-const makePiece = fetchSpecFile()
-  .then(specFile => getPiano(specFile))
-  .then(piano => {
-    NOTES.forEach(note => {
-      const interval = randomNumber({ min: MIN_REPEAT_S, max: MAX_REPEAT_S });
-      const delay = randomNumber({ min: 0, max: MAX_REPEAT_S - MIN_REPEAT_S });
-      const playNote = () => piano.triggerAttack(note, '+1');
-      Tone.Transport.scheduleRepeat(playNote, interval, `+${delay}`);
+const makePiece = ({ audioContext, destination, preferredFormat }) => {
+  if (Tone.context !== audioContext) {
+    Tone.setContext(audioContext);
+  }
+  return fetchSpecFile()
+    .then(specFile => getPiano(specFile, preferredFormat))
+    .then(piano => {
+      piano.connect(destination);
+      NOTES.forEach(note => {
+        const interval = randomNumber({ min: MIN_REPEAT_S, max: MAX_REPEAT_S });
+        const delay = randomNumber({
+          min: 0,
+          max: MAX_REPEAT_S - MIN_REPEAT_S,
+        });
+        const playNote = () => piano.triggerAttack(note, '+1');
+        Tone.Transport.scheduleRepeat(playNote, interval, `+${delay}`);
+      });
+      return () => {
+        piano.dispose();
+      };
     });
-    return () => {
-      piano.dispose();
-    };
-  });
+};
 
-export default piece;
+export default makePiece;
