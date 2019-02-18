@@ -1,0 +1,7 @@
+{
+  "title": "Little Bells",
+  "makePiece": "./dist/piece.js",
+  "image": "./image.png",
+  "id": "little-bells",
+  "artistId": "alex-bainter"
+}
