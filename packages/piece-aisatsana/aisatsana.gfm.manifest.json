@@ -1,5 +1,5 @@
 {
-  "piece": "./dist/piece.js",
+  "makePiece": "./dist/piece.js",
   "image": "./image.png",
   "title": "aisatsana (generative remix)",
   "id": "aisatsana",

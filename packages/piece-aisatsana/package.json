@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/piece.js",
   "module": "dist/piece.js",
-  "generativeFmManifest": "generative-fm.manifest.json",
+  "generativeFmManifest": "aisatsana.gfm.manifest.json",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint \".\"",
@@ -20,7 +20,7 @@
   "files": [
     "dist",
     "image.png",
-    "generative-fm.manifest.json"
+    "aisatsana.gfm.manifest.json"
   ],
   "author": "Alex Bainter <alexbainter+github@gmail.com> (https://alexbainter.com)",
   "license": "MIT",
@@ -39,7 +39,7 @@
     "tone": "^13.4.9"
   },
   "dependencies": {
-    "@generative-music/samples.generative.fm": "^1.1.0",
+    "@generative-music/samples.generative.fm": "^1.1.1",
     "markov-chains": "^1.0.2"
   }
 }
