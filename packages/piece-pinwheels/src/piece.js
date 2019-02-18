@@ -1,12 +1,12 @@
-'use strict';
-
-const tonal = require('tonal');
-const pickRandom = require('pick-random');
-const randomNumber = require('random-number');
-const shuffle = require('shuffle-array');
+import * as tonal from 'tonal';
+import pickRandom from 'pick-random';
+import randomNumber from 'random-number';
+import shuffle from 'shuffle-array';
+import Tone from 'tone';
+import fetchSampleSpec from '@generative-music/samples.generative.fm/browser-client';
 
 const P_SPAWN_TWO = 0.33;
-//eslint-disable-next-line no-magic-numbers
+// eslint-disable-next-line no-magic-numbers
 const OCTAVES = [3, 4, 5];
 const TONICS = tonal.Note.names().reduce(
   (notesWithOctaves, noteName) =>
@@ -35,7 +35,7 @@ function* makeArrayLooper(arr) {
 
 const getNewMaxDelay = () => randomBetween(MIN_MAX_DELAY_S, MAX_MAX_DELAY_S);
 
-const startPinwheelChain = ({ time, instrument }) => {
+const startPinwheelChain = instrument => {
   const generatePinwheel = (
     tonic = pickRandom(TONICS)[0],
     maxDelay = getNewMaxDelay(),
@@ -55,8 +55,8 @@ const startPinwheelChain = ({ time, instrument }) => {
       max: MAX_MIN_DELAY_S,
     });
     const playNextNote = (delay, multiplier) => {
-      time.createTimeout(() => {
-        instrument.attack(noteGenerator.next().value);
+      Tone.Transport.scheduleOnce(() => {
+        instrument.triggerAttack(noteGenerator.next().value, '+1');
         const nextDelay = delay * multiplier;
         if (nextDelay < minDelay) {
           playNextNote(
@@ -68,7 +68,7 @@ const startPinwheelChain = ({ time, instrument }) => {
           );
         } else if (nextDelay > maxDelay) {
           if (spawnAnother) {
-            time.createTimeout(() => {
+            Tone.Transport.scheduleOnce(() => {
               if (Math.random() < P_SPAWN_TWO) {
                 const [nextLetter] = pickRandom(tonal.Note.names());
                 const shuffledOctaves = shuffle(OCTAVES.slice(0));
@@ -87,12 +87,12 @@ const startPinwheelChain = ({ time, instrument }) => {
               } else {
                 generatePinwheel();
               }
-            }, getNewMaxDelay());
+            }, `+${getNewMaxDelay()}`);
           }
         } else {
           playNextNote(nextDelay, multiplier);
         }
-      }, delay);
+      }, `+${delay}`);
     };
     playNextNote(
       maxDelay,
@@ -102,8 +102,28 @@ const startPinwheelChain = ({ time, instrument }) => {
   generatePinwheel();
 };
 
-const piece = ({ time, instruments }) => {
-  startPinwheelChain({ time, instrument: instruments[0] });
-};
+const getPiano = (samplesSpec, format) =>
+  new Promise(resolve => {
+    const piano = new Tone.Sampler(
+      samplesSpec.samples['vsco2-piano-mf'][format],
+      {
+        onload: () => resolve(piano),
+      }
+    );
+  });
 
-module.exports = piece;
+const makePiece = ({ audioContext, destination, preferredFormat }) =>
+  fetchSampleSpec()
+    .then(sampleSpec => getPiano(sampleSpec, preferredFormat))
+    .then(piano => {
+      if (Tone.context !== audioContext) {
+        Tone.setContext(audioContext);
+      }
+      piano.connect(destination);
+      startPinwheelChain(piano);
+      return () => {
+        piano.dispose();
+      };
+    });
+
+export default makePiece;

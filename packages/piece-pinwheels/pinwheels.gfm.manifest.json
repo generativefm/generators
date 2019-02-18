@@ -1,0 +1,7 @@
+{
+  "title": "Pinwheels",
+  "makePiece": "./dist/piece.js",
+  "image": "./image.png",
+  "id": "pinwheels",
+  "artistId": "alex-bainter"
+}
