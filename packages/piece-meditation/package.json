@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preversion": "npm run lint",
     "postversion": "git push && git push --tags",
-    "prepublish": "npm run build"
+    "prepublishOnly": "npm run build"
   },
   "files": [
     "dist",
