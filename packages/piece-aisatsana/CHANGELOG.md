@@ -17,4 +17,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Convert to generative.fm's new piece structure
 
+[1.0.2]: https://github.com/generative-music/piece-aisatsana/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/generative-music/piece-aisatsana/compare/v0.1.0...v1.0.1
