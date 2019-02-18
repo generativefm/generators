@@ -5,12 +5,9 @@ import instructions from './instructions.json';
 
 const BPM = 102;
 const SECONDS_PER_MINUTE = 60;
-const MILLISECONDS_PER_SECOND = 1000;
 const EIGHTH_NOTES_IN_BEAT = 2;
 const EIGHTH_NOTE_INTERVAL_S =
   SECONDS_PER_MINUTE / (EIGHTH_NOTES_IN_BEAT * BPM);
-const EIGHTH_NOTE_INTERVAL_MS =
-  EIGHTH_NOTE_INTERVAL_S * MILLISECONDS_PER_SECOND;
 const DELIMITER = ',';
 const SONG_LENGTH = 301;
 
@@ -62,31 +59,23 @@ const makePiece = ({ destination, audioContext, preferredFormat }) =>
     })
     .then(piano => {
       piano.connect(destination);
-      const timeoutsToClear = [];
       const schedule = () => {
         const phrase = chain.walk();
         phrase.forEach(str => {
           const [t, ...names] = str.split(DELIMITER);
           const parsedT = Number.parseInt(t, 10);
-          names.forEach(name =>
-            timeoutsToClear.push(
-              setTimeout(
-                () => piano.triggerAttack(name, '+1'),
-                parsedT * EIGHTH_NOTE_INTERVAL_MS
-              )
-            )
-          );
+          names.forEach(name => {
+            const waitTime = parsedT * EIGHTH_NOTE_INTERVAL_S;
+            piano.triggerAttack(name, `+${waitTime + 1}`);
+          });
         });
       };
-      schedule();
-      const interval = setInterval(
+      Tone.Transport.scheduleRepeat(
         schedule,
-        phraseLength * EIGHTH_NOTE_INTERVAL_MS
+        phraseLength * EIGHTH_NOTE_INTERVAL_S
       );
       return () => {
         piano.dispose();
-        clearInterval(interval);
-        timeoutsToClear.forEach(timeout => clearTimeout(timeout));
       };
     });
 
