@@ -1,0 +1,7 @@
+{
+  "title": "Meditation",
+  "makePiece": "./dist/piece.js",
+  "image": "./image.png",
+  "id": "meditation",
+  "artistId": "alex-bainter"
+}
