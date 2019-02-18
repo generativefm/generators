@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Mark Tone as a dependency
 
+### Added
+
+- Link in readme
+
 ## [1.0.2] - 2019-02-17
 
 ### Changed
