@@ -40,4 +40,4 @@ const makePiece = fetchSpecFile()
     };
   });
 
-module.exports = piece;
+export default piece;

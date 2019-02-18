@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.0.1] - 2019-02-17
+
+### Fixed
+
+- Include bulit files
+
 ## [1.0.0] - 2019-02-17
 
 ### Changed
@@ -19,6 +25,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Upgrade `tonal` to latest version to fix install errors
 
-[unreleased]: https://github.com/generative-music/piece-eno-machine/compare/v1.0.0...HEAD
+[unreleased]: https://github.com/generative-music/piece-eno-machine/compare/v1.0.1...HEAD
+
+[1.0.1]:: https://github.com/generative-music/piece-eno-machine/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/generative-music/piece-eno-machine/compare/v0.1.0...v1.0.0
 [0.1.1]: https://github.com/generative-music/piece-eno-machine/compare/v0.1.0...v0.1.1
