@@ -1,0 +1,7 @@
+{
+  "makePiece": "./dist/piece.js",
+  "image": "./image.png",
+  "title": "Eno Machine",
+  "id": "eno-machine",
+  "artistId": "alex-bainter"
+}
