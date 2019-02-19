@@ -1,0 +1,7 @@
+{
+  "title": "Sevenths",
+  "makePiece": "./dist/piece.js",
+  "image": "./image.png",
+  "id": "sevenths",
+  "artistId": "alex-bainter"
+}

@@ -2,34 +2,47 @@
   "name": "@generative-music/piece-sevenths",
   "version": "0.1.1",
   "description": "",
-  "main": "index.js",
+  "main": "dist/piece.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint \".\"",
+    "lint": "eslint .",
     "ci": "npm run lint",
-    "preversion": "npm run ci",
-    "postversion": "git push && git push --tags"
+    "preversion": "npm run lint",
+    "postversion": "git push && git push --tags",
+    "build": "rollup -c",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/generative-music/piece-sevenths.git"
   },
   "files": [
-    "lib"
+    "dist",
+    "image.png",
+    "sevenths.gfm.manifest.json"
   ],
-  "author": "Alex Bainter <alexbainter+github@gmail.com> (http://alexbainter.com)",
+  "author": "Alex Bainter <alexbainter+github@gmail.com> (https://alexbainter.com)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/generative-music/piece-sevenths/issues"
   },
   "homepage": "https://github.com/generative-music/piece-sevenths#readme",
   "devDependencies": {
-    "eslint": "^5.4.0",
-    "eslint-config-metalex9": "^0.3.0"
+    "@babel/core": "^7.3.3",
+    "@babel/preset-env": "^7.3.1",
+    "eslint": "^5.14.0",
+    "eslint-config-metalex9": "^0.3.0",
+    "prettier": "^1.16.4",
+    "rollup": "^1.2.1",
+    "rollup-plugin-babel": "^4.3.2"
   },
   "dependencies": {
+    "@generative-music/samples.generative.fm": "^1.1.1",
     "pick-random": "^2.0.0",
     "random-number": "0.0.9",
-    "tonal": "^2.0.0"
-  }
+    "tonal": "^2.0.0",
+    "tone": "^13.4.9"
+  },
+  "module": "dist/piece.js",
+  "generativeFmManifest": "sevenths.gfm.manifest.json"
 }
