@@ -1,0 +1,7 @@
+{
+  "title": "Townsend",
+  "makePiece": "./dist/piece.js",
+  "image": "./image.png",
+  "id": "townsend",
+  "artistId": "alex-bainter"
+}
