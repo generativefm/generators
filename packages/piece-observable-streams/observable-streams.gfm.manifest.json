@@ -1,0 +1,7 @@
+{
+  "title": "Observable Streams",
+  "makePiece": "./dist/piece.js",
+  "image": "./image.png",
+  "id": "observable-streams",
+  "artistId": "alex-bainter"
+}

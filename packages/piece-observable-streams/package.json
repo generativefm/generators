@@ -1,0 +1,37 @@
+{
+  "name": "@generative-music/piece-observable-streams",
+  "main": "dist/piece.js",
+  "module": "dist/piece.js",
+  "generativeFmManifest": "observable-streams.gfm.manifest.json",
+  "scripts": {
+    "build": "rollup -c",
+    "lint": "eslint .",
+    "preversion": "npm run lint",
+    "postversion": "git push && git push --tags",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/generative-music/piece-observable-streams.git"
+  },
+  "files": [
+    "dist",
+    "image.png",
+    "observable-streams.gfm.manifest.json"
+  ],
+  "author": "Alex Bainter <alexbainter+github@gmail.com> (https://alexbainter.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/generative-music/piece-observable-streams/issues"
+  },
+  "homepage": "https://github.com/generative-music/piece-observable-streams#readme",
+  "devDependencies": {
+    "@babel/core": "^7.3.3",
+    "@babel/preset-env": "^7.3.1",
+    "eslint": "^5.14.0",
+    "eslint-config-metalex9": "^0.3.0",
+    "prettier": "^1.16.4",
+    "rollup": "^1.2.1",
+    "rollup-plugin-babel": "^4.3.2"
+  }
+}
