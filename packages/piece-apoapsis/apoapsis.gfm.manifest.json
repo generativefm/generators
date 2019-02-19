@@ -1,0 +1,7 @@
+{
+  "title": "Apoapsis",
+  "makePiece": "./dist/piece.js",
+  "image": "./image.png",
+  "id": "apoapsis",
+  "artistId": "alex-bainter"
+}
