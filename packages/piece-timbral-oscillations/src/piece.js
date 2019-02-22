@@ -151,7 +151,6 @@ const makePiece = ({ audioContext, destination, preferredFormat }) =>
         }, `+${Math.random() * 10 + 10}`);
       };
       playPhrase();
-      Tone.Transport.start();
       return () => {
         [
           reverb,
