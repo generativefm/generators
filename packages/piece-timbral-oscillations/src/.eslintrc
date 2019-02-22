@@ -1,0 +1,13 @@
+{
+  "env": {
+    "node": false,
+    "browser": true
+  },
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 10
+  },
+  "rules": {
+    "no-magic-numbers": 0
+  }
+}

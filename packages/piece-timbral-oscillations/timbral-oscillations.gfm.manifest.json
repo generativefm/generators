@@ -1,0 +1,7 @@
+{
+  "title": "Timbral Oscillations",
+  "makePiece": "./dist/piece.js",
+  "image": "./image.png",
+  "id": "timbral-oscillations",
+  "artistId": "alex-bainter"
+}
