@@ -84,7 +84,6 @@ const makePiece = ({ audioContext, destination, preferredFormat }) =>
           }
         }
       }, (phrase.length * 5) / NOTES_PER_SECOND);
-      Tone.Transport.start();
       return () => {
         [piano, violins, cello, reverb, delay, volume].forEach(node =>
           node.dispose()
