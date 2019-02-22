@@ -1,0 +1,7 @@
+{
+  "title": "A Viable System",
+  "makePiece": "./dist/piece.js",
+  "image": "./image.png",
+  "id": "a-viable-system",
+  "artistId": "alex-bainter"
+}
