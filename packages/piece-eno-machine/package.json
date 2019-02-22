@@ -10,7 +10,8 @@
     "lint": "eslint \".\"",
     "ci": "npm run lint",
     "preversion": "npm run ci",
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "prepublishOnly": "npm run build"
   },
   "files": [
     "dist",
@@ -40,5 +41,6 @@
     "random-number": "0.0.9",
     "tonal": "^2.0.0",
     "tone": "^13.4.9"
-  }
+  },
+  "gitHead": "56c5d96ff938c41cf7a32b46ca208daa70b3e596"
 }

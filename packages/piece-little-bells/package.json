@@ -21,7 +21,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup -c",
     "lint": "eslint .",
-    "preversion": "npm run lint"
+    "preversion": "npm run lint",
+    "prepublishOnly": "npm run build"
   },
   "files": [
     "dist",
@@ -39,5 +40,6 @@
   },
   "homepage": "https://github.com/generative-music/piece-little-bells#readme",
   "module": "dist/piece.js",
-  "generativeFmManifest": "little-bells.gfm.manifest.json"
+  "generativeFmManifest": "little-bells.gfm.manifest.json",
+  "gitHead": "56c5d96ff938c41cf7a32b46ca208daa70b3e596"
 }
