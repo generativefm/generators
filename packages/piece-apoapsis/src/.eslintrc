@@ -5,5 +5,8 @@
   },
   "parserOptions": {
     "sourceType": "module"
+  },
+  "rules": {
+    "no-magic-numbers": 0
   }
 }
