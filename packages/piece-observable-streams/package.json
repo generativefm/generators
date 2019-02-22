@@ -35,7 +35,7 @@
     "rollup-plugin-babel": "^4.3.2"
   },
   "dependencies": {
-    "@generative-music/samples.generative.fm": "^1.1.1",
+    "@generative-music/samples.generative.fm": "^1.2.0",
     "rxjs": "^6.4.0",
     "tonal": "^2.2.1",
     "tone": "^13.4.9"

@@ -38,7 +38,7 @@
     "rollup-plugin-json": "^3.1.0"
   },
   "dependencies": {
-    "@generative-music/samples.generative.fm": "^1.1.1",
+    "@generative-music/samples.generative.fm": "^1.2.0",
     "markov-chains": "^1.0.2",
     "tone": "^13.4.9"
   }
