@@ -37,5 +37,5 @@
     "@generative-music/samples.generative.fm": "^1.2.0",
     "tone": "^13.4.9"
   },
-  "version": "1.1.1"
+  "version": "1.1.2"
 }
