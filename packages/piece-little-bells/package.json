@@ -21,8 +21,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup -c",
     "lint": "eslint .",
-    "preversion": "npm run lint",
-    "postversion": "git push && git push --tags"
+    "preversion": "npm run lint"
   },
   "files": [
     "dist",

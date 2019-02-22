@@ -8,7 +8,6 @@
     "build": "rollup -c",
     "lint": "eslint .",
     "preversion": "npm run lint",
-    "postversion": "git push && git push --tags",
     "prepublishOnly": "npm run build"
   },
   "files": [

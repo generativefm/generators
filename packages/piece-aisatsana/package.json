@@ -10,7 +10,6 @@
     "lint": "eslint \".\"",
     "ci": "npm run lint",
     "preversion": "npm run ci",
-    "postversion": "git push && git push --tags",
     "build": "rollup -c"
   },
   "repository": {

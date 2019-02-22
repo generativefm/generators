@@ -8,7 +8,6 @@
     "lint": "eslint .",
     "ci": "npm run lint",
     "preversion": "npm run lint",
-    "postversion": "git push && git push --tags",
     "build": "rollup -c",
     "prepublishOnly": "npm run build"
   },
