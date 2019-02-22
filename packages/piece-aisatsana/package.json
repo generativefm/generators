@@ -1,6 +1,6 @@
 {
   "name": "@generative-music/piece-aisatsana",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "",
   "main": "dist/piece.js",
   "module": "dist/piece.js",
