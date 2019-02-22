@@ -1,6 +1,6 @@
 {
   "name": "@generative-music/piece-sevenths",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "",
   "main": "dist/piece.js",
   "scripts": {
