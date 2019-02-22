@@ -1,0 +1,7 @@
+{
+  "title": "Spring Again",
+  "makePiece": "./dist/piece.js",
+  "image": "./image.png",
+  "id": "spring-again",
+  "artistId": "alex-bainter"
+}
