@@ -1,7 +1,7 @@
 {
   "name": "@generative-music/piece-spring-again",
-  "main": "dist/piece.js",
-  "module": "dist/piece.js",
+  "main": "dist/cjs.js",
+  "module": "dist/esm.js",
   "generativeFmManifest": "spring-again.gfm.manifest.json",
   "scripts": {
     "build": "rollup -c",
