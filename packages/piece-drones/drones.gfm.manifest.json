@@ -1,0 +1,7 @@
+{
+  "title": "Drones",
+  "makePiece": "./dist/piece.js",
+  "image": "./image.png",
+  "id": "drones",
+  "artistId": "alex-bainter"
+}
