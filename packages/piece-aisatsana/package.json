@@ -38,8 +38,10 @@
     "rollup-plugin-json": "^3.1.0"
   },
   "dependencies": {
+    "markov-chains": "^1.0.2"
+  },
+  "peerDependencies": {
     "@generative-music/samples.generative.fm": "^1.2.0",
-    "markov-chains": "^1.0.2",
     "tone": "^13.4.9"
   },
   "gitHead": "56c5d96ff938c41cf7a32b46ca208daa70b3e596"

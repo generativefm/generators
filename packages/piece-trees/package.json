@@ -34,8 +34,10 @@
     "rollup-plugin-babel": "^4.3.2"
   },
   "dependencies": {
+    "tonal": "^2.2.1"
+  },
+  "peerDependencies": {
     "@generative-music/samples.generative.fm": "^1.2.0",
-    "tonal": "^2.2.1",
     "tone": "^13.4.9"
   },
   "version": "1.1.3",
