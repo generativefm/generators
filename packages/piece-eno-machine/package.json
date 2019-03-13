@@ -20,7 +20,6 @@
     "url": "https://github.com/generative-music/piece-eno-machine/issues"
   },
   "homepage": "https://github.com/generative-music/piece-eno-machine#readme",
-  "devDependencies": {},
   "dependencies": {
     "random-number": "0.0.9",
     "tonal": "^2.0.0"

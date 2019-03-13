@@ -18,7 +18,6 @@
     "url": "https://github.com/generative-music/piece-otherness/issues"
   },
   "homepage": "https://github.com/generative-music/piece-otherness#readme",
-  "devDependencies": {},
   "dependencies": {
     "tonal": "^2.2.1"
   },

@@ -18,7 +18,6 @@
     "url": "https://github.com/generative-music/piece-townsend/issues"
   },
   "homepage": "https://github.com/generative-music/piece-townsend#readme",
-  "devDependencies": {},
   "peerDependencies": {
     "@generative-music/samples.generative.fm": "^1.5.0",
     "tone": "^13.4.9"

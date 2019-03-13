@@ -13,7 +13,6 @@
     "url": "https://github.com/generative-music/piece-pinwheels/issues"
   },
   "homepage": "https://github.com/generative-music/piece-pinwheels#readme",
-  "devDependencies": {},
   "dependencies": {
     "pick-random": "^2.0.0",
     "random-number": "0.0.9",

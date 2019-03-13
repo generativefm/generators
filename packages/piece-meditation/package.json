@@ -18,7 +18,6 @@
     "url": "https://github.com/generative-music/piece-meditation/issues"
   },
   "homepage": "https://github.com/generative-music/piece-meditation#readme",
-  "devDependencies": {},
   "dependencies": {
     "tonal": "^2.1.2"
   },

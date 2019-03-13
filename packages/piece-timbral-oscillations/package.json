@@ -18,7 +18,6 @@
     "url": "https://github.com/generative-music/piece-timbral-oscillations/issues"
   },
   "homepage": "https://github.com/generative-music/piece-timbral-oscillations#readme",
-  "devDependencies": {},
   "dependencies": {
     "tonal": "^2.2.1"
   },
