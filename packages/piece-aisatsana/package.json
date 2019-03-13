@@ -5,14 +5,6 @@
   "main": "dist/piece.js",
   "module": "dist/piece.js",
   "generativeFmManifest": "aisatsana.gfm.manifest.json",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint \".\"",
-    "ci": "npm run lint",
-    "preversion": "npm run ci",
-    "build": "rollup -c",
-    "prepublishOnly": "npm run build"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/generative-music/piece-aisatsana.git"
@@ -29,19 +21,13 @@
   },
   "homepage": "https://github.com/generative-music/piece-aisatsana#readme",
   "devDependencies": {
-    "@babel/core": "^7.3.3",
-    "@babel/preset-env": "^7.3.1",
-    "eslint": "^5.14.0",
-    "eslint-config-metalex9": "^0.2.0",
-    "rollup": "^1.2.1",
-    "rollup-plugin-babel": "^4.3.2",
     "rollup-plugin-json": "^3.1.0"
   },
   "dependencies": {
     "markov-chains": "^1.0.2"
   },
   "peerDependencies": {
-    "@generative-music/samples.generative.fm": "^1.2.0",
+    "@generative-music/samples.generative.fm": "^1.5.0",
     "tone": "^13.4.9"
   },
   "gitHead": "56c5d96ff938c41cf7a32b46ca208daa70b3e596"
