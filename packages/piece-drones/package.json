@@ -1,7 +1,7 @@
 {
   "name": "@generative-music/piece-drones",
-  "main": "dist/piece.js",
-  "module": "dist/piece.js",
+  "main": "dist/cjs.js",
+  "module": "dist/esm.js",
   "generativeFmManifest": "drones.gfm.manifest.json",
   "version": "2.0.0",
   "repository": {
@@ -29,5 +29,6 @@
   },
   "dependencies": {
     "tonal": "^2.2.1"
-  }
+  },
+  "gitHead": "8ed39368a8376ff9ea366fe8e1ab01820553a037"
 }

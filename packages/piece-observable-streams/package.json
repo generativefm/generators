@@ -1,7 +1,7 @@
 {
   "name": "@generative-music/piece-observable-streams",
-  "main": "dist/piece.js",
-  "module": "dist/piece.js",
+  "main": "dist/cjs.js",
+  "module": "dist/esm.js",
   "generativeFmManifest": "observable-streams.gfm.manifest.json",
   "repository": {
     "type": "git",
@@ -27,5 +27,5 @@
     "tone": "^13.4.9"
   },
   "version": "2.0.0",
-  "gitHead": "56c5d96ff938c41cf7a32b46ca208daa70b3e596"
+  "gitHead": "8ed39368a8376ff9ea366fe8e1ab01820553a037"
 }

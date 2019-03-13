@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-sevenths",
   "version": "2.0.0",
   "description": "",
-  "main": "dist/piece.js",
+  "main": "dist/cjs.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/generative-music/piece-sevenths.git"
@@ -27,7 +27,7 @@
     "@generative-music/samples.generative.fm": "^1.5.0",
     "tone": "^13.4.9"
   },
-  "module": "dist/piece.js",
+  "module": "dist/esm.js",
   "generativeFmManifest": "sevenths.gfm.manifest.json",
-  "gitHead": "56c5d96ff938c41cf7a32b46ca208daa70b3e596"
+  "gitHead": "8ed39368a8376ff9ea366fe8e1ab01820553a037"
 }
