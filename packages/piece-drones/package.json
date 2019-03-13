@@ -3,7 +3,7 @@
   "main": "dist/piece.js",
   "module": "dist/piece.js",
   "generativeFmManifest": "drones.gfm.manifest.json",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "scripts": {
     "build": "rollup -c",
     "lint": "eslint .",
