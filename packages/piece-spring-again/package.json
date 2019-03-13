@@ -3,6 +3,7 @@
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
   "generativeFmManifest": "spring-again.gfm.manifest.json",
+  "version": "0.0.0",
   "scripts": {
     "build": "rollup -c",
     "lint": "eslint .",
