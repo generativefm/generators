@@ -1,6 +1,6 @@
 {
   "title": "Impact",
-  "makePiece": "./dist/piece.js",
+  "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "impact",
   "artistId": "alex-bainter"

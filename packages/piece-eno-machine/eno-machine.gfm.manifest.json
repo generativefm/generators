@@ -1,5 +1,5 @@
 {
-  "makePiece": "./dist/piece.js",
+  "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "title": "Eno Machine",
   "id": "eno-machine",

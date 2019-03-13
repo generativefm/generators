@@ -1,6 +1,6 @@
 {
   "title": "Trees",
-  "makePiece": "./dist/piece.js",
+  "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "trees",
   "artistId": "alex-bainter"

@@ -1,6 +1,6 @@
 {
   "title": "Little Bells",
-  "makePiece": "./dist/piece.js",
+  "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "little-bells",
   "artistId": "alex-bainter"

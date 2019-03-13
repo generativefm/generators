@@ -1,6 +1,6 @@
 {
   "title": "Drones",
-  "makePiece": "./dist/piece.js",
+  "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "drones",
   "artistId": "alex-bainter"

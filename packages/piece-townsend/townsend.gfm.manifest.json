@@ -1,6 +1,6 @@
 {
   "title": "Townsend",
-  "makePiece": "./dist/piece.js",
+  "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "townsend",
   "artistId": "alex-bainter"
