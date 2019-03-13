@@ -38,7 +38,7 @@ const makePiece = ({
       if (Tone.context !== audioContext) {
         Tone.setContext(audioContext);
       }
-      const masterVol = new Tone.Volume(-10).connect(destination);
+      const masterVol = new Tone.Volume(-12).connect(destination);
       const disposableNodes = [masterVol];
       ['vsco2-trumpet-sus-f', 'vsco2-trumpet-sus-mf'].forEach(
         instrumentName => {
