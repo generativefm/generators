@@ -1,6 +1,6 @@
 {
   "title": "Otherness",
-  "makePiece": "./dist/piece.js",
+  "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "otherness",
   "artistId": "alex-bainter"

@@ -1,6 +1,6 @@
 {
   "title": "Apoapsis",
-  "makePiece": "./dist/piece.js",
+  "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "apoapsis",
   "artistId": "alex-bainter"

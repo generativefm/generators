@@ -1,0 +1,12 @@
+{
+  "env": {
+    "node": false,
+    "browser": true
+  },
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "rules": {
+    "no-magic-numbers": 0
+  }
+}

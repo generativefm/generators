@@ -1,7 +1,7 @@
 {
-  "title": "Spring Again",
+  "title": "Drones",
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
-  "id": "spring-again",
+  "id": "drones",
   "artistId": "alex-bainter"
 }

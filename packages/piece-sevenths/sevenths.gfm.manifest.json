@@ -1,6 +1,6 @@
 {
   "title": "Sevenths",
-  "makePiece": "./dist/piece.js",
+  "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "sevenths",
   "artistId": "alex-bainter"

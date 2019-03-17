@@ -1,0 +1,34 @@
+{
+  "name": "@generative-music/piece-drones",
+  "main": "dist/cjs.js",
+  "module": "dist/esm.js",
+  "generativeFmManifest": "drones.gfm.manifest.json",
+  "version": "2.0.2",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/generative-music/piece-drones.git"
+  },
+  "files": [
+    "dist",
+    "image.png",
+    "drones.gfm.manifest.json"
+  ],
+  "author": "Alex Bainter <alexbainter+github@gmail.com> (https://alexbainter.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/generative-music/piece-drones/issues"
+  },
+  "homepage": "https://github.com/generative-music/piece-drones#readme",
+  "devDependencies": {
+    "@generative-music/samples.generative.fm": "^1.4.0",
+    "tone": "^13.4.9"
+  },
+  "peerDependencies": {
+    "@generative-music/samples.generative.fm": "^1.5.0",
+    "tone": "^13.4.9"
+  },
+  "dependencies": {
+    "tonal": "^2.2.1"
+  },
+  "gitHead": "8ed39368a8376ff9ea366fe8e1ab01820553a037"
+}

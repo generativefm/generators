@@ -1,6 +1,6 @@
 {
   "title": "Lemniscate",
-  "makePiece": "./dist/piece.js",
+  "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "lemniscate",
   "artistId": "alex-bainter"

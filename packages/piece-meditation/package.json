@@ -1,15 +1,8 @@
 {
   "name": "@generative-music/piece-meditation",
-  "version": "1.1.3",
+  "version": "2.0.2",
   "description": "",
-  "main": "dist/piece.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rollup -c",
-    "lint": "eslint .",
-    "preversion": "npm run lint",
-    "prepublishOnly": "npm run build"
-  },
+  "main": "dist/cjs.js",
   "files": [
     "dist",
     "image.png",
@@ -25,21 +18,14 @@
     "url": "https://github.com/generative-music/piece-meditation/issues"
   },
   "homepage": "https://github.com/generative-music/piece-meditation#readme",
-  "devDependencies": {
-    "@babel/core": "^7.3.3",
-    "@babel/preset-env": "^7.3.1",
-    "eslint": "^5.14.0",
-    "eslint-config-metalex9": "^0.3.0",
-    "prettier": "^1.16.4",
-    "rollup": "^1.2.1",
-    "rollup-plugin-babel": "^4.3.2"
-  },
   "dependencies": {
-    "@generative-music/samples.generative.fm": "^1.2.0",
-    "tonal": "^2.1.2",
+    "tonal": "^2.1.2"
+  },
+  "peerDependencies": {
+    "@generative-music/samples.generative.fm": "^1.5.0",
     "tone": "^13.4.9"
   },
-  "module": "dist/piece.js",
+  "module": "dist/esm.js",
   "generativeFmManifest": "meditation.gfm.manifest.json",
-  "gitHead": "56c5d96ff938c41cf7a32b46ca208daa70b3e596"
+  "gitHead": "8ed39368a8376ff9ea366fe8e1ab01820553a037"
 }
