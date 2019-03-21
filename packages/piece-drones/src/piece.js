@@ -55,11 +55,7 @@ const makePiece = ({
               difference + pitchShift
             );
             const url = samplesByNote[closestSampledNote];
-            return getBuffer(
-              url.includes('samples')
-                ? url
-                : `./samples/${instrumentName}/${url}`
-            ).then(buffer => {
+            return getBuffer(url).then(buffer => {
               disposableNodes.push(buffer);
               const source = new Tone.BufferSource(buffer).connect(
                 droneDestination
