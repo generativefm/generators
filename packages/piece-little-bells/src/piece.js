@@ -49,8 +49,13 @@ const getGlock = (samplesSpec, format) =>
     });
   });
 
-const makePiece = ({ audioContext, destination, preferredFormat }) =>
-  fetchSampleSpec()
+const makePiece = ({
+  audioContext,
+  destination,
+  preferredFormat,
+  sampleSource = {},
+}) =>
+  fetchSampleSpec(sampleSource.baseUrl, sampleSource.specFilename)
     .then(sampleSpec => getGlock(sampleSpec, preferredFormat))
     .then(glock => {
       if (Tone.context !== audioContext) {

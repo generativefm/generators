@@ -122,8 +122,13 @@ const makeGetSampledInstrument = (sampleSpec, format) => (
     );
   });
 
-const makePiece = ({ audioContext, destination, preferredFormat }) =>
-  fetchSpecFile()
+const makePiece = ({
+  audioContext,
+  destination,
+  preferredFormat,
+  sampleSource = {},
+}) =>
+  fetchSpecFile(sampleSource.baseUrl, sampleSource.specFilename)
     .then(specFile => {
       if (Tone.context !== audioContext) {
         Tone.setContext(audioContext);

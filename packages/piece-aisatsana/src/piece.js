@@ -32,8 +32,8 @@ while (enCopy.length > 0) {
 }
 
 const phrasesWithIndex = phrases.map(phrase =>
-  phrase.map(
-    (names, i) => (names.length === 0 ? `${i}` : `${i}${DELIMITER}${names}`)
+  phrase.map((names, i) =>
+    names.length === 0 ? `${i}` : `${i}${DELIMITER}${names}`
   )
 );
 
@@ -49,8 +49,13 @@ const getPiano = (samplesSpec, format) =>
     );
   });
 
-const makePiece = ({ destination, audioContext, preferredFormat }) =>
-  fetchSpecFile()
+const makePiece = ({
+  destination,
+  audioContext,
+  preferredFormat,
+  sampleSource = {},
+}) =>
+  fetchSpecFile(sampleSource.baseUrl, sampleSource.specFilename)
     .then(samplesSpec => {
       if (audioContext !== Tone.context) {
         Tone.setContext(audioContext);
