@@ -23,11 +23,16 @@ const getPiano = (samplesSpec, format) =>
     );
   });
 
-const makePiece = ({ audioContext, destination, preferredFormat }) => {
+const makePiece = ({
+  audioContext,
+  destination,
+  preferredFormat,
+  sampleSource = {},
+}) => {
   if (Tone.context !== audioContext) {
     Tone.setContext(audioContext);
   }
-  return fetchSpecFile()
+  return fetchSpecFile(sampleSource.baseUrl, sampleSource.specFilename)
     .then(specFile => getPiano(specFile, preferredFormat))
     .then(piano => {
       piano.connect(destination);

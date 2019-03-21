@@ -111,34 +111,43 @@ const makeInstrumentComponent = (
   });
 };
 
-const makePiece = ({ audioContext, destination, preferredFormat }) =>
-  fetchSpecFile().then(({ samples }) => {
-    if (Tone.context !== audioContext) {
-      Tone.setContext(audioContext);
+const makePiece = ({
+  audioContext,
+  destination,
+  preferredFormat,
+  sampleSource = {},
+}) =>
+  fetchSpecFile(sampleSource.baseUrl, sampleSource.specFilename).then(
+    ({ samples }) => {
+      if (Tone.context !== audioContext) {
+        Tone.setContext(audioContext);
+      }
+      const delay = new Tone.FeedbackDelay({
+        feedback: 0.3 + Math.random() / 30,
+        wet: 0.5,
+        delayTime: 10 + Math.random() * 2,
+      }).connect(destination);
+      const reverb = new Tone.Freeverb({ roomSize: 0.6 }).connect(delay);
+      return Promise.all(
+        Reflect.ownKeys(instrumentConfigs).map(instrumentName => {
+          const instrumentSamplesByNote =
+            samples[instrumentName][preferredFormat];
+          instrumentConfigs[
+            instrumentName
+          ].notes = getPossibleNotesForInstrument(
+            instrumentSamplesByNote,
+            instrumentConfigs[instrumentName].octaves
+          );
+          return makeInstrumentComponent(
+            instrumentSamplesByNote,
+            instrumentName,
+            reverb
+          );
+        })
+      ).then(instruments => () => {
+        instruments.concat(delay, reverb).forEach(node => node.dispose());
+      });
     }
-    const delay = new Tone.FeedbackDelay({
-      feedback: 0.3 + Math.random() / 30,
-      wet: 0.5,
-      delayTime: 10 + Math.random() * 2,
-    }).connect(destination);
-    const reverb = new Tone.Freeverb({ roomSize: 0.6 }).connect(delay);
-    return Promise.all(
-      Reflect.ownKeys(instrumentConfigs).map(instrumentName => {
-        const instrumentSamplesByNote =
-          samples[instrumentName][preferredFormat];
-        instrumentConfigs[instrumentName].notes = getPossibleNotesForInstrument(
-          instrumentSamplesByNote,
-          instrumentConfigs[instrumentName].octaves
-        );
-        return makeInstrumentComponent(
-          instrumentSamplesByNote,
-          instrumentName,
-          reverb
-        );
-      })
-    ).then(instruments => () => {
-      instruments.concat(delay, reverb).forEach(node => node.dispose());
-    });
-  });
+  );
 
 export default makePiece;

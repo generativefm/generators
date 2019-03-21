@@ -27,8 +27,13 @@ const getSampledInstrument = samplesByNote =>
     });
   });
 
-const makePiece = ({ audioContext, destination, preferredFormat }) =>
-  fetchSpecFile()
+const makePiece = ({
+  audioContext,
+  destination,
+  preferredFormat,
+  sampleSource = {},
+}) =>
+  fetchSpecFile(sampleSource.baseUrl, sampleSource.specFilename)
     .then(({ samples }) => {
       if (Tone.context !== audioContext) {
         Tone.setContext(audioContext);

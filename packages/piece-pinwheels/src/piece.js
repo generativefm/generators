@@ -112,8 +112,13 @@ const getPiano = (samplesSpec, format) =>
     );
   });
 
-const makePiece = ({ audioContext, destination, preferredFormat }) =>
-  fetchSampleSpec()
+const makePiece = ({
+  audioContext,
+  destination,
+  preferredFormat,
+  sampleSource = {},
+}) =>
+  fetchSampleSpec(sampleSource.baseUrl, sampleSource.specFilename)
     .then(sampleSpec => getPiano(sampleSpec, preferredFormat))
     .then(piano => {
       if (Tone.context !== audioContext) {
