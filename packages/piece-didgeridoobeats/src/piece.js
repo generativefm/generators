@@ -84,18 +84,19 @@ const makePiece = ({
           .map(i => percussionInstrument(i))
           .concat([getBuffers(didgeridooSamples)])
       ).then(([hats, kick, snare, didgeridoo]) => {
-        const playDrumLoop = time => {
+        const playDrumLoop = () => {
           volume.volume.linearRampToValueAtTime(
             MAX_DRUMS_VOLUME_DB,
-            time + DRUM_LOOP_LENGTH_S / 2
+            `+${DRUM_LOOP_LENGTH_S / 2}`
           );
-          Tone.Transport.scheduleOnce(volumeTime => {
+
+          Tone.Transport.scheduleOnce(() => {
             volume.volume.linearRampToValueAtTime(
               MIN_DRUMS_VOLUME_DB,
-              volumeTime + DRUM_LOOP_LENGTH_S / 2
+              `+${DRUM_LOOP_LENGTH_S / 2}`
             );
-          }, time + DRUM_LOOP_LENGTH_S / 2);
-          const SIXTEENTH_TIME = Math.random() * 0.05 + 0.1;
+          }, `+${DRUM_LOOP_LENGTH_S / 2}`);
+          const sixteenthTime = Math.random() * 0.05 + 0.1;
 
           const hatPattern = getPattern(0.9, 0.5, 0.1);
           const snarePattern = getPattern(0.5, 0.25, 0.1);
@@ -110,25 +111,25 @@ const makePiece = ({
           ].forEach(([inst, pattern], i) => {
             if (i > 0 || Math.random() < 0.25) {
               Tone.Transport.scheduleRepeat(
-                patternTime => {
+                () => {
                   pattern.forEach(beat => {
-                    inst.play(patternTime + beat * SIXTEENTH_TIME);
+                    inst.play(`+${beat * sixteenthTime + 0.05}`);
                   });
                 },
-                BEAT_SIXTEETHS_COUNT * SIXTEENTH_TIME,
-                time,
-                DRUM_LOOP_LENGTH_S
+                BEAT_SIXTEETHS_COUNT * sixteenthTime,
+                Tone.Transport.now(),
+                DRUM_LOOP_LENGTH_S - BEAT_SIXTEETHS_COUNT * sixteenthTime + 0.5
               );
             }
           });
 
-          Tone.Transport.scheduleOnce(nextTime => {
-            playDrumLoop(nextTime);
-          }, time + DRUM_LOOP_LENGTH_S + 2);
+          Tone.Transport.scheduleOnce(() => {
+            playDrumLoop();
+          }, `+${DRUM_LOOP_LENGTH_S + 3}`);
         };
 
-        Tone.Transport.scheduleOnce(time => {
-          playDrumLoop(time);
+        Tone.Transport.scheduleOnce(() => {
+          playDrumLoop();
         }, '+5');
 
         const didgeridooAutoFilter = new Tone.AutoFilter({
@@ -149,7 +150,7 @@ const makePiece = ({
           delay
         );
 
-        const playDigeridoo = time => {
+        const playDigeridoo = () => {
           const index = Math.floor(Math.random() * didgeridooSamples.length);
           const buffer = didgeridoo.get(index);
           let playbackRate = 1;
@@ -164,14 +165,14 @@ const makePiece = ({
             playbackRate,
           }).connect(reverb);
           source.onended = () => source.dispose();
-          source.start(time + 1);
-          Tone.Transport.scheduleOnce(nextTime => {
-            playDigeridoo(nextTime);
-          }, time + (Math.random() < 0.03 ? Math.random() * 10 + 10 : Math.random() * 5 + 5));
+          source.start('+1');
+          Tone.Transport.scheduleOnce(() => {
+            playDigeridoo();
+          }, `+${Math.random() < 0.03 ? Math.random() * 10 + 10 : Math.random() * 5 + 5}`);
         };
 
-        Tone.Transport.scheduleOnce(time => {
-          playDigeridoo(time);
+        Tone.Transport.scheduleOnce(() => {
+          playDigeridoo();
         }, '+1');
 
         return Promise.resolve(() => {
