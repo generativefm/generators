@@ -1,0 +1,7 @@
+{
+  "title": "Didgeridoobeats",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "didgeridoobeats",
+  "artistId": "alex-bainter"
+}
