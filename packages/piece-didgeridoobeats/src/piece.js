@@ -129,7 +129,7 @@ const makePiece = ({
 
         Tone.Transport.scheduleOnce(time => {
           playDrumLoop(time);
-        }, 5);
+        }, '+5');
 
         const didgeridooAutoFilter = new Tone.AutoFilter({
           frequency: 0.06,
@@ -169,7 +169,10 @@ const makePiece = ({
             playDigeridoo(nextTime);
           }, time + (Math.random() < 0.03 ? Math.random() * 10 + 10 : Math.random() * 5 + 5));
         };
-        playDigeridoo(1);
+
+        Tone.Transport.scheduleOnce(time => {
+          playDigeridoo(time);
+        }, '+1');
 
         return Promise.resolve(() => {
           [
