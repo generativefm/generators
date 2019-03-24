@@ -117,7 +117,7 @@ const makePiece = ({
                   });
                 },
                 BEAT_SIXTEETHS_COUNT * sixteenthTime,
-                Tone.Transport.now(),
+                '+0.05',
                 DRUM_LOOP_LENGTH_S - BEAT_SIXTEETHS_COUNT * sixteenthTime + 0.5
               );
             }
