@@ -84,6 +84,7 @@ const makePiece = ({
       if (Tone.context !== audioContext) {
         Tone.setContext(audioContext);
       }
+      const masterVol = new Tone.Volume(-7).connect(destination);
       return Promise.all([
         Promise.all(
           NOTES.reduce(
@@ -109,7 +110,7 @@ const makePiece = ({
             disposableNodes.splice(i, 1);
           }
         };
-        const compressor = new Tone.Compressor().connect(destination);
+        const compressor = new Tone.Compressor().connect(masterVol);
         const filter = new Tone.Filter(1000);
         filter.connect(compressor);
         const startDelays = wines.map(() => Math.random() * 60);
@@ -140,7 +141,7 @@ const makePiece = ({
           delayTime: 3,
           feedback: 0.3,
           wet: 0.2,
-        }).connect(destination);
+        }).connect(masterVol);
         const reverb = new Tone.Freeverb({ roomSize: 0.6, wet: 1 }).connect(
           delay
         );
