@@ -1,0 +1,7 @@
+{
+  "title": "Buttafingers",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "buttafingers",
+  "artistId": "alex-bainter"
+}
