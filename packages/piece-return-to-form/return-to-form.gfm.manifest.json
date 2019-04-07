@@ -1,0 +1,7 @@
+{
+  "title": "Return to Form",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "return-to-form",
+  "artistId": "alex-bainter"
+}
