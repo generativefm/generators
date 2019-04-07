@@ -40,6 +40,7 @@ const makePiece = ({
       if (Tone.context !== audioContext) {
         Tone.setContext(audioContext);
       }
+      Tone.context.latencyHint = 'interactive';
       const masterVol = new Tone.Volume(-5).connect(destination);
 
       const drumsAutoFilter = new Tone.AutoFilter({
@@ -188,6 +189,7 @@ const makePiece = ({
           ].forEach(node => {
             node.dispose();
           });
+          Tone.context.latencyHint = 'balanced';
         });
       });
     }
