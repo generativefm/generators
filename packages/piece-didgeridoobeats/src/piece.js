@@ -176,7 +176,7 @@ const makePiece = ({
           playDigeridoo();
         }, '+1');
 
-        return Promise.resolve(() => {
+        return () => {
           [
             masterVol,
             drumsAutoFilter,
@@ -190,7 +190,7 @@ const makePiece = ({
             node.dispose();
           });
           Tone.context.latencyHint = 'balanced';
-        });
+        };
       });
     }
   );
