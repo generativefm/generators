@@ -3,5 +3,6 @@
   "image": "./image.png",
   "title": "aisatsana (generative remix)",
   "id": "aisatsana",
-  "artistId": "alex-bainter"
+  "artistId": "alex-bainter",
+  "isRecordable": false
 }
