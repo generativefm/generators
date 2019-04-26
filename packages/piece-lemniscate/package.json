@@ -22,6 +22,6 @@
     "@generative-music/samples.generative.fm": "^1.5.0",
     "tone": "^13.4.9"
   },
-  "version": "2.4.0",
+  "version": "2.6.0",
   "gitHead": "8ed39368a8376ff9ea366fe8e1ab01820553a037"
 }
