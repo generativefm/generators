@@ -22,10 +22,18 @@ const findClosest = (samplesByNote, note) => {
   return note;
 };
 
-const getBuffer = url =>
-  new Promise(resolve => {
+const fetchedBuffers = {};
+
+const getBuffer = url => {
+  if (fetchedBuffers[url]) {
+    return fetchedBuffers[url];
+  }
+  const bufferPromise = new Promise(resolve => {
     const buffer = new Tone.Buffer(url, () => resolve(buffer));
   });
+  fetchedBuffers[url] = bufferPromise;
+  return bufferPromise;
+};
 
 const makePiece = ({
   audioContext,
@@ -56,7 +64,9 @@ const makePiece = ({
             );
             const url = samplesByNote[closestSampledNote];
             return getBuffer(url).then(buffer => {
-              disposableNodes.push(buffer);
+              if (!disposableNodes.includes(buffer)) {
+                disposableNodes.push(buffer);
+              }
               const source = new Tone.BufferSource(buffer).connect(
                 droneDestination
               );
@@ -111,9 +121,10 @@ const makePiece = ({
           });
         }
       );
-      return Promise.resolve(() => {
+      Tone.Transport.start();
+      return () => {
         disposableNodes.forEach(node => node.dispose());
-      });
+      };
     }
   );
 
