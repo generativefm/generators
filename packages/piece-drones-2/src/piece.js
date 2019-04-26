@@ -22,19 +22,6 @@ const findClosest = (samplesByNote, note) => {
   return note;
 };
 
-const fetchedBuffers = {};
-
-const getBuffer = url => {
-  if (fetchedBuffers[url]) {
-    return fetchedBuffers[url];
-  }
-  const bufferPromise = new Promise(resolve => {
-    const buffer = new Tone.Buffer(url, () => resolve(buffer));
-  });
-  fetchedBuffers[url] = bufferPromise;
-  return bufferPromise;
-};
-
 const makePiece = ({
   audioContext,
   destination,
@@ -46,6 +33,20 @@ const makePiece = ({
       if (Tone.context !== audioContext) {
         Tone.setContext(audioContext);
       }
+
+      const fetchedBuffers = {};
+
+      const getBuffer = url => {
+        if (fetchedBuffers[url]) {
+          return fetchedBuffers[url];
+        }
+        const bufferPromise = new Promise(resolve => {
+          const buffer = new Tone.Buffer(url, () => resolve(buffer));
+        });
+        fetchedBuffers[url] = bufferPromise;
+        return bufferPromise;
+      };
+
       const filter = new Tone.Filter(6000, 'lowpass', -48).connect(destination);
       const disposableNodes = [filter];
       const samplesByNote = samples['vsco2-violins-susvib'][preferredFormat];
