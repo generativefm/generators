@@ -1,0 +1,33 @@
+{
+  "name": "@generative-music/piece-awash",
+  "main": "dist/cjs.js",
+  "module": "dist/esm.js",
+  "version": "0.0.0",
+  "generativeFmManifest": "awash.gfm.manifest.json",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/generative-music/pieces-alex-bainter.git"
+  },
+  "files": [
+    "dist",
+    "image.png",
+    "awash.gfm.manifest.json"
+  ],
+  "author": "Alex Bainter <alexbainter+github@gmail.com> (https://alexbainter.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/generative-music/pieces-alex-bainter/issues"
+  },
+  "homepage": "https://github.com/generative-music/pieces-alex-bainter#readme",
+  "peerDependencies": {
+    "@generative-music/samples.generative.fm": "^1.8.0",
+    "tone": "^13.4.9"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@generative-music/samples.generative.fm": "^1.8.0",
+    "tone": "^13.4.9"
+  }
+}
