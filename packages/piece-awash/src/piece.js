@@ -87,13 +87,11 @@ const makePiece = ({
                 curve: 'linear',
                 playbackRate: 0.5,
                 onended: () => {
-                  const index = disposableNodes.findIndex(
-                    node => node === source
-                  );
+                  const index = disposableNodes.indexOf(source);
                   if (index >= 0) {
-                    disposableNodes.splice(i, 1);
+                    source.dispose();
+                    disposableNodes.splice(index, 1);
                   }
-                  source.dispose();
                 },
               })
               .connect(reverb);
@@ -105,11 +103,12 @@ const makePiece = ({
           };
           Tone.Transport.scheduleOnce(() => {
             play();
-          }, `+${firstOceanDelays[i] - minOceanDelay + 1}`);
+          }, `+${firstOceanDelays[i] - minOceanDelay}`);
         });
 
         return () => {
           disposableNodes.forEach(node => node.dispose());
+          disposableNodes.splice(0, disposableNodes.length);
         };
       });
     }

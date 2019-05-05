@@ -34,12 +34,14 @@ const makePiece = ({
       if (Tone.context !== audioContext) {
         Tone.setContext(audioContext);
       }
+      const fluteReverb = new Tone.Reverb(50).set({ wet: 1 });
       return Promise.all([
         getFlute(samplesSpec, preferredFormat),
         getGuitarSounds(samplesSpec, preferredFormat),
+        fluteReverb.generate(),
       ]);
     })
-    .then(([flute, guitarBuffers]) => {
+    .then(([flute, guitarBuffers, fluteReverb]) => {
       const volume = new Tone.Volume(-10);
 
       const volumeLfo = new Tone.LFO({
@@ -49,23 +51,19 @@ const makePiece = ({
       });
       volumeLfo.connect(flute.volume);
       volumeLfo.start();
-      const fluteReverb = new Tone.Reverb(50);
-      fluteReverb.wet.value = 1;
       const delay = new Tone.FeedbackDelay({ delayTime: 1, feedback: 0.7 });
-      fluteReverb.generate().then(() => {
-        flute.chain(fluteReverb, delay, volume, destination);
+      flute.chain(fluteReverb, delay, volume, destination);
 
-        const intervalTimes = FLUTE_NOTES.map(() => Math.random() * 10 + 5);
+      const intervalTimes = FLUTE_NOTES.map(() => Math.random() * 10 + 5);
 
-        const shortestInterval = Math.min(...intervalTimes);
+      const shortestInterval = Math.min(...intervalTimes);
 
-        FLUTE_NOTES.forEach((note, i) => {
-          Tone.Transport.scheduleRepeat(
-            () => flute.triggerAttack(note, '+1'),
-            intervalTimes[i],
-            intervalTimes[i] - shortestInterval
-          );
-        });
+      FLUTE_NOTES.forEach((note, i) => {
+        Tone.Transport.scheduleRepeat(
+          () => flute.triggerAttack(note, '+1'),
+          intervalTimes[i],
+          intervalTimes[i] - shortestInterval
+        );
       });
 
       const reverb = new Tone.Freeverb({
@@ -76,13 +74,26 @@ const makePiece = ({
       const compressor = new Tone.Compressor();
       reverb.chain(compressor, volume, destination);
 
+      const disposableNodes = [
+        flute,
+        ...guitarBuffers,
+        volumeLfo,
+        fluteReverb,
+        reverb,
+        compressor,
+      ];
       const playRandomChord = lastChord => {
         const nextChords = guitarBuffers.filter(chord => chord !== lastChord);
         const randomChord =
           nextChords[Math.floor(Math.random() * nextChords.length)];
         const source = new Tone.BufferSource(randomChord).connect(reverb);
+        disposableNodes.push(source);
         source.onended = () => {
-          source.dispose();
+          const i = disposableNodes.indexOf(source);
+          if (i >= 0) {
+            source.dispose();
+            disposableNodes.splice(i, 1);
+          }
         };
         source.start('+1');
         Tone.Transport.scheduleOnce(() => {
@@ -95,14 +106,8 @@ const makePiece = ({
       }, Math.random() * 5 + 5);
 
       return () => {
-        [
-          flute,
-          ...guitarBuffers,
-          volumeLfo,
-          fluteReverb,
-          reverb,
-          compressor,
-        ].forEach(node => node.dispose());
+        disposableNodes.forEach(node => node.dispose());
+        disposableNodes.splice(0, disposableNodes.length);
       };
     });
 

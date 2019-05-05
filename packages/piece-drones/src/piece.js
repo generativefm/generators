@@ -22,6 +22,13 @@ const findClosest = (samplesByNote, note) => {
   return note;
 };
 
+const getBuffers = samplesByNote =>
+  new Promise(resolve => {
+    const buffers = new Tone.Buffers(samplesByNote, {
+      onload: () => resolve(buffers),
+    });
+  });
+
 const makePiece = ({
   audioContext,
   destination,
@@ -34,97 +41,90 @@ const makePiece = ({
         Tone.setContext(audioContext);
       }
 
-      const fetchedBuffers = {};
+      const instrumentNames = ['vsco2-trumpet-sus-f', 'vsco2-trumpet-sus-mf'];
 
-      const getBuffer = url => {
-        if (fetchedBuffers[url]) {
-          return fetchedBuffers[url];
-        }
-        const bufferPromise = new Promise(resolve => {
-          const buffer = new Tone.Buffer(url, () => resolve(buffer));
-        });
-        fetchedBuffers[url] = bufferPromise;
-        return bufferPromise;
-      };
       const masterVol = new Tone.Volume(-12).connect(destination);
       const disposableNodes = [masterVol];
-      ['vsco2-trumpet-sus-f', 'vsco2-trumpet-sus-mf'].forEach(
-        instrumentName => {
-          const samplesByNote = samples[instrumentName][preferredFormat];
-          const drone = (
-            note,
-            droneDestination,
-            pitchShift = 0,
-            reverse = false
-          ) => {
-            const closestSampledNote = findClosest(samplesByNote, note);
-            const difference = Distance.semitones(closestSampledNote, note);
-            const playbackRate = Tone.intervalToFrequencyRatio(
-              difference + pitchShift
-            );
-            const url = samplesByNote[closestSampledNote];
-            return getBuffer(url).then(buffer => {
-              if (!disposableNodes.includes(buffer)) {
-                disposableNodes.push(buffer);
-              }
-              const source = new Tone.BufferSource(buffer).connect(
-                droneDestination
+      return Promise.all(
+        instrumentNames.map(instrumentName =>
+          getBuffers(samples[instrumentName][preferredFormat])
+        )
+      )
+        .then(instrumentBuffers =>
+          instrumentBuffers.forEach((buffers, i) => {
+            disposableNodes.push(buffers);
+            const instrumentName = instrumentNames[i];
+            const samplesByNote = samples[instrumentName][preferredFormat];
+            const drone = (
+              note,
+              droneDestination,
+              pitchShift = 0,
+              reverse = false
+            ) => {
+              const closestSampledNote = findClosest(samplesByNote, note);
+              const difference = Distance.semitones(closestSampledNote, note);
+              const playbackRate = Tone.intervalToFrequencyRatio(
+                difference + pitchShift
               );
-              source.reverse = reverse;
-              source.onended = () => {
-                const i = disposableNodes.findIndex(node => node === source);
-                if (i >= 0) {
-                  disposableNodes.splice(i, 1);
-                }
-                source.dispose();
-              };
-              source.playbackRate.value = playbackRate;
+              const buffer = buffers.get(closestSampledNote);
+              const source = new Tone.BufferSource(buffer)
+                .set({
+                  reverse,
+                  playbackRate,
+                  onended: () => {
+                    const index = disposableNodes.indexOf(source);
+                    if (index >= 0) {
+                      source.dispose();
+                      disposableNodes.splice(index, 1);
+                    }
+                  },
+                })
+                .connect(droneDestination);
               source.start('+1');
-            });
-          };
-          const autoFilter = new Tone.AutoFilter(Math.random() / 10, 150, 4)
-            .connect(masterVol)
-            .start();
-
-          const lfoMin = Math.random() / 100;
-          const lfoMax = lfoMin * 10;
-
-          const frequencyLfo = new Tone.LFO({ min: lfoMin, max: lfoMax });
-
-          frequencyLfo.connect(autoFilter.frequency);
-          frequencyLfo.start();
-
-          const lastVol = new Tone.Volume();
-          const lastVolLfo = new Tone.LFO({
-            min: -100,
-            max: -10,
-            frequency: Math.random() / 100,
-            phase: 90,
-          });
-          lastVolLfo.connect(lastVol.volume);
-          lastVolLfo.start();
-          lastVol.connect(autoFilter);
-
-          disposableNodes.push(autoFilter, frequencyLfo, lastVol, lastVolLfo);
-
-          NOTES.forEach((note, i) => {
-            const playDrone = () => {
-              if (i === NOTES.length - 1) {
-                drone(note, lastVol, -36);
-              }
-              drone(note, autoFilter, -36);
-              Tone.Transport.scheduleOnce(() => {
-                playDrone();
-              }, `+${Math.random() * 20 + 40}`);
             };
-            playDrone();
-          });
-        }
-      );
-      Tone.Transport.start();
-      return () => {
-        disposableNodes.forEach(node => node.dispose());
-      };
+            const autoFilter = new Tone.AutoFilter(Math.random() / 10, 150, 4)
+              .connect(masterVol)
+              .start();
+
+            const lfoMin = Math.random() / 100;
+            const lfoMax = lfoMin * 10;
+
+            const frequencyLfo = new Tone.LFO({ min: lfoMin, max: lfoMax });
+
+            frequencyLfo.connect(autoFilter.frequency);
+            frequencyLfo.start();
+
+            const lastVol = new Tone.Volume();
+            const lastVolLfo = new Tone.LFO({
+              min: -100,
+              max: -10,
+              frequency: Math.random() / 100,
+              phase: 90,
+            });
+            lastVolLfo.connect(lastVol.volume);
+            lastVolLfo.start();
+            lastVol.connect(autoFilter);
+
+            disposableNodes.push(autoFilter, frequencyLfo, lastVol, lastVolLfo);
+
+            NOTES.forEach((note, noteIndex) => {
+              const playDrone = () => {
+                if (noteIndex === NOTES.length - 1) {
+                  drone(note, lastVol, -36);
+                }
+                drone(note, autoFilter, -36);
+                Tone.Transport.scheduleOnce(() => {
+                  playDrone();
+                }, `+${Math.random() * 20 + 40}`);
+              };
+              playDrone();
+            });
+          })
+        )
+        .then(() => () => {
+          disposableNodes.forEach(node => node.dispose());
+          disposableNodes.splice(0, disposableNodes.length);
+        });
     }
   );
 
