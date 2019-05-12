@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-return-to-form",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "2.7.0",
+  "version": "2.8.0",
   "generativeFmManifest": "return-to-form.gfm.manifest.json",
   "repository": {
     "type": "git",
