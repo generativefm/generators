@@ -37,7 +37,7 @@ const makePiece = ({
           wet: 0.3,
         }).connect(reverb);
 
-        const fluteVolume = new Tone.Volume(-5).connect(delay);
+        const fluteVolume = new Tone.Volume(-8).connect(delay);
 
         const playbackRate = Math.random() * 0.25 + 0.5;
 
