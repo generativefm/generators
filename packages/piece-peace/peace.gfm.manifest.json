@@ -1,0 +1,8 @@
+{
+  "title": "Peace",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "peace",
+  "artistId": "alex-bainter",
+  "isRecordable": true
+}
