@@ -119,11 +119,13 @@ const makePiece = ({
   sampleSource = {},
 }) =>
   fetchSampleSpec(sampleSource.baseUrl, sampleSource.specFilename)
-    .then(sampleSpec => getPiano(sampleSpec, preferredFormat))
-    .then(piano => {
+    .then(sampleSpec => {
       if (Tone.context !== audioContext) {
         Tone.setContext(audioContext);
       }
+      return getPiano(sampleSpec, preferredFormat);
+    })
+    .then(piano => {
       piano.connect(destination);
       startPinwheelChain(piano);
       return () => {
