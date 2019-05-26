@@ -84,11 +84,13 @@ const makePiece = ({
   sampleSource = {},
 }) =>
   fetchSpecFile(sampleSource.baseUrl, sampleSource.specFilename)
-    .then(specFile => getBowls(specFile, preferredFormat))
-    .then(bowls => {
+    .then(specFile => {
       if (Tone.context !== audioContext) {
         Tone.setContext(audioContext);
       }
+      return getBowls(specFile, preferredFormat);
+    })
+    .then(bowls => {
       const volume = new Tone.Volume(VOLUME_ADJUSTMENT);
       const delay = new Tone.FeedbackDelay({
         wet: 0.5,
