@@ -33,7 +33,7 @@ const makePiece = ({
   audioContext,
   destination,
   preferredFormat,
-  sampleSource,
+  sampleSource = {},
 }) =>
   fetchSpecFile(sampleSource.baseUrl, sampleSource.specFilename).then(
     ({ samples }) => {
