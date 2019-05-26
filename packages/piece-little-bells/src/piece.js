@@ -56,11 +56,13 @@ const makePiece = ({
   sampleSource = {},
 }) =>
   fetchSampleSpec(sampleSource.baseUrl, sampleSource.specFilename)
-    .then(sampleSpec => getGlock(sampleSpec, preferredFormat))
-    .then(glock => {
+    .then(sampleSpec => {
       if (Tone.context !== audioContext) {
         Tone.setContext(audioContext);
       }
+      return getGlock(sampleSpec, preferredFormat);
+    })
+    .then(glock => {
       const delay = new Tone.FeedbackDelay({
         delayTime: 8,
         feedback: 0.7,
