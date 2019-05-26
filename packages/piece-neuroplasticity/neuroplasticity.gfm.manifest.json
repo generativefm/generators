@@ -1,0 +1,8 @@
+{
+  "title": "Neuroplasticity",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "neuroplasticity",
+  "artistId": "alex-bainter",
+  "isRecordable": true
+}
