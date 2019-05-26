@@ -62,11 +62,13 @@ const makePiece = ({
   sampleSource = {},
 }) =>
   fetchSampleSpec(sampleSource.baseUrl, sampleSource.specFilename)
-    .then(specFile => getPiano(specFile, preferredFormat))
-    .then(piano => {
+    .then(specFile => {
       if (Tone.context !== audioContext) {
         Tone.setContext(audioContext);
       }
+      return getPiano(specFile, preferredFormat);
+    })
+    .then(piano => {
       piano.connect(destination);
       makeScheduleChord(piano)();
       return () => {
