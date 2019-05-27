@@ -1,14 +1,7 @@
 import Tone from 'tone';
 import { Scale, Note, Chord } from 'tonal';
-import { of, from, timer } from 'rxjs';
-import {
-  concatMap,
-  delay,
-  repeat,
-  mergeMap,
-  delayWhen,
-  filter,
-} from 'rxjs/operators';
+import { of, from, timer, Observable } from 'rxjs';
+import { delay, repeat, mergeMap, delayWhen, filter } from 'rxjs/operators';
 import fetchSpecFile from '@generative-music/samples.generative.fm/browser-client';
 
 const toss = (pcs = [], octaves = []) =>
@@ -95,12 +88,14 @@ const chord = p => source =>
     })
   );
 
-const notes$ = of(null).pipe(
-  concatMap(() =>
-    of(NOTES[Math.floor(Math.random() * NOTES.length)]).pipe(
-      delay(getDelayTimeInMS())
-    )
-  ),
+const randomScheduledNote$ = Observable.create(observer => {
+  Tone.Transport.scheduleOnce(() => {
+    observer.next(NOTES[Math.floor(Math.random() * NOTES.length)]);
+    observer.complete();
+  }, `+${getDelayTimeInMS() / 1000}`);
+});
+
+const notes$ = randomScheduledNote$.pipe(
   repeat(),
   octaved(0.2, 1),
   octaved(0.2, -1),
