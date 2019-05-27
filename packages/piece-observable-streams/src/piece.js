@@ -1,7 +1,7 @@
 import Tone from 'tone';
 import { Scale, Note, Chord } from 'tonal';
-import { of, from, timer, Observable } from 'rxjs';
-import { delay, repeat, mergeMap, delayWhen, filter } from 'rxjs/operators';
+import { of, from, Observable } from 'rxjs';
+import { repeat, mergeMap, filter } from 'rxjs/operators';
 import fetchSpecFile from '@generative-music/samples.generative.fm/browser-client';
 
 const toss = (pcs = [], octaves = []) =>
@@ -49,12 +49,33 @@ const octaved = (p, octaveChange) => source =>
     )
   );
 
+const scheduledNote = (noteArg, timeArg) =>
+  Observable.create(observer => {
+    let note = noteArg;
+    let time = timeArg;
+    if (typeof note === 'undefined') {
+      note = NOTES[Math.floor(Math.random() * NOTES.length)];
+    }
+    if (typeof time === 'undefined') {
+      time = getDelayTimeInMS() / 1000;
+    }
+    Tone.Transport.scheduleOnce(() => {
+      observer.next(note);
+      observer.complete();
+    }, `+${time}`);
+  });
+
 const humanize = () => source =>
-  source.pipe(mergeMap(note => of(note).pipe(delay(Math.random() * 100))));
+  source.pipe(mergeMap(note => scheduledNote(note, Math.random() / 10)));
 
 const delayed = () => source =>
   source.pipe(
-    delayWhen(() => timer(Math.random() < 0.2 ? getDelayTimeInMS() : 0))
+    mergeMap(note => {
+      if (Math.random() < 0.2) {
+        return scheduledNote(note);
+      }
+      return of(note);
+    })
   );
 
 const shortTermThrottleByNote = timeMS => {
@@ -88,14 +109,7 @@ const chord = p => source =>
     })
   );
 
-const randomScheduledNote$ = Observable.create(observer => {
-  Tone.Transport.scheduleOnce(() => {
-    observer.next(NOTES[Math.floor(Math.random() * NOTES.length)]);
-    observer.complete();
-  }, `+${getDelayTimeInMS() / 1000}`);
-});
-
-const notes$ = randomScheduledNote$.pipe(
+const notes$ = scheduledNote().pipe(
   repeat(),
   octaved(0.2, 1),
   octaved(0.2, -1),
