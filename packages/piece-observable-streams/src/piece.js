@@ -78,15 +78,15 @@ const delayed = () => source =>
     })
   );
 
-const shortTermThrottleByNote = timeMS => {
+const shortTermThrottleByNote = timeInSeconds => {
   const lastTimes = new Map();
   return source =>
     source.pipe(
       filter(note => {
-        const now = Date.now();
+        const now = Tone.now();
         if (lastTimes.has(note)) {
           const lastTime = lastTimes.get(note);
-          if (now - lastTime < timeMS) {
+          if (now - lastTime < timeInSeconds) {
             return false;
           }
         }
@@ -115,7 +115,7 @@ const notes$ = scheduledNote().pipe(
   octaved(0.2, -1),
   octaved(0.4, -2),
   delayed(),
-  shortTermThrottleByNote(3000),
+  shortTermThrottleByNote(3),
   chord(0.2),
   humanize()
 );
@@ -199,14 +199,14 @@ const makePiece = ({
           interval - minInterval
         );
       });
-      let lastViolinTimeMS = Date.now();
+      let lastViolinTimeS = Tone.now();
       const noteSubscription = notes$.subscribe(note => {
         if (
           Math.random() < 0.1 &&
           Note.oct(note) > 3 &&
-          Date.now() - lastViolinTimeMS > 20000
+          Tone.now() - lastViolinTimeS > 20
         ) {
-          lastViolinTimeMS = Date.now();
+          lastViolinTimeS = Tone.now();
           violin.triggerAttack(note, '+1');
         } else {
           piano.triggerAttack(note, '+1');
