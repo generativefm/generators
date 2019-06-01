@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-awash",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "2.10.0",
+  "version": "2.11.0",
   "generativeFmManifest": "awash.gfm.manifest.json",
   "repository": {
     "type": "git",
