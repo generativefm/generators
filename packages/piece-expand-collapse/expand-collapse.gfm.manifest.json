@@ -1,0 +1,8 @@
+{
+  "title": "Expand/Collapse",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "expand-collapse",
+  "artistId": "alex-bainter",
+  "isRecordable": true
+}
