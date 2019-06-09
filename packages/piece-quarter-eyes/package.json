@@ -29,5 +29,8 @@
   "devDependencies": {
     "@generative-music/samples.generative.fm": "^1.11.1",
     "tone": "^13.4.9"
+  },
+  "dependencies": {
+    "tonal": "^2.2.2"
   }
 }
