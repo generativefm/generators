@@ -1,0 +1,9 @@
+{
+  "title": "Quarter Eyes",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "quarter-eyes",
+  "artistId": "alex-bainter",
+  "isRecordable": true,
+  "tags": ["orchestral","acoustic","strings","percussion"]
+}
