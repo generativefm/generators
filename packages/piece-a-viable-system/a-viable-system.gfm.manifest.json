@@ -3,5 +3,6 @@
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "a-viable-system",
-  "artistId": "alex-bainter"
+  "artistId": "alex-bainter",
+  "tags": ["pensive", "piano", "strings", "acoustic"]
 }

@@ -3,5 +3,6 @@
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "spring-again",
-  "artistId": "alex-bainter"
+  "artistId": "alex-bainter",
+  "tags": ["happy", "piano", "strings", "acoustic"]
 }

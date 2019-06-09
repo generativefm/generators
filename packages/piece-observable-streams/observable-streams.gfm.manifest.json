@@ -3,5 +3,6 @@
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "observable-streams",
-  "artistId": "alex-bainter"
+  "artistId": "alex-bainter",
+  "tags": ["happy", "piano", "strings", "acoustic", "melodic"]
 }

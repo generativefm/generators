@@ -3,5 +3,6 @@
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "pinwheels",
-  "artistId": "alex-bainter"
+  "artistId": "alex-bainter",
+  "tags": ["piano", "acoustic"]
 }

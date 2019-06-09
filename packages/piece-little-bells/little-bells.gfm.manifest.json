@@ -3,5 +3,6 @@
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "little-bells",
-  "artistId": "alex-bainter"
+  "artistId": "alex-bainter",
+  "tags": ["bells", "glockenspiel", "acoustic", "canon"]
 }

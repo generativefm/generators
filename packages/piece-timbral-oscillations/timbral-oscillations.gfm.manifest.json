@@ -3,5 +3,6 @@
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "timbral-oscillations",
-  "artistId": "alex-bainter"
+  "artistId": "alex-bainter",
+  "tags": ["piano", "electronic"]
 }

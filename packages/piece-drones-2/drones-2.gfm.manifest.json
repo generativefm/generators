@@ -3,5 +3,6 @@
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "drones-2",
-  "artistId": "alex-bainter"
+  "artistId": "alex-bainter",
+  "tags": ["drone", "electronic"]
 }

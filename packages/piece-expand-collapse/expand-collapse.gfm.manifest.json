@@ -4,5 +4,6 @@
   "image": "./image.png",
   "id": "expand-collapse",
   "artistId": "alex-bainter",
-  "isRecordable": true
+  "isRecordable": true,
+  "tags": ["piano", "acoustic", "electronic"]
 }

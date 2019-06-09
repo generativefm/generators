@@ -3,5 +3,6 @@
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "meditation",
-  "artistId": "alex-bainter"
+  "artistId": "alex-bainter",
+  "tags": ["calm", "bells"]
 }

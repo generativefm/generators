@@ -3,5 +3,6 @@
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "lemniscate",
-  "artistId": "alex-bainter"
+  "artistId": "alex-bainter",
+  "tags": ["calm", "piano", "acoustic"]
 }

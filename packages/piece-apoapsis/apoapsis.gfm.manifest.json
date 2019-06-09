@@ -3,5 +3,6 @@
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "apoapsis",
-  "artistId": "alex-bainter"
+  "artistId": "alex-bainter",
+  "tags": ["calm", "electronic", "dream"]
 }

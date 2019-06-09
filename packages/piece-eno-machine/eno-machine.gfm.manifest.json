@@ -3,5 +3,6 @@
   "image": "./image.png",
   "title": "Eno Machine",
   "id": "eno-machine",
-  "artistId": "alex-bainter"
+  "artistId": "alex-bainter",
+  "tags": ["calm", "piano", "acoustic"]
 }

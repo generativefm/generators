@@ -3,5 +3,6 @@
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "return-to-form",
-  "artistId": "alex-bainter"
+  "artistId": "alex-bainter",
+  "tags": ["happy", "piano", "electronic"]
 }
