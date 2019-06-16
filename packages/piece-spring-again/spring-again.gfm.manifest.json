@@ -4,5 +4,7 @@
   "image": "./image.png",
   "id": "spring-again",
   "artistId": "alex-bainter",
-  "tags": ["happy", "piano", "strings", "acoustic"]
+  "isRecordable": true,
+  "tags": ["happy", "piano", "strings", "acoustic"],
+  "releaseDate": "2019-02-22T00:00:00.000Z"
 }

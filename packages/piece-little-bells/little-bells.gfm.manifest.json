@@ -4,5 +4,7 @@
   "image": "./image.png",
   "id": "little-bells",
   "artistId": "alex-bainter",
-  "tags": ["bells", "glockenspiel", "acoustic", "canon"]
+  "isRecordable": true,
+  "tags": ["bells", "glockenspiel", "acoustic", "canon"],
+  "releaseDate": "2018-11-22T00:00:00.000Z"
 }

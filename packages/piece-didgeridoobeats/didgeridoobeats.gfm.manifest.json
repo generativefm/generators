@@ -4,5 +4,7 @@
   "image": "./image.png",
   "id": "didgeridoobeats",
   "artistId": "alex-bainter",
-  "tags": ["electronic", "beats"]
+  "isRecordable": true,
+  "tags": ["electronic", "beats"],
+  "releaseDate": "2019-03-24T00:00:00.000Z"
 }

@@ -4,5 +4,7 @@
   "image": "./image.png",
   "id": "sevenths",
   "artistId": "alex-bainter",
-  "tags": ["piano", "acoustic"]
+  "isRecordable": true,
+  "tags": ["piano", "acoustic"],
+  "releaseDate": "2018-07-21T00:00:00.000Z"
 }

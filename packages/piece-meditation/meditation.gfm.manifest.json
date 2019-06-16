@@ -4,5 +4,7 @@
   "image": "./image.png",
   "id": "meditation",
   "artistId": "alex-bainter",
-  "tags": ["calm", "bells"]
+  "isRecordable": true,
+  "tags": ["calm", "bells"],
+  "releaseDate": "2018-11-23T00:00:00.000Z"
 }

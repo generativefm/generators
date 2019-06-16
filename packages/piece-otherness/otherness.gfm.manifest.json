@@ -4,5 +4,7 @@
   "image": "./image.png",
   "id": "otherness",
   "artistId": "alex-bainter",
-  "tags": ["electronic"]
+  "isRecordable": true,
+  "tags": ["electronic"],
+  "releaseDate": "2019-01-11T00:00:00.000Z"
 }

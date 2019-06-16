@@ -4,5 +4,7 @@
   "image": "./image.png",
   "id": "trees",
   "artistId": "alex-bainter",
-  "tags": ["happy", "piano", "acoustic"]
+  "isRecordable": true,
+  "tags": ["happy", "piano", "acoustic"],
+  "releaseDate": "2019-01-17T00:00:00.000Z"
 }

@@ -5,5 +5,6 @@
   "id": "enough",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["dark", "melancholy", "electronic"]
+  "tags": ["dark", "melancholy", "electronic"],
+  "releaseDate": "2019-05-12T00:00:00.000Z"
 }

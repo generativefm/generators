@@ -4,5 +4,7 @@
   "image": "./image.png",
   "id": "return-to-form",
   "artistId": "alex-bainter",
-  "tags": ["happy", "piano", "electronic"]
+  "isRecordable": true,
+  "tags": ["happy", "piano", "electronic"],
+  "releaseDate": "2019-04-06T00:00:00.000Z"
 }

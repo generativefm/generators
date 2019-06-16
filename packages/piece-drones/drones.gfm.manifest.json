@@ -4,5 +4,7 @@
   "image": "./image.png",
   "id": "drones",
   "artistId": "alex-bainter",
-  "tags": ["drone", "electronic"]
+  "isRecordable": true,
+  "tags": ["drone", "electronic"],
+  "releaseDate": "2019-03-13T00:00:00.000Z"
 }

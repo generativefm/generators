@@ -4,5 +4,7 @@
   "image": "./image.png",
   "id": "buttafingers",
   "artistId": "alex-bainter",
-  "tags": ["drone", "electronic"]
+  "isRecordable": true,
+  "tags": ["drone", "electronic"],
+  "releaseDate": "2019-03-31T00:00:00.000Z"
 }
