@@ -1,0 +1,9 @@
+{
+  "title": "Day/Dream",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "day-dream",
+  "artistId": "alex-bainter",
+  "isRecordable": true,
+  "tags": ["electronic","calm"]
+}
