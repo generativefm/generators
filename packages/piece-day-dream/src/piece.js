@@ -96,18 +96,23 @@ const makePiece = ({
           return semitoneChange;
         };
 
-        NOTES.forEach(note => {
-          const play = (
-            lastSemitoneChange = (NOON_SEMITONE_CHANGE +
-              MIDNIGHT_SEMITONE_CHANGE) /
-              2
-          ) => {
+        const firstDelays = NOTES.map(
+          () =>
+            Math.random() *
+              ((NOON_SEMITONE_CHANGE + MIDNIGHT_SEMITONE_CHANGE) / 2) +
+            15
+        );
+
+        const minFirstDelay = Math.min(...firstDelays);
+
+        NOTES.forEach((note, i) => {
+          const play = time => {
             Tone.Transport.scheduleOnce(() => {
               const semitoneChange = playNote(note);
-              play(semitoneChange);
-            }, `+${Math.random() * (lastSemitoneChange + 12) + 3}`);
+              play(Math.random() * (semitoneChange + 12) + 3);
+            }, `+${time}`);
           };
-          play();
+          play(firstDelays[i] - minFirstDelay);
         });
 
         return () => {
