@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-drones-2",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "2.12.0",
+  "version": "2.13.0",
   "generativeFmManifest": "drones-2.gfm.manifest.json",
   "repository": {
     "type": "git",
