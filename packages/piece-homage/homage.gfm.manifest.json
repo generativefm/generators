@@ -1,0 +1,10 @@
+{
+  "title": "Homage",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "homage",
+  "artistId": "alex-bainter",
+  "isRecordable": true,
+  "tags": ["electronic", "drone"],
+  "releaseDate": "2019-06-30T00:00:00.000Z"
+}
