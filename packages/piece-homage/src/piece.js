@@ -38,6 +38,7 @@ const makePiece = ({
       if (Tone.context !== audioContext) {
         Tone.setContext(audioContext);
       }
+      const masterVol = new Tone.Volume(5).connect(destination);
       const pianoSamples = samples['vsco2-piano-mf'][preferredFormat];
       const violinSamples = samples['vsco2-violins-susvib'][preferredFormat];
 
@@ -46,7 +47,7 @@ const makePiece = ({
       const makePlayNote = (
         buffers,
         samplesByNote,
-        noteDestination = destination
+        noteDestination = masterVol
       ) => note => {
         const closestSampledNote = findClosest(samplesByNote, note);
         const difference = Distance.semitones(closestSampledNote, note);
@@ -72,11 +73,11 @@ const makePiece = ({
         getBuffers(violinSamples),
         new Tone.Reverb(50).generate(),
       ]).then(([pianoBuffers, violinBuffers, reverb]) => {
-        const violinVolume = new Tone.Volume(-15).toMaster();
+        const violinVolume = new Tone.Volume(-15).connect(masterVol);
         reverb.connect(violinVolume);
         const filter = new Tone.Filter(50).connect(reverb);
         const filterLfo = new Tone.LFO(
-          Math.random() * 0.004 + 0.001,
+          Math.random() * 0.001 + 0.0005,
           100,
           2000
         ).set({
