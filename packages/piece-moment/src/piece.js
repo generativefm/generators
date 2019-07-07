@@ -97,9 +97,16 @@ const makePiece = ({
         reverb.connect(destination);
         reverb.set({ wet: 0.5 });
 
-        NOTES.forEach(note => {
-          const play = () => {
-            const pc = Note.pc(note);
+        const firstDelays = NOTES.map(
+          note => Math.random() * 20 * (Note.pc(note) === 'E' ? 3 : 1)
+        );
+        const minFirstDelay = Math.min(...firstDelays);
+
+        NOTES.forEach((note, i) => {
+          const pc = Note.pc(note);
+          const play = (
+            time = (Math.random() * 20 + 5) * (pc === 'E' ? 3 : 1)
+          ) => {
             Tone.Transport.scheduleOnce(() => {
               const octave = Note.oct(note);
               if (
@@ -112,9 +119,9 @@ const makePiece = ({
               }
               playGuitar(note);
               play();
-            }, `+${(Math.random() * 20 + 5) * (pc === 'E' ? 3 : 1)}`);
+            }, `+${time}`);
           };
-          play();
+          play(firstDelays[i] - minFirstDelay);
         });
       });
     }
