@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-quarter-eyes",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "2.14.0",
+  "version": "2.15.0",
   "generativeFmManifest": "quarter-eyes.gfm.manifest.json",
   "repository": {
     "type": "git",
