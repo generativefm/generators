@@ -59,6 +59,7 @@ const makePiece = ({
       if (Tone.context !== audioContext) {
         Tone.setContext(audioContext);
       }
+      const masterVol = new Tone.Volume(-5).connect(destination);
       const guitarSamples = samples['acoustic-guitar'][preferredFormat];
       const hum1Samples = samples['alex-hum-1'][preferredFormat];
       const hum2Samples = samples['alex-hum-2'][preferredFormat];
@@ -94,7 +95,7 @@ const makePiece = ({
           }
         };
 
-        reverb.connect(destination);
+        reverb.connect(masterVol);
         reverb.set({ wet: 0.5 });
 
         const firstDelays = NOTES.map(
