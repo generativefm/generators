@@ -105,8 +105,8 @@ const makePiece = ({
         });
         const lastHumTime = new Map();
         const playHums = note => {
-          const now = Date.now();
-          if (!lastHumTime.has(note) || now - lastHumTime.get(note) > 30000) {
+          const now = Tone.now();
+          if (!lastHumTime.has(note) || now - lastHumTime.get(note) > 30) {
             [playHum1, playHum2].forEach(playHum => playHum(note));
             lastHumTime.set(note, now);
           }
