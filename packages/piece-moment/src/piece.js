@@ -29,25 +29,6 @@ const getBuffers = samplesByNote =>
     });
   });
 
-const makePlayNote = (
-  buffers,
-  samplesByNote,
-  destination,
-  opts = {}
-) => note => {
-  const closestSampledNote = findClosest(samplesByNote, note);
-  const difference = Distance.semitones(closestSampledNote, note);
-  const buffer = buffers.get(closestSampledNote);
-  const pitchShiftSemitones = Math.random() < 1 ? 0 : 12;
-  const playbackRate = Tone.intervalToFrequencyRatio(
-    difference - pitchShiftSemitones
-  );
-  const source = new Tone.BufferSource(buffer)
-    .set(Object.assign({}, opts, { playbackRate }))
-    .connect(destination);
-  source.start(`+1`, 0, buffer.duration / playbackRate - (opts.fadeOut || 0));
-};
-
 const makePiece = ({
   audioContext,
   destination,
@@ -63,6 +44,42 @@ const makePiece = ({
       const guitarSamples = samples['acoustic-guitar'][preferredFormat];
       const hum1Samples = samples['alex-hum-1'][preferredFormat];
       const hum2Samples = samples['alex-hum-2'][preferredFormat];
+
+      const activeSources = [];
+
+      const makePlayNote = (
+        buffers,
+        samplesByNote,
+        bufferDestination,
+        opts = {}
+      ) => note => {
+        const closestSampledNote = findClosest(samplesByNote, note);
+        const difference = Distance.semitones(closestSampledNote, note);
+        const buffer = buffers.get(closestSampledNote);
+        const pitchShiftSemitones = Math.random() < 1 ? 0 : 12;
+        const playbackRate = Tone.intervalToFrequencyRatio(
+          difference - pitchShiftSemitones
+        );
+        const source = new Tone.BufferSource(buffer)
+          .set(
+            Object.assign({}, opts, {
+              playbackRate,
+              onended: () => {
+                const i = activeSources.indexOf(source);
+                if (i >= 0) {
+                  activeSources.splice(i, 1);
+                }
+              },
+            })
+          )
+          .connect(bufferDestination);
+        source.start(
+          `+1`,
+          0,
+          buffer.duration / playbackRate - (opts.fadeOut || 0)
+        );
+      };
+
       return Promise.all([
         getBuffers(guitarSamples),
         getBuffers(hum1Samples),
@@ -124,6 +141,19 @@ const makePiece = ({
           };
           play(firstDelays[i] - minFirstDelay);
         });
+
+        return () => {
+          [
+            guitarBuffers,
+            hum1Buffers,
+            hum2Buffers,
+            reverb,
+            compressor,
+            humVolume,
+            masterVol,
+            ...activeSources,
+          ].forEach(node => node.dispose());
+        };
       });
     }
   );
