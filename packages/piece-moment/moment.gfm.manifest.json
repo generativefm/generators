@@ -1,0 +1,9 @@
+{
+  "title": "Moment",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "moment",
+  "artistId": "alex-bainter",
+  "isRecordable": true,
+  "tags": ["calm","acoustic","guitar","vocals"]
+}
