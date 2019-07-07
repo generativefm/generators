@@ -22,11 +22,10 @@ const findClosest = (samplesByNote, note) => {
   return note;
 };
 
-const getBuffers = (samplesByNote, baseUrl) =>
+const getBuffers = samplesByNote =>
   new Promise(resolve => {
     const buffers = new Tone.Buffers(samplesByNote, {
       onload: () => resolve(buffers),
-      baseUrl,
     });
   });
 
@@ -64,9 +63,9 @@ const makePiece = ({
       const hum1Samples = samples['alex-hum-1'][preferredFormat];
       const hum2Samples = samples['alex-hum-2'][preferredFormat];
       return Promise.all([
-        getBuffers(guitarSamples, './samples/acoustic-guitar/'),
-        getBuffers(hum1Samples, './samples/alex-hum-1/'),
-        getBuffers(hum2Samples, './samples/alex-hum-2/'),
+        getBuffers(guitarSamples),
+        getBuffers(hum1Samples),
+        getBuffers(hum2Samples),
         new Tone.Reverb(10).generate(),
       ]).then(([guitarBuffers, hum1Buffers, hum2Buffers, reverb]) => {
         const compressor = new Tone.Compressor().connect(reverb);
