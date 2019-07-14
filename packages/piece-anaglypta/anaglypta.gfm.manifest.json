@@ -1,0 +1,9 @@
+{
+  "title": "Anaglypta",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "anaglypta",
+  "artistId": "alex-bainter",
+  "isRecordable": true,
+  "tags": ["electronic","calm"]
+}
