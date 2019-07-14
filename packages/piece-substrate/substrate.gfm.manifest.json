@@ -1,8 +1,8 @@
 {
-  "title": "Anaglypta",
+  "title": "Substrate",
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
-  "id": "anaglypta",
+  "id": "substrate",
   "artistId": "alex-bainter",
   "isRecordable": true,
   "tags": ["electronic", "calm"],

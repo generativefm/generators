@@ -68,6 +68,7 @@ const makePiece = ({
       if (Tone.context !== audioContext) {
         Tone.setContext(audioContext);
       }
+      const masterVol = new Tone.Volume(5).connect(destination);
       const marimbaSamplesByNote = samples['vsco2-marimba'][preferredFormat];
       const pianoSamplesByNote = samples['vsco2-piano-mf'][preferredFormat];
       return Promise.all([
@@ -75,7 +76,7 @@ const makePiece = ({
         getBuffers(pianoSamplesByNote),
         new Tone.Reverb(20).set({ wet: 0.5 }).generate(),
       ]).then(([primaryBuffers, secondaryBuffers, reverb]) => {
-        reverb.connect(destination);
+        reverb.connect(masterVol);
         const tonic =
           PITCH_CLASSES[Math.floor(Math.random() * PITCH_CLASSES.length)];
         const notes = shuffle(getNotes(tonic), { copy: true });

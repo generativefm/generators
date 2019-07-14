@@ -7,4 +7,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-[unreleased]: https://github.com/generative-music/piece-anaglypta/compare/v0.0.0...HEAD
+[unreleased]: https://github.com/generative-music/piece-substrate/compare/v0.0.0...HEAD

@@ -1,9 +1,9 @@
 {
-  "name": "@generative-music/piece-anaglypta",
+  "name": "@generative-music/piece-substrate",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
   "version": "0.0.0",
-  "generativeFmManifest": "anaglypta.gfm.manifest.json",
+  "generativeFmManifest": "substrate.gfm.manifest.json",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/generative-music/pieces-alex-bainter.git"
@@ -11,7 +11,7 @@
   "files": [
     "dist",
     "image.png",
-    "anaglypta.gfm.manifest.json"
+    "substrate.gfm.manifest.json"
   ],
   "author": "Alex Bainter <alexbainter+github@gmail.com> (https://alexbainter.com)",
   "license": "MIT",
