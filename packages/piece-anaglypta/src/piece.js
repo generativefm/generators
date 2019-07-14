@@ -114,14 +114,14 @@ const makePiece = ({
 
         const playNote = makePlayNote(
           primaryBuffers,
-          samples['vsco2-marimba'],
+          marimbaSamplesByNote,
           reverb,
           -24,
           0.3
         );
         const playSecondaryNote = makePlayNote(
           secondaryBuffers,
-          samples['vsco2-piano-mf'],
+          pianoSamplesByNote,
           reverb,
           -12,
           0.25
