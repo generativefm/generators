@@ -30,6 +30,16 @@ const melodyFromNote = (
 
 const NOTES_PER_SECOND = Math.random() * 2 + 5;
 
+const repeat = (fn, interval) => {
+  const schedule = time => {
+    Tone.Transport.scheduleOnce((...args) => {
+      fn(...args);
+      schedule(`+${interval}`);
+    }, time);
+  };
+  schedule(`+${0}`);
+};
+
 const makePiece = ({
   audioContext,
   destination,
@@ -65,12 +75,13 @@ const makePiece = ({
       for (let i = 1; i < Math.random() * 5 + 5; i += 1) {
         phrase.push(melodyFromNote(phrase[phrase.length - 1]));
       }
-      Tone.Transport.scheduleRepeat(() => {
+
+      repeat(() => {
         phrase.forEach((note, i) => {
           piano.triggerAttack(note, `+${i / NOTES_PER_SECOND}`);
         });
       }, phrase.length / NOTES_PER_SECOND);
-      Tone.Transport.scheduleRepeat(() => {
+      repeat(() => {
         const index = Math.floor(Math.random() * phrase.length);
         phrase[index] = melodyFromNote(phrase[index]);
       }, (phrase.length / NOTES_PER_SECOND) * 2);
@@ -79,7 +90,7 @@ const makePiece = ({
       cello.chain(volume);
 
       cello.volume.value = -8;
-      Tone.Transport.scheduleRepeat(() => {
+      repeat(() => {
         if (Math.random() < 0.9) {
           const note = phrase[Math.floor(Math.random() * phrase.length)];
           violins.triggerAttack(note);
