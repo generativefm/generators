@@ -4,9 +4,9 @@ import { Distance, Note } from 'tonal';
 import findClosestSample from './find-closest-sample';
 import getBuffers from './get-buffers';
 import uniquePitchClasses from './unique-pitch-classes';
-import getRandomPitchClasses from './get-random-pitch-classes';
 import getSampler from './get-sampler';
 import pickRandom from './pick-random';
+import getSimilarNotes from './get-similar-notes';
 
 const DRONE_OCTAVES = [4, 5];
 const PIANO_OCTAVES = [4, 5, 6];
@@ -85,42 +85,19 @@ const makePiece = ({
             return dronesHash;
           }, {});
 
-        const playChord = (pitchClasses = getRandomPitchClasses()) => {
+        const playChord = (notes = getSimilarNotes([], DRONE_OCTAVES)) => {
           const time = Math.random() * 30 + 30;
-          const notes = pitchClasses
-            .reduce(
-              (withOctaves, pc) =>
-                withOctaves.concat(DRONE_OCTAVES.map(oct => `${pc}${oct}`)),
-              []
-            )
-            .filter(() => Math.random() < (11 - pitchClasses.length) / 10)
-            .reduce(
-              (noYuckyIntervals, note) =>
-                noYuckyIntervals.every(otherNote => {
-                  const distance = Math.abs(
-                    Distance.semitones(note, otherNote)
-                  );
-                  return distance !== 6 && distance !== 1;
-                })
-                  ? noYuckyIntervals.concat([note])
-                  : noYuckyIntervals,
-              []
-            );
           notes.forEach(note => {
             dronesByNote[note].volume.linearRampToValueAtTime(
               0,
               `+${time / 2}`
             );
           });
-          const playedPitchClasses = Array.from(
-            new Set(notes.map(note => Note.pc(note)))
+          const nextNotes = getSimilarNotes(
+            notes.filter(() => Math.random() < 0.5),
+            DRONE_OCTAVES
           );
-          const nextPitchClasses = getRandomPitchClasses(
-            playedPitchClasses.filter(() => Math.random() < 0.5)
-          );
-          const notesToMute = notes.filter(
-            note => !nextPitchClasses.includes(Note.pc(note))
-          );
+          const notesToMute = notes.filter(note => !nextNotes.includes(note));
           Tone.Transport.scheduleOnce(() => {
             notesToMute.forEach(note => {
               dronesByNote[note].volume.linearRampToValueAtTime(
@@ -159,7 +136,7 @@ const makePiece = ({
               if (Math.random() < 0.5) {
                 const otherNoteTime = 3 + Math.random() * 2;
                 const secondPc = Note.pc(
-                  pickRandom(pitchClasses.filter(pc => pc !== firstPc))
+                  pickRandom(notes.filter(note => Note.pc(note) !== firstPc))
                 );
                 primarySampler.triggerAttack(
                   `${secondPc}${pickRandom(primaryOctaves)}`,
@@ -175,7 +152,7 @@ const makePiece = ({
               }
             }
             Tone.Transport.scheduleOnce(() => {
-              playChord(nextPitchClasses);
+              playChord(nextNotes);
             }, `+${time / 4}`);
           }, `+${time / 2}`);
         };

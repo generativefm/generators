@@ -11,7 +11,7 @@ const majorScalesWithNotes = notes =>
     notes.every(note => scaleNotes.includes(note))
   );
 
-const getRandomPitchClasses = (includingPitchClasses = []) => {
+const getSimilarPitchClasses = (includingPitchClasses = []) => {
   const compatibleMajorScales = majorScalesWithNotes(includingPitchClasses);
   const randomCompatibleScale =
     compatibleMajorScales[
@@ -25,4 +25,4 @@ const getRandomPitchClasses = (includingPitchClasses = []) => {
   );
 };
 
-export default getRandomPitchClasses;
+export default getSimilarPitchClasses;
