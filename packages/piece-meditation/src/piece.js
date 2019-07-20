@@ -50,11 +50,13 @@ const startInterval = (
   instrument
 ) => {
   const playNotes = () => {
-    instrument.triggerAttack(pickRandomFromArray(notes));
+    instrument.triggerAttack(pickRandomFromArray(notes), '+1');
     if (Math.random() > P_SECOND_NOTE) {
       instrument.triggerAttack(
         pickRandomFromArray(notes),
-        Math.random() * SECOND_NOTE_DELAY_MULTIPLIER_S + MIN_SECOND_NOTE_DELAY_S
+        `+${1 +
+          Math.random() * SECOND_NOTE_DELAY_MULTIPLIER_S +
+          MIN_SECOND_NOTE_DELAY_S}`
       );
     }
   };

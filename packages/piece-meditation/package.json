@@ -29,7 +29,7 @@
   "generativeFmManifest": "meditation.gfm.manifest.json",
   "gitHead": "8ed39368a8376ff9ea366fe8e1ab01820553a037",
   "devDependencies": {
-    "@generative-music/samples.generative.fm": "^1.9.0",
+    "@generative-music/samples.generative.fm": "^1.13.0",
     "tone": "^13.4.9"
   }
 }
