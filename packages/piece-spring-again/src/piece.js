@@ -37,7 +37,7 @@ const repeat = (fn, interval) => {
       schedule(`+${interval}`);
     }, time);
   };
-  schedule(`+${0}`);
+  schedule('+0');
 };
 
 const makePiece = ({
