@@ -51,6 +51,7 @@ const makePiece = ({
       if (Tone.context !== audioContext) {
         Tone.setContext(audioContext);
       }
+      Tone.context.latencyHint = 'interactive';
       return Promise.all([
         getInstrument(samples['vsco2-piano-mf'][preferredFormat]),
         getInstrument(samples['vsco2-violins-susvib'][preferredFormat]),
@@ -101,6 +102,7 @@ const makePiece = ({
         }
       }, (phrase.length * 5) / NOTES_PER_SECOND);
       return () => {
+        Tone.context.latencyHint = 'balanced';
         [piano, violins, cello, reverb, delay, volume].forEach(node =>
           node.dispose()
         );
