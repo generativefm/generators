@@ -169,8 +169,6 @@ const makePiece = ({
         playChord();
         changeFilterFrequency();
 
-        Tone.Transport.start();
-
         return () =>
           [
             droneBuffers,
