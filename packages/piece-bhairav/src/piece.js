@@ -68,12 +68,11 @@ function* makeRagaGenerator(raga) {
   }
 }
 
-const getSampler = (samplesByNote, baseUrl, opts = {}) =>
+const getSampler = (samplesByNote, opts = {}) =>
   new Promise(resolve => {
     const sampler = new Tone.Sampler(
       samplesByNote,
       Object.assign(opts, {
-        baseUrl,
         onload: () => resolve(sampler),
       })
     );
@@ -91,20 +90,15 @@ const makePiece = ({
         Tone.setContext(audioContext);
       }
       return Promise.all([
-        getSampler(
-          samples['vsco2-piano-mf'][preferredFormat],
-          './samples/vsco2-piano-mf/'
-        ),
-        getSampler(
-          samples['vsco2-cellos-susvib-mp'][preferredFormat],
-          './samples/vsco2-cellos-susvib-mp/',
-          { attack: 2, curve: 'linear', release: 2 }
-        ),
-        new Tone.Reverb(15)
-          .set({ wet: 0.6 })
-          .connect(destination)
-          .generate(),
+        getSampler(samples['vsco2-piano-mf'][preferredFormat]),
+        getSampler(samples['vsco2-cellos-susvib-mp'][preferredFormat], {
+          attack: 2,
+          curve: 'linear',
+          release: 2,
+        }),
+        new Tone.Reverb(15).set({ wet: 0.6 }).generate(),
       ]).then(([pianoSampler, cellos, reverb]) => {
+        reverb.connect(destination);
         pianoSampler.connect(reverb);
 
         let tonic = Math.random() < 0.5 ? 'C#4' : 'C#5';
@@ -161,7 +155,12 @@ const makePiece = ({
         Tone.Transport.scheduleOnce(() => {
           playNextNote();
         }, `+${Math.random() * 2 + 2}`);
-        Tone.Transport.start();
+
+        return () => {
+          [reverb, pianoSampler, cellos, celloFilter].forEach(node =>
+            node.dispose()
+          );
+        };
       });
     }
   );
