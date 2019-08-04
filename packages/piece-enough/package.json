@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-enough",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "2.18.0",
+  "version": "2.19.0",
   "generativeFmManifest": "enough.gfm.manifest.json",
   "repository": {
     "type": "git",
