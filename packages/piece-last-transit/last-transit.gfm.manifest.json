@@ -1,0 +1,11 @@
+{
+  "title": "Last Transit",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "last-transit",
+  "artistId": "alex-bainter",
+  "isRecordable": true,
+  "tags": ["industrial","noise"],
+  "releaseDate": "2019-08-18T00:00:00.000Z",
+  "visualizationType": "partialLattice"
+}
