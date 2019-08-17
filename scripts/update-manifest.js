@@ -5,6 +5,8 @@ const glob = require('glob');
 
 const filenames = glob.sync('./packages/*/*.gfm.manifest.json');
 
+const JSON_SPACING = 2;
+
 Promise.all(
   filenames.map(filename =>
     fs
@@ -15,7 +17,7 @@ Promise.all(
           JSON.stringify(
             Object.assign({ visualizationType: 'squareCut' }, JSON.parse(data)),
             null,
-            2
+            JSON_SPACING
           )
         )
       )
