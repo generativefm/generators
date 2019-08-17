@@ -13,7 +13,7 @@ Promise.all(
         fs.writeFile(
           filename,
           JSON.stringify(
-            Object.assign({ test: true }, JSON.parse(data)),
+            Object.assign({ visualizationType: 'squareCut' }, JSON.parse(data)),
             null,
             2
           )

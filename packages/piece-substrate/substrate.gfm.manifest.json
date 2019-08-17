@@ -1,10 +1,14 @@
 {
+  "visualizationType": "squareCut",
   "title": "Substrate",
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "substrate",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["electronic", "calm"],
+  "tags": [
+    "electronic",
+    "calm"
+  ],
   "releaseDate": "2019-07-14T00:00:00.000Z"
 }

@@ -1,10 +1,15 @@
 {
+  "visualizationType": "squareCut",
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "title": "Eno Machine",
   "id": "eno-machine",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["calm", "piano", "acoustic"],
+  "tags": [
+    "calm",
+    "piano",
+    "acoustic"
+  ],
   "releaseDate": "2018-05-07T00:00:00.000Z"
 }

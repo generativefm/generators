@@ -1,10 +1,17 @@
 {
+  "visualizationType": "squareCut",
   "title": "Observable Streams",
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "observable-streams",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["happy", "piano", "strings", "acoustic", "melodic"],
+  "tags": [
+    "happy",
+    "piano",
+    "strings",
+    "acoustic",
+    "melodic"
+  ],
   "releaseDate": "2019-02-11T00:00:00.000Z"
 }

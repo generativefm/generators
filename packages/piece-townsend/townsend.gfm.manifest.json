@@ -1,10 +1,16 @@
 {
+  "visualizationType": "squareCut",
   "title": "Townsend",
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "townsend",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["calm", "guitar", "flute", "acoustic"],
+  "tags": [
+    "calm",
+    "guitar",
+    "flute",
+    "acoustic"
+  ],
   "releaseDate": "2019-02-16T00:00:00.000Z"
 }

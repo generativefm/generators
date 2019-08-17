@@ -1,9 +1,15 @@
 {
+  "visualizationType": "squareCut",
   "title": "Pulse-code Modulation",
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "pulse-code-modulation",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["drone","electronic","piano","calm"]
+  "tags": [
+    "drone",
+    "electronic",
+    "piano",
+    "calm"
+  ]
 }

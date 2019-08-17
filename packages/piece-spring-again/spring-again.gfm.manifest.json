@@ -1,10 +1,16 @@
 {
+  "visualizationType": "squareCut",
   "title": "Spring Again",
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "spring-again",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["happy", "piano", "strings", "acoustic"],
+  "tags": [
+    "happy",
+    "piano",
+    "strings",
+    "acoustic"
+  ],
   "releaseDate": "2019-02-22T00:00:00.000Z"
 }

@@ -1,10 +1,15 @@
 {
+  "visualizationType": "squareCut",
   "title": "Apoapsis",
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "apoapsis",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["calm", "electronic", "dream"],
+  "tags": [
+    "calm",
+    "electronic",
+    "dream"
+  ],
   "releaseDate": "2019-02-01T00:00:00.000Z"
 }

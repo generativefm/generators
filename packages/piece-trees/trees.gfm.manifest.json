@@ -1,10 +1,15 @@
 {
+  "visualizationType": "squareCut",
   "title": "Trees",
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "trees",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["happy", "piano", "acoustic"],
+  "tags": [
+    "happy",
+    "piano",
+    "acoustic"
+  ],
   "releaseDate": "2019-01-17T00:00:00.000Z"
 }

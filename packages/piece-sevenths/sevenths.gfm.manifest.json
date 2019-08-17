@@ -1,10 +1,14 @@
 {
+  "visualizationType": "squareCut",
   "title": "Sevenths",
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "sevenths",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["piano", "acoustic"],
+  "tags": [
+    "piano",
+    "acoustic"
+  ],
   "releaseDate": "2018-07-21T00:00:00.000Z"
 }

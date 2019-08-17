@@ -1,10 +1,16 @@
 {
+  "visualizationType": "squareCut",
   "title": "Moment",
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "moment",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["calm", "acoustic", "guitar", "vocals"],
+  "tags": [
+    "calm",
+    "acoustic",
+    "guitar",
+    "vocals"
+  ],
   "releaseDate": "2019-07-07T00:00:00.000Z"
 }

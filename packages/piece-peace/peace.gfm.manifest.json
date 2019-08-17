@@ -1,10 +1,15 @@
 {
+  "visualizationType": "squareCut",
   "title": "Peace",
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "peace",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["calm", "flute", "acoustic"],
+  "tags": [
+    "calm",
+    "flute",
+    "acoustic"
+  ],
   "releaseDate": "2019-05-19T00:00:00.000Z"
 }

@@ -1,10 +1,15 @@
 {
+  "visualizationType": "squareCut",
   "title": "Impact",
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "impact",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["piano", "electronic", "acoustic"],
+  "tags": [
+    "piano",
+    "electronic",
+    "acoustic"
+  ],
   "releaseDate": "2018-07-27T00:00:00.000Z"
 }

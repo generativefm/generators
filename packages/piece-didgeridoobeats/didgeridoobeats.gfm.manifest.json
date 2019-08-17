@@ -1,10 +1,14 @@
 {
+  "visualizationType": "squareCut",
   "title": "Didgeridoobeats",
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "didgeridoobeats",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["electronic", "beats"],
+  "tags": [
+    "electronic",
+    "beats"
+  ],
   "releaseDate": "2019-03-24T00:00:00.000Z"
 }

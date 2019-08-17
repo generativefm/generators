@@ -1,10 +1,15 @@
 {
+  "visualizationType": "squareCut",
   "title": "A Viable System",
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "a-viable-system",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["piano", "strings", "acoustic"],
+  "tags": [
+    "piano",
+    "strings",
+    "acoustic"
+  ],
   "releaseDate": "2019-01-25T00:00:00.000Z"
 }

@@ -1,10 +1,15 @@
 {
+  "visualizationType": "squareCut",
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "title": "aisatsana (generative remix)",
   "id": "aisatsana",
   "artistId": "alex-bainter",
   "isRecordable": false,
-  "tags": ["calm", "piano", "acoustic"],
+  "tags": [
+    "calm",
+    "piano",
+    "acoustic"
+  ],
   "releaseDate": "2018-05-07T00:00:00.000Z"
 }

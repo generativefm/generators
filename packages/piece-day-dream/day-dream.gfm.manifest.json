@@ -1,10 +1,14 @@
 {
+  "visualizationType": "squareCut",
   "title": "Day/Dream",
   "makePiece": "./dist/esm.js",
   "image": "./image.png",
   "id": "day-dream",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["electronic", "calm"],
+  "tags": [
+    "electronic",
+    "calm"
+  ],
   "releaseDate": "2019-06-16T00:00:00.000Z"
 }
