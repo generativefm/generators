@@ -22,7 +22,7 @@ const makePiece = ({
         new Tone.Reverb(5).set({ wet: 0.5 }).generate(),
       ]).then(([buffer, reverb]) => {
         const activeSources = [];
-        const vol = new Tone.Volume(15).connect(destination);
+        const vol = new Tone.Volume(10).connect(destination);
         reverb.connect(vol);
         const filter = new Tone.AutoFilter(Math.random() / 30).connect(reverb);
         filter.start();
