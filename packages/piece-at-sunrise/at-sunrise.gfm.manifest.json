@@ -1,0 +1,11 @@
+{
+  "title": "At Sunrise",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "at-sunrise",
+  "artistId": "alex-bainter",
+  "isRecordable": true,
+  "tags": ["calm","dream","electronic"],
+  "releaseDate": "2019-08-25T00:00:00.000Z",
+  "visualizationType": "squareCut"
+}
