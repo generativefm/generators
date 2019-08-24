@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-at-sunrise",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "0.0.0",
+  "version": "2.21.0",
   "generativeFmManifest": "at-sunrise.gfm.manifest.json",
   "repository": {
     "type": "git",

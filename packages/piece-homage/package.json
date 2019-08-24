@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-homage",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "2.20.0",
+  "version": "2.21.0",
   "generativeFmManifest": "homage.gfm.manifest.json",
   "repository": {
     "type": "git",
