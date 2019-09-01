@@ -81,6 +81,10 @@ const makePiece = ({
         };
 
         leftHand();
+
+        return () => {
+          [piano, reverb].forEach(node => node.dispose());
+        };
       });
     }
   );
