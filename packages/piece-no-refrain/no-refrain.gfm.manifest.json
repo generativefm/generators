@@ -1,0 +1,11 @@
+{
+  "title": "No Refrain",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "no-refrain",
+  "artistId": "alex-bainter",
+  "isRecordable": true,
+  "tags": ["piano","acoustic","melancholy"],
+  "releaseDate": "2019-09-01T00:00:00.000Z",
+  "visualizationType": "squareCut"
+}
