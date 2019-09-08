@@ -1,0 +1,11 @@
+{
+  "title": "Agua Ravine",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "agua-ravine",
+  "artistId": "alex-bainter",
+  "isRecordable": true,
+  "tags": ["piano", "acoustic"],
+  "releaseDate": "2019-09-08T00:00:00.000Z",
+  "visualizationType": "squareCut"
+}
