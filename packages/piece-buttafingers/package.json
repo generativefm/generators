@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-buttafingers",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "2.24.0",
+  "version": "2.25.0",
   "generativeFmManifest": "buttafingers.gfm.manifest.json",
   "repository": {
     "type": "git",
