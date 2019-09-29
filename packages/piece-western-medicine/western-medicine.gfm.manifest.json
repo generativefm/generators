@@ -1,0 +1,11 @@
+{
+  "title": "Western Medicine",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "western-medicine",
+  "artistId": "alex-bainter",
+  "isRecordable": true,
+  "tags": ["electronic"],
+  "releaseDate": "2019-09-30T00:00:00.000Z",
+  "visualizationType": "squareCut"
+}
