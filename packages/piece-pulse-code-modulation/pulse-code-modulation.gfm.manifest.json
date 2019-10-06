@@ -6,10 +6,6 @@
   "id": "pulse-code-modulation",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": [
-    "drone",
-    "electronic",
-    "piano",
-    "calm"
-  ]
+  "tags": ["drone", "electronic", "piano", "calm"],
+  "releaseDate": "2019-07-21T00:00:00.000Z"
 }
