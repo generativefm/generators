@@ -1,0 +1,11 @@
+{
+  "title": "Soundtrack",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "soundtrack",
+  "artistId": "alex-bainter",
+  "isRecordable": true,
+  "tags": ["electronic", "drone", "dark", "bells", "strings"],
+  "releaseDate": "2019-10-06T00:00:00.000Z",
+  "visualizationType": "squareCut"
+}
