@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-animalia-chordata",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "2.26.0",
+  "version": "2.27.0",
   "generativeFmManifest": "animalia-chordata.gfm.manifest.json",
   "repository": {
     "type": "git",
