@@ -1,0 +1,11 @@
+{
+  "title": "Nakaii",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "nakaii",
+  "artistId": "alex-bainter",
+  "isRecordable": true,
+  "tags": ["calm","electronic"],
+  "releaseDate": "2019-10-13T00:00:00.000Z",
+  "visualizationType": "squareCut"
+}
