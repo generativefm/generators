@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-neuroplasticity",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "2.27.0",
+  "version": "2.28.0",
   "generativeFmManifest": "neuroplasticity.gfm.manifest.json",
   "repository": {
     "type": "git",

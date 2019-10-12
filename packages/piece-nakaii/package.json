@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-nakaii",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "0.0.0",
+  "version": "2.28.0",
   "generativeFmManifest": "nakaii.gfm.manifest.json",
   "repository": {
     "type": "git",
