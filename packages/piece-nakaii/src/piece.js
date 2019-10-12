@@ -47,10 +47,10 @@ const getCustomSampler = (destination, samplesByNote, semitoneChange = 24) =>
             activeSources.push(bufferSource);
             bufferSource.start(time);
           },
+          dispose: () => {
+            [buffers, ...activeSources].forEach(node => node.dispose());
+          },
         });
-      },
-      dispose: () => {
-        [buffers, ...activeSources].forEach(node => node.dispose());
       },
     });
   });
