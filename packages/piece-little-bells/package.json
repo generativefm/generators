@@ -1,6 +1,6 @@
 {
   "name": "@generative-music/piece-little-bells",
-  "version": "2.28.0",
+  "version": "2.29.0",
   "description": "",
   "main": "dist/cjs.js",
   "dependencies": {
