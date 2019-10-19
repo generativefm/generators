@@ -89,17 +89,15 @@ const makePiece = ({
       if (Tone.context !== audioContext) {
         Tone.setContext(audioContext);
       }
-      const volume = new Tone.Volume().connect(destination);
+      const masterVol = new Tone.Volume(5).connect(destination);
+      const volume = new Tone.Volume().connect(masterVol);
       const volLfo = new Tone.LFO(0.001, -100, -5).set({
         phase: 90,
       });
       volLfo.connect(volume.volume);
       volLfo.start();
       return Promise.all([
-        getCustomSampler(
-          destination,
-          samples['vsco2-piano-mf'][preferredFormat]
-        ),
+        getCustomSampler(masterVol, samples['vsco2-piano-mf'][preferredFormat]),
         getCustomSampler(
           volume,
           samples['vsco2-violins-susvib'][preferredFormat],
@@ -149,7 +147,9 @@ const makePiece = ({
           play();
         });
         return () => {
-          [volume, volLfo, piano, violins].forEach(node => node.dispose());
+          [masterVol, volume, volLfo, piano, violins].forEach(node =>
+            node.dispose()
+          );
         };
       });
     }
