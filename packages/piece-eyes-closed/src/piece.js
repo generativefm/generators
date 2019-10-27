@@ -126,6 +126,12 @@ const makePiece = ({
         };
 
         scheduleChord();
+
+        return () => {
+          [danTranhLfo, pianoLfo, danTranh, piano].forEach(node =>
+            node.dispose()
+          );
+        };
       });
     }
   );
