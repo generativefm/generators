@@ -1,0 +1,11 @@
+{
+  "title": "Eyes Closed",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "eyes-closed",
+  "artistId": "alex-bainter",
+  "isRecordable": true,
+  "tags": ["electronic","calm","dream"],
+  "releaseDate": "2019-10-27T00:00:00.000Z",
+  "visualizationType": "squareCut"
+}
