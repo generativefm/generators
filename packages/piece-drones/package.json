@@ -3,7 +3,7 @@
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
   "generativeFmManifest": "drones.gfm.manifest.json",
-  "version": "2.30.0",
+  "version": "2.31.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/generative-music/piece-drones.git"
