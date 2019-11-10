@@ -1,0 +1,11 @@
+{
+  "title": "Ritual",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "ritual",
+  "artistId": "alex-bainter",
+  "isRecordable": true,
+  "tags": ["drone","percussion","electronic"],
+  "releaseDate": "2019-11-10T00:00:00.000Z",
+  "visualizationType": "squareCut"
+}
