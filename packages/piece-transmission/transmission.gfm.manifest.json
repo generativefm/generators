@@ -1,0 +1,11 @@
+{
+  "title": "Transmission",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "transmission",
+  "artistId": "alex-bainter",
+  "isRecordable": true,
+  "tags": ["electronic","piano"],
+  "releaseDate": "2019-11-17T00:00:00.000Z",
+  "visualizationType": "squareCut"
+}
