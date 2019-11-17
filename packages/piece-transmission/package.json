@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-transmission",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "0.0.0",
+  "version": "2.33.0",
   "generativeFmManifest": "transmission.gfm.manifest.json",
   "repository": {
     "type": "git",

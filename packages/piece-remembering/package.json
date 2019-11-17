@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-remembering",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "2.32.0",
+  "version": "2.33.0",
   "generativeFmManifest": "remembering.gfm.manifest.json",
   "repository": {
     "type": "git",
