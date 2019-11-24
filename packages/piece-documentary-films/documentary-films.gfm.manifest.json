@@ -1,0 +1,11 @@
+{
+  "title": "Documentary Films",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "documentary-films",
+  "artistId": "alex-bainter",
+  "isRecordable": true,
+  "tags": ["drone","brass","calm"],
+  "releaseDate": "2019-11-24T00:00:00.000Z",
+  "visualizationType": "squareCut"
+}
