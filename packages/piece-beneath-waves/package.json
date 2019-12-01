@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-beneath-waves",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "0.0.0",
+  "version": "2.35.0",
   "generativeFmManifest": "beneath-waves.gfm.manifest.json",
   "repository": {
     "type": "git",

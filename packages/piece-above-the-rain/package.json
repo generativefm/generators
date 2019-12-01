@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-above-the-rain",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "2.34.0",
+  "version": "2.35.0",
   "generativeFmManifest": "above-the-rain.gfm.manifest.json",
   "repository": {
     "type": "git",
