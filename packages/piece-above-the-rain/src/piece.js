@@ -54,13 +54,26 @@ const makePiece = ({
         const playbackRate = 0.25;
         const vol = new Tone.Volume(-10);
         vol.connect(autoFilter);
+        const activeSources = [];
         const play = notes => {
           const note = notes[Math.floor(Math.random() * notes.length)];
           const buf = chorus.get(note);
           const source = new Tone.BufferSource(buf)
-            .set({ playbackRate, fadeIn: 4, fadeOut: 4, curve: 'linear' })
+            .set({
+              playbackRate,
+              fadeIn: 4,
+              fadeOut: 4,
+              curve: 'linear',
+              onended: () => {
+                const i = activeSources.indexOf(source);
+                if (i > -1) {
+                  activeSources.splice(i, 1);
+                }
+              },
+            })
             .connect(vol);
           source.start('+1', 0, buf.duration / playbackRate);
+          activeSources.push(source);
 
           if (Math.random() < 0.15) {
             const [pc] = note;
