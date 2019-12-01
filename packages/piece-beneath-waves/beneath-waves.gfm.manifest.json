@@ -1,0 +1,11 @@
+{
+  "title": "Beneath Waves",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "beneath-waves",
+  "artistId": "alex-bainter",
+  "isRecordable": true,
+  "tags": ["dark", "drone", "electronic"],
+  "releaseDate": "2019-12-01T00:00:00.000Z",
+  "visualizationType": "squareCut"
+}
