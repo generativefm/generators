@@ -157,7 +157,8 @@ const makePiece = ({
             drone(chorus, note, min, max);
           }, `+${Math.random() * (max - min) + min}`);
         };
-        droneStacks.forEach(([chord, volume, sampler], i) => {
+        // eslint-disable-next-line no-unused-vars
+        droneStacks.forEach(([chord, volume, sampler]) => {
           chord.forEach(note => {
             drone(sampler, note, 20, 10);
           });
@@ -170,6 +171,7 @@ const makePiece = ({
         const changeChord = () => {
           const transitionTime = Math.ceil(Math.random() * 10 + 10);
           const mutedDroneStacks = droneStacks.filter(
+            // eslint-disable-next-line no-unused-vars
             ([chord, volume]) => volume !== unmutedDroneVolume
           );
           const nextUnmutedDroneStack =
@@ -235,6 +237,7 @@ const makePiece = ({
             waveBuffer,
             pitchShiftPiano,
             ...droneStacks.reduce(
+              // eslint-disable-next-line no-unused-vars
               (disposableNodes, [chord, volume, sampler]) =>
                 disposableNodes.concat([volume, sampler]),
               []
