@@ -76,7 +76,7 @@ const makePiece = ({
       if (Tone.context !== audioContext) {
         Tone.setContext(audioContext);
       }
-      const stereoWidener = new Tone.StereoWidener().connect(destination);
+      const stereoWidener = new Tone.StereoWidener();
       const wavesVol = new Tone.Volume().connect(stereoWidener);
       const dronesVol = new Tone.Volume().connect(stereoWidener);
       const volLfoFreq = Math.random() / 10000 + 0.0001;
@@ -117,7 +117,7 @@ const makePiece = ({
       ).set({
         phase: getRandomPhase(),
       });
-      const pianoVol = new Tone.Volume().connect(destination);
+      const pianoVol = new Tone.Volume().connect(stereoWidener);
       pianoVolLfo.connect(pianoVol.volume);
       pianoVolLfo.start();
       return Promise.all([
@@ -222,6 +222,8 @@ const makePiece = ({
         }, `+${Math.random() * 10 + 10}`);
 
         Tone.Transport.start();
+
+        stereoWidener.connect(destination);
 
         return () => {
           [
