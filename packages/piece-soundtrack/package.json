@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-soundtrack",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "2.35.0",
+  "version": "2.36.0",
   "generativeFmManifest": "soundtrack.gfm.manifest.json",
   "repository": {
     "type": "git",
