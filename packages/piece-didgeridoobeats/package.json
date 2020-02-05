@@ -26,7 +26,6 @@
     "access": "public"
   },
   "devDependencies": {
-    "@generative-music/samples.generative.fm": "^1.9.0",
     "tone": "^13.4.9"
   },
   "version": "2.36.0"
