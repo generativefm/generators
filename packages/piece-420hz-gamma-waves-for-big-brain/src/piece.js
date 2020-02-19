@@ -63,7 +63,6 @@ const getBuffer = url =>
   });
 
 const getRandomPhase = () => Math.random() * 360;
-const getOppositePhase = phase => (phase >= 180 ? phase - 180 : phase + 180);
 
 const makePiece = ({
   audioContext,
@@ -77,22 +76,15 @@ const makePiece = ({
         Tone.setContext(audioContext);
       }
       const stereoWidener = new Tone.StereoWidener();
-      const wavesVol = new Tone.Volume().connect(stereoWidener);
-      const dronesVol = new Tone.Volume().connect(stereoWidener);
-      const volLfoFreq = Math.random() / 10000 + 0.0001;
-      const wavesVolPhase = getRandomPhase();
-      const wavesVolLfo = new Tone.LFO(volLfoFreq, -100, -10).set({
-        phase: wavesVolPhase,
+      const crossFade = new Tone.CrossFade().connect(stereoWidener);
+      const crossFadeLfo = new Tone.LFO(Math.random() / 10000 + 0.0001).set({
+        phase: 90,
       });
-      const dronesVolLfo = new Tone.LFO(volLfoFreq, -100, 0).set({
-        phase: getOppositePhase(wavesVolPhase),
+      crossFadeLfo.connect(crossFade.fade);
+      crossFadeLfo.start();
+      const stereoLfo = new Tone.LFO(Math.random() / 100 + 0.01, 0.5, 1).set({
+        phase: getRandomPhase(),
       });
-      wavesVolLfo.start();
-      dronesVolLfo.start();
-      wavesVolLfo.connect(wavesVol.volume);
-      dronesVolLfo.connect(dronesVol.volume);
-
-      const stereoLfo = new Tone.LFO(Math.random() / 100 + 0.01, 0.5, 1);
       stereoLfo.connect(stereoWidener.width);
       stereoLfo.start();
       const autoLowPass = new Tone.AutoFilter(
@@ -101,7 +93,7 @@ const makePiece = ({
         1
       )
         .set({ filter: { rolloff: -96 } })
-        .connect(dronesVol);
+        .connect(crossFade, 0, 0);
       autoLowPass.start();
       const chords = [
         ['G3', 'C4', 'E4'],
@@ -120,6 +112,7 @@ const makePiece = ({
       const pianoVol = new Tone.Volume().connect(stereoWidener);
       pianoVolLfo.connect(pianoVol.volume);
       pianoVolLfo.start();
+
       return Promise.all([
         getBuffer(samples.waves[preferredFormat][0]),
         pitchShiftSampler(
@@ -140,7 +133,7 @@ const makePiece = ({
           const playbackRate = 0.5;
           const source = new Tone.BufferSource(waveBuffer)
             .set({ fadeIn: 5, fadeOut: 5, curve: 'linear', playbackRate })
-            .connect(wavesVol);
+            .connect(crossFade, 0, 1);
           source.start('+1', 0, waveBuffer.duration / playbackRate - 5);
 
           Tone.Transport.scheduleOnce(() => {
@@ -221,6 +214,7 @@ const makePiece = ({
           changeChord();
         }, `+${Math.random() * 10 + 10}`);
 
+        // TODO REMOVE
         Tone.Transport.start();
 
         stereoWidener.connect(destination);
@@ -228,10 +222,8 @@ const makePiece = ({
         return () => {
           [
             stereoWidener,
-            wavesVol,
-            dronesVol,
-            wavesVolLfo,
-            dronesVolLfo,
+            crossFade,
+            crossFadeLfo,
             stereoLfo,
             autoLowPass,
             pianoVolLfo,
