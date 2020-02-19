@@ -214,9 +214,6 @@ const makePiece = ({
           changeChord();
         }, `+${Math.random() * 10 + 10}`);
 
-        // TODO REMOVE
-        Tone.Transport.start();
-
         stereoWidener.connect(destination);
 
         return () => {
