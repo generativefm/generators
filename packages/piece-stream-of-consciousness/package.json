@@ -1,0 +1,31 @@
+{
+  "name": "@generative-music/piece-stream-of-consciousness",
+  "main": "dist/cjs.js",
+  "module": "dist/esm.js",
+  "version": "0.0.0",
+  "generativeFmManifest": "stream-of-consciousness.gfm.manifest.json",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/generative-music/pieces-alex-bainter.git"
+  },
+  "files": [
+    "dist",
+    "image.png",
+    "stream-of-consciousness.gfm.manifest.json"
+  ],
+  "author": "Alex Bainter <alex@alexbainter.com> (https://alexbainter.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/generative-music/pieces-alex-bainter/issues"
+  },
+  "homepage": "https://github.com/generative-music/pieces-alex-bainter#readme",
+  "peerDependencies": {
+    "tone": "^13.8.25"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "tone": "^13.8.25"
+  }
+}
