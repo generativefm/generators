@@ -10,5 +10,9 @@
     "electronic",
     "guitar"
   ],
-  "releaseDate": "2019-05-26T00:00:00.000Z"
+  "releaseDate": "2019-05-26T00:00:00.000Z",
+  "sampleNames": [
+    "guitar-namaste",
+    "vsco2-piano-mf"
+  ]
 }

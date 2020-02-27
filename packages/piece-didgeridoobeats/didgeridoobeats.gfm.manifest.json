@@ -6,9 +6,12 @@
   "id": "didgeridoobeats",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": [
-    "electronic",
-    "beats"
-  ],
-  "releaseDate": "2019-03-24T00:00:00.000Z"
+  "tags": ["electronic", "beats"],
+  "releaseDate": "2019-03-24T00:00:00.000Z",
+  "sampleNames": [
+    "vcsl-didgeridoo-sus",
+    "itslucid-lofi-hats",
+    "itslucid-lofi-kick",
+    "itslucid-lofi-snare"
+  ]
 }

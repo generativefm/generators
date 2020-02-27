@@ -11,5 +11,9 @@
     "guitar",
     "dream"
   ],
-  "releaseDate": "2019-05-05T00:00:00.000Z"
+  "releaseDate": "2019-05-05T00:00:00.000Z",
+  "sampleNames": [
+    "vcsl-ocean-drum",
+    "dry-guitar-vib"
+  ]
 }

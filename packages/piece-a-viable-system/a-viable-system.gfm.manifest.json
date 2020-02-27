@@ -6,10 +6,11 @@
   "id": "a-viable-system",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": [
-    "piano",
-    "strings",
-    "acoustic"
-  ],
-  "releaseDate": "2019-01-25T00:00:00.000Z"
+  "tags": ["piano", "strings", "acoustic"],
+  "releaseDate": "2019-01-25T00:00:00.000Z",
+  "sampleNames": [
+    "vsco2-piano-mf",
+    "vsco2-contrabass-susvib",
+    "vsco2-violin-arcvib"
+  ]
 }

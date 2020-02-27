@@ -6,10 +6,7 @@
   "id": "impact",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": [
-    "piano",
-    "electronic",
-    "acoustic"
-  ],
-  "releaseDate": "2018-07-27T00:00:00.000Z"
+  "tags": ["piano", "electronic", "acoustic"],
+  "releaseDate": "2018-07-27T00:00:00.000Z",
+  "sampleNames": ["vsco2-piano-mf"]
 }

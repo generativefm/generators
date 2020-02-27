@@ -10,5 +10,9 @@
     "electronic",
     "calm"
   ],
-  "releaseDate": "2019-07-14T00:00:00.000Z"
+  "releaseDate": "2019-07-14T00:00:00.000Z",
+  "sampleNames": [
+    "vsco2-marimba",
+    "vsco2-piano-mf"
+  ]
 }

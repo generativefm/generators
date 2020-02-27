@@ -12,5 +12,10 @@
     "strings",
     "acoustic"
   ],
-  "releaseDate": "2019-02-22T00:00:00.000Z"
+  "releaseDate": "2019-02-22T00:00:00.000Z",
+  "sampleNames": [
+    "vsco2-piano-mf",
+    "vsco2-violins-susvib",
+    "vsco2-cello-susvib-f"
+  ]
 }

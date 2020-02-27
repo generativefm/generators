@@ -10,5 +10,8 @@
     "industrial",
     "noise"
   ],
-  "releaseDate": "2019-08-18T00:00:00.000Z"
+  "releaseDate": "2019-08-18T00:00:00.000Z",
+  "sampleNames": [
+    "idling-truck"
+  ]
 }

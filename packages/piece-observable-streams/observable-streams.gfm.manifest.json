@@ -6,12 +6,7 @@
   "id": "observable-streams",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": [
-    "happy",
-    "piano",
-    "strings",
-    "acoustic",
-    "melodic"
-  ],
-  "releaseDate": "2019-02-11T00:00:00.000Z"
+  "tags": ["happy", "piano", "strings", "acoustic", "melodic"],
+  "releaseDate": "2019-02-11T00:00:00.000Z",
+  "sampleNames": ["vsco2-piano-mf", "vsco2-violin-arcvib", "sso-cor-anglais"]
 }

@@ -10,5 +10,8 @@
     "drone",
     "electronic"
   ],
-  "releaseDate": "2019-04-28T00:00:00.000Z"
+  "releaseDate": "2019-04-28T00:00:00.000Z",
+  "sampleNames": [
+    "vsco2-violins-susvib"
+  ]
 }

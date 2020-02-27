@@ -12,5 +12,10 @@
     "guitar",
     "vocals"
   ],
-  "releaseDate": "2019-07-07T00:00:00.000Z"
+  "releaseDate": "2019-07-07T00:00:00.000Z",
+  "sampleNames": [
+    "acoustic-guitar",
+    "alex-hum-1",
+    "alex-hum-2"
+  ]
 }

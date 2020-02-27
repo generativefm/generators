@@ -5,7 +5,16 @@
   "id": "documentary-films",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["drone","brass","calm"],
+  "tags": [
+    "drone",
+    "brass",
+    "calm"
+  ],
   "releaseDate": "2019-11-24T00:00:00.000Z",
-  "visualizationType": "squareCut"
+  "visualizationType": "squareCut",
+  "sampleNames": [
+    "vsco2-trumpet-sus-mf",
+    "vsco2-trombone-sus-mf",
+    "vsco2-tuba-sus-mf"
+  ]
 }

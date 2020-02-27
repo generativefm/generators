@@ -7,5 +7,11 @@
   "isRecordable": true,
   "tags": ["electronic"],
   "releaseDate": "2019-09-30T00:00:00.000Z",
-  "visualizationType": "squareCut"
+  "visualizationType": "squareCut",
+  "sampleNames": [
+    "guitar-harmonics",
+    "vsco2-marimba",
+    "vsco2-harp",
+    "vsco2-piano-mf"
+  ]
 }

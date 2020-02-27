@@ -11,5 +11,8 @@
     "piano",
     "acoustic"
   ],
-  "releaseDate": "2019-01-17T00:00:00.000Z"
+  "releaseDate": "2019-01-17T00:00:00.000Z",
+  "sampleNames": [
+    "vsco2-piano-mf"
+  ]
 }

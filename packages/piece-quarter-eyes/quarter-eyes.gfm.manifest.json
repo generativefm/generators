@@ -6,12 +6,14 @@
   "id": "quarter-eyes",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": [
-    "dark",
-    "orchestral",
-    "acoustic",
-    "strings",
-    "percussion"
-  ],
-  "releaseDate": "2019-06-09T00:00:00.000Z"
+  "tags": ["dark", "orchestral", "acoustic", "strings", "percussion"],
+  "releaseDate": "2019-06-09T00:00:00.000Z",
+  "sampleNames": [
+    "vcsl-bassdrum-hit-f",
+    "vcsl-bassdrum-hit-ff",
+    "vcsl-sleighbells",
+    "vcsl-finger-cymbals",
+    "vcsl-tom",
+    "vsco2-cellos-susvib-mp"
+  ]
 }

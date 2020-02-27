@@ -5,7 +5,13 @@
   "id": "uun",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["piano","acoustic"],
+  "tags": [
+    "piano",
+    "acoustic"
+  ],
   "releaseDate": "2019-11-03T00:00:00.000Z",
-  "visualizationType": "squareCut"
+  "visualizationType": "squareCut",
+  "sampleNames": [
+    "vsco2-piano-mf"
+  ]
 }

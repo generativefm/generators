@@ -5,7 +5,17 @@
   "id": "ritual",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["drone","percussion","electronic"],
+  "tags": ["drone", "percussion", "electronic"],
   "releaseDate": "2019-11-10T00:00:00.000Z",
-  "visualizationType": "squareCut"
+  "visualizationType": "squareCut",
+  "sampleNames": [
+    "vcsl-didgeridoo-sus",
+    "vsco2-violins-susvib",
+    "vcsl-bassdrum-hit-ff",
+    "vcsl-darbuka-1-f",
+    "vcsl-darbuka-2-f",
+    "vcsl-darbuka-3-f",
+    "vcsl-darbuka-4-f",
+    "vcsl-darbuka-5-f"
+  ]
 }

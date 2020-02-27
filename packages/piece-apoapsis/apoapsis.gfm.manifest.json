@@ -11,5 +11,9 @@
     "electronic",
     "dream"
   ],
-  "releaseDate": "2019-02-01T00:00:00.000Z"
+  "releaseDate": "2019-02-01T00:00:00.000Z",
+  "sampleNames": [
+    "vsco2-violins-susvib",
+    "vsco2-piano-mf"
+  ]
 }

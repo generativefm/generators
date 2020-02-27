@@ -9,5 +9,9 @@
   "tags": [
     "guitar"
   ],
-  "releaseDate": "2019-08-04T00:00:00.000Z"
+  "releaseDate": "2019-08-04T00:00:00.000Z",
+  "sampleNames": [
+    "guitar-coil-spank",
+    "guitar-dusty"
+  ]
 }

@@ -11,5 +11,9 @@
     "drone",
     "calm"
   ],
-  "releaseDate": "2019-06-30T00:00:00.000Z"
+  "releaseDate": "2019-06-30T00:00:00.000Z",
+  "sampleNames": [
+    "vsco2-piano-mf",
+    "vsco2-violins-susvib"
+  ]
 }

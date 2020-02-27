@@ -10,5 +10,9 @@
     "piano",
     "acoustic"
   ],
-  "releaseDate": "2019-07-28T00:00:00.000Z"
+  "releaseDate": "2019-07-28T00:00:00.000Z",
+  "sampleNames": [
+    "vsco2-piano-mf",
+    "vsco2-cellos-susvib-mp"
+  ]
 }

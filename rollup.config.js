@@ -25,10 +25,7 @@ const makeConfig = (
     file: `${dirname}/dist/${format}.js`,
     format,
   },
-  external: [
-    '@generative-music/samples.generative.fm/browser-client',
-    'rxjs/operators',
-  ]
+  external: ['rxjs/operators']
     .concat(Reflect.ownKeys(dependencies))
     .concat(Reflect.ownKeys(peerDependencies)),
   plugins: [json(), babel({ exclude: 'node_modules/**' })],

@@ -5,7 +5,15 @@
   "id": "above-the-rain",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["drone","calm","electronic"],
+  "tags": [
+    "drone",
+    "calm",
+    "electronic"
+  ],
   "releaseDate": "2019-09-22T00:00:00.000Z",
-  "visualizationType": "squareCut"
+  "visualizationType": "squareCut",
+  "sampleNames": [
+    "sso-chorus-female",
+    "vsco2-trumpet-sus-mf"
+  ]
 }

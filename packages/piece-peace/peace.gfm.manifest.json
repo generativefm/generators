@@ -11,5 +11,8 @@
     "flute",
     "acoustic"
   ],
-  "releaseDate": "2019-05-19T00:00:00.000Z"
+  "releaseDate": "2019-05-19T00:00:00.000Z",
+  "sampleNames": [
+    "native-american-flute-susvib"
+  ]
 }

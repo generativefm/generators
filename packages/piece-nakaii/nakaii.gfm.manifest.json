@@ -5,7 +5,14 @@
   "id": "nakaii",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["calm","electronic"],
+  "tags": [
+    "calm",
+    "electronic"
+  ],
   "releaseDate": "2019-10-13T00:00:00.000Z",
-  "visualizationType": "squareCut"
+  "visualizationType": "squareCut",
+  "sampleNames": [
+    "vsco2-piano-mf",
+    "vsco2-violins-susvib"
+  ]
 }
