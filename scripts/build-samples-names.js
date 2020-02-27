@@ -47,6 +47,7 @@ Promise.all([
       ]).then(([sampleNames, manifest]) =>
         pfs.writeFile(
           manifestFilename,
+          //eslint-disable-next-line no-magic-numbers
           JSON.stringify(Object.assign(manifest, { sampleNames }), null, 2)
         )
       );
