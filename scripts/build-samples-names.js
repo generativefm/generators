@@ -9,6 +9,7 @@ const findSampleNames = filename =>
     const sampleNames = [];
     let match = sampleNameRegex.exec(content);
     while (match) {
+      //eslint-disable-next-line no-unused-vars
       const [group1, group2, group3] = match;
       if (group2) {
         sampleNames.push(group2);
