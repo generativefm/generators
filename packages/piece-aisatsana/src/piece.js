@@ -1,5 +1,4 @@
 import Chain from 'markov-chains';
-import fetchSpecFile from '@generative-music/samples.generative.fm';
 import Tone from 'tone';
 import instructions from './instructions.json';
 
@@ -39,49 +38,38 @@ const phrasesWithIndex = phrases.map(phrase =>
 
 const chain = new Chain(phrasesWithIndex);
 
-const getPiano = (samplesSpec, format) =>
+const getPiano = samples =>
   new Promise(resolve => {
-    const piano = new Tone.Sampler(
-      samplesSpec.samples['vsco2-piano-mf'][format],
-      {
-        onload: () => resolve(piano),
-      }
-    );
+    const piano = new Tone.Sampler(samples['vsco2-piano-mf'], {
+      onload: () => resolve(piano),
+    });
   });
 
-const makePiece = ({
-  destination,
-  audioContext,
-  preferredFormat,
-  sampleSource = {},
-}) =>
-  fetchSpecFile(sampleSource.baseUrl, sampleSource.specFilename)
-    .then(samplesSpec => {
-      if (audioContext !== Tone.context) {
-        Tone.setContext(audioContext);
-      }
-      return getPiano(samplesSpec, preferredFormat);
-    })
-    .then(piano => {
-      piano.connect(destination);
-      const schedule = () => {
-        const phrase = chain.walk();
-        phrase.forEach(str => {
-          const [t, ...names] = str.split(DELIMITER);
-          const parsedT = Number.parseInt(t, 10);
-          names.forEach(name => {
-            const waitTime = parsedT * EIGHTH_NOTE_INTERVAL_S;
-            piano.triggerAttack(name, `+${waitTime + 1}`);
-          });
+const makePiece = ({ destination, audioContext, samples }) => {
+  if (audioContext !== Tone.context) {
+    Tone.setContext(audioContext);
+  }
+  return getPiano(samples).then(piano => {
+    piano.connect(destination);
+    const schedule = () => {
+      const phrase = chain.walk();
+      phrase.forEach(str => {
+        const [t, ...names] = str.split(DELIMITER);
+        const parsedT = Number.parseInt(t, 10);
+        names.forEach(name => {
+          const waitTime = parsedT * EIGHTH_NOTE_INTERVAL_S;
+          piano.triggerAttack(name, `+${waitTime + 1}`);
         });
-      };
-      Tone.Transport.scheduleRepeat(
-        schedule,
-        phraseLength * EIGHTH_NOTE_INTERVAL_S
-      );
-      return () => {
-        piano.dispose();
-      };
-    });
+      });
+    };
+    Tone.Transport.scheduleRepeat(
+      schedule,
+      phraseLength * EIGHTH_NOTE_INTERVAL_S
+    );
+    return () => {
+      piano.dispose();
+    };
+  });
+};
 
 export default makePiece;

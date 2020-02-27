@@ -2,7 +2,6 @@ import pickRandom from 'pick-random';
 import randomNumber from 'random-number';
 import * as tonal from 'tonal';
 import Tone from 'tone';
-import fetchSampleSpec from '@generative-music/samples.generative.fm';
 
 const CHORDS = ['m7', 'maj7', '7'];
 // eslint-disable-next-line no-magic-numbers
@@ -45,35 +44,24 @@ const makeScheduleChord = instrument => {
   return scheduleChord;
 };
 
-const getPiano = (samplesSpec, format) =>
+const getPiano = samples =>
   new Promise(resolve => {
-    const piano = new Tone.Sampler(
-      samplesSpec.samples['vsco2-piano-mf'][format],
-      {
-        onload: () => resolve(piano),
-      }
-    );
+    const piano = new Tone.Sampler(samples['vsco2-piano-mf'], {
+      onload: () => resolve(piano),
+    });
   });
 
-const makePiece = ({
-  audioContext,
-  destination,
-  preferredFormat,
-  sampleSource = {},
-}) =>
-  fetchSampleSpec(sampleSource.baseUrl, sampleSource.specFilename)
-    .then(specFile => {
-      if (Tone.context !== audioContext) {
-        Tone.setContext(audioContext);
-      }
-      return getPiano(specFile, preferredFormat);
-    })
-    .then(piano => {
-      piano.connect(destination);
-      makeScheduleChord(piano)();
-      return () => {
-        piano.dispose();
-      };
-    });
+const makePiece = ({ audioContext, destination, samples }) => {
+  if (Tone.context !== audioContext) {
+    Tone.setContext(audioContext);
+  }
+  return getPiano(samples).then(piano => {
+    piano.connect(destination);
+    makeScheduleChord(piano)();
+    return () => {
+      piano.dispose();
+    };
+  });
+};
 
 export default makePiece;

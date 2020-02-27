@@ -1,6 +1,5 @@
 import Tone from 'tone';
 import { Note } from 'tonal';
-import fetchSpecFile from '@generative-music/samples.generative.fm/browser-client';
 
 const OCTAVES = [2, 3, 4];
 const notes = OCTAVES.reduce(
@@ -27,39 +26,31 @@ const getSampledInstrument = samplesByNote =>
     });
   });
 
-const makePiece = ({
-  audioContext,
-  destination,
-  preferredFormat,
-  sampleSource = {},
-}) =>
-  fetchSpecFile(sampleSource.baseUrl, sampleSource.specFilename)
-    .then(({ samples }) => {
-      if (Tone.context !== audioContext) {
-        Tone.setContext(audioContext);
-      }
-      return getSampledInstrument(samples.otherness[preferredFormat]);
-    })
-    .then(instrument => {
-      const volume = new Tone.Volume(-5).connect(destination);
-      const sineSynth = new Tone.MonoSynth({
-        oscillator: { type: 'sine' },
-        envelope: {
-          attack: 3,
-          release: 10,
-        },
-      }).connect(volume);
+const makePiece = ({ audioContext, destination, samples }) => {
+  if (Tone.context !== audioContext) {
+    Tone.setContext(audioContext);
+  }
+  return getSampledInstrument(samples.otherness).then(instrument => {
+    const volume = new Tone.Volume(-5).connect(destination);
+    const sineSynth = new Tone.MonoSynth({
+      oscillator: { type: 'sine' },
+      envelope: {
+        attack: 3,
+        release: 10,
+      },
+    }).connect(volume);
 
-      instrument.connect(volume);
+    instrument.connect(volume);
 
-      sineSynth.volume.value = -25;
-      instrument.volume.value = -5;
+    sineSynth.volume.value = -25;
+    instrument.volume.value = -5;
 
-      playNote(instrument, sineSynth);
+    playNote(instrument, sineSynth);
 
-      return () => {
-        [sineSynth, instrument, volume].forEach(node => node.dispose());
-      };
-    });
+    return () => {
+      [sineSynth, instrument, volume].forEach(node => node.dispose());
+    };
+  });
+};
 
 export default makePiece;

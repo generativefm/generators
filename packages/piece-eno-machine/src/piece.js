@@ -1,6 +1,5 @@
 import { Chord, Array } from 'tonal';
 import randomNumber from 'random-number';
-import fetchSpecFile from '@generative-music/samples.generative.fm/browser-client';
 import Tone from 'tone';
 
 const OCTAVES = [3, 4, 5];
@@ -13,42 +12,32 @@ const NOTES = Array.rotate(1, Chord.notes('DbM9')).reduce(
   []
 );
 
-const getPiano = (samplesSpec, format) =>
+const getPiano = samples =>
   new Promise(resolve => {
-    const piano = new Tone.Sampler(
-      samplesSpec.samples['vsco2-piano-mf'][format],
-      {
-        onload: () => resolve(piano),
-      }
-    );
+    const piano = new Tone.Sampler(samples['vsco2-piano-mf'], {
+      onload: () => resolve(piano),
+    });
   });
 
-const makePiece = ({
-  audioContext,
-  destination,
-  preferredFormat,
-  sampleSource = {},
-}) => {
+const makePiece = ({ audioContext, destination, samples }) => {
   if (Tone.context !== audioContext) {
     Tone.setContext(audioContext);
   }
-  return fetchSpecFile(sampleSource.baseUrl, sampleSource.specFilename)
-    .then(specFile => getPiano(specFile, preferredFormat))
-    .then(piano => {
-      piano.connect(destination);
-      NOTES.forEach(note => {
-        const interval = randomNumber({ min: MIN_REPEAT_S, max: MAX_REPEAT_S });
-        const delay = randomNumber({
-          min: 0,
-          max: MAX_REPEAT_S - MIN_REPEAT_S,
-        });
-        const playNote = () => piano.triggerAttack(note, '+1');
-        Tone.Transport.scheduleRepeat(playNote, interval, `+${delay}`);
+  return getPiano(samples).then(piano => {
+    piano.connect(destination);
+    NOTES.forEach(note => {
+      const interval = randomNumber({ min: MIN_REPEAT_S, max: MAX_REPEAT_S });
+      const delay = randomNumber({
+        min: 0,
+        max: MAX_REPEAT_S - MIN_REPEAT_S,
       });
-      return () => {
-        piano.dispose();
-      };
+      const playNote = () => piano.triggerAttack(note, '+1');
+      Tone.Transport.scheduleRepeat(playNote, interval, `+${delay}`);
     });
+    return () => {
+      piano.dispose();
+    };
+  });
 };
 
 export default makePiece;

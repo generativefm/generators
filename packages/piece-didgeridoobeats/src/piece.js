@@ -1,5 +1,4 @@
 import Tone from 'tone';
-import fetchSpecFile from '@generative-music/samples.generative.fm';
 
 const DRUM_LOOP_LENGTH_S = 75;
 const BEAT_SIXTEETHS_COUNT = 32;
@@ -29,170 +28,158 @@ const getPattern = (quarterP, eighthP, sixteethP) => {
   return pattern;
 };
 
-const makePiece = ({
-  audioContext,
-  destination,
-  preferredFormat,
-  sampleSource = {},
-}) =>
-  fetchSpecFile(sampleSource.baseUrl, sampleSource.specFilename).then(
-    ({ samples }) => {
-      if (Tone.context !== audioContext) {
-        Tone.setContext(audioContext);
-      }
-      Tone.context.latencyHint = 'interactive';
-      const masterVol = new Tone.Volume(-5).connect(destination);
+const makePiece = ({ audioContext, destination, samples }) => {
+  if (Tone.context !== audioContext) {
+    Tone.setContext(audioContext);
+  }
+  Tone.context.latencyHint = 'interactive';
+  const masterVol = new Tone.Volume(-5).connect(destination);
 
-      const drumsAutoFilter = new Tone.AutoFilter({
-        frequency: 0.08,
-        octaves: 4,
-        filter: { type: 'bandpass' },
-      })
-        .set({ wet: 0.7 })
-        .start()
-        .connect(masterVol);
-      const volume = new Tone.Volume(MIN_DRUMS_VOLUME_DB).connect(
-        drumsAutoFilter
-      );
-      const hatVolume = new Tone.Volume(-5).connect(volume);
+  const drumsAutoFilter = new Tone.AutoFilter({
+    frequency: 0.08,
+    octaves: 4,
+    filter: { type: 'bandpass' },
+  })
+    .set({ wet: 0.7 })
+    .start()
+    .connect(masterVol);
+  const volume = new Tone.Volume(MIN_DRUMS_VOLUME_DB).connect(drumsAutoFilter);
+  const hatVolume = new Tone.Volume(-5).connect(volume);
 
-      const percussionInstrument = instrumentName => {
-        const instrumentSamples = samples[instrumentName][preferredFormat];
-        return getBuffers(instrumentSamples).then(buffers => {
-          const randomBuffer = () =>
-            buffers.get(Math.floor(Math.random() * instrumentSamples.length));
+  const percussionInstrument = instrumentName => {
+    const instrumentSamples = samples[instrumentName];
+    return getBuffers(instrumentSamples).then(buffers => {
+      const randomBuffer = () =>
+        buffers.get(Math.floor(Math.random() * instrumentSamples.length));
 
-          let currentBuffer = randomBuffer();
-          return {
-            newSound: () => {
-              currentBuffer = randomBuffer();
-            },
-            play: t => {
-              const bufferSource = new Tone.BufferSource(currentBuffer).connect(
-                instrumentName.includes('hats') ? hatVolume : volume
-              );
-              bufferSource.onended = () => bufferSource.dispose();
-              bufferSource.start(t);
-            },
-          };
-        });
-      };
-
-      const didgeridooSamples = samples['vcsl-didgeridoo-sus'][preferredFormat];
-
-      return Promise.all(
-        ['itslucid-lofi-hats', 'itslucid-lofi-kick', 'itslucid-lofi-snare']
-          .map(i => percussionInstrument(i))
-          .concat([getBuffers(didgeridooSamples)])
-      ).then(([hats, kick, snare, didgeridoo]) => {
-        const playDrumLoop = () => {
-          volume.volume.linearRampToValueAtTime(
-            MAX_DRUMS_VOLUME_DB,
-            `+${DRUM_LOOP_LENGTH_S / 2}`
+      let currentBuffer = randomBuffer();
+      return {
+        newSound: () => {
+          currentBuffer = randomBuffer();
+        },
+        play: t => {
+          const bufferSource = new Tone.BufferSource(currentBuffer).connect(
+            instrumentName.includes('hats') ? hatVolume : volume
           );
+          bufferSource.onended = () => bufferSource.dispose();
+          bufferSource.start(t);
+        },
+      };
+    });
+  };
 
-          Tone.Transport.scheduleOnce(() => {
-            volume.volume.linearRampToValueAtTime(
-              MIN_DRUMS_VOLUME_DB,
-              `+${DRUM_LOOP_LENGTH_S / 2}`
-            );
-          }, `+${DRUM_LOOP_LENGTH_S / 2}`);
-          const sixteenthTime = Math.random() * 0.05 + 0.1;
+  const didgeridooSamples = samples['vcsl-didgeridoo-sus'];
 
-          const hatPattern = getPattern(0.9, 0.5, 0.1);
-          const snarePattern = getPattern(0.5, 0.25, 0.1);
-          const kickPattern = getPattern(0.5, 0.2, 0.05);
+  return Promise.all(
+    ['itslucid-lofi-hats', 'itslucid-lofi-kick', 'itslucid-lofi-snare']
+      .map(i => percussionInstrument(i))
+      .concat([getBuffers(didgeridooSamples)])
+  ).then(([hats, kick, snare, didgeridoo]) => {
+    const playDrumLoop = () => {
+      volume.volume.linearRampToValueAtTime(
+        MAX_DRUMS_VOLUME_DB,
+        `+${DRUM_LOOP_LENGTH_S / 2}`
+      );
 
-          [hats, snare, kick].forEach(({ newSound }) => newSound());
-
-          [
-            [hats, hatPattern],
-            [snare, snarePattern],
-            [kick, kickPattern],
-          ].forEach(([inst, pattern], i) => {
-            if (i > 0 || Math.random() < 0.25) {
-              Tone.Transport.scheduleRepeat(
-                () => {
-                  pattern.forEach(beat => {
-                    inst.play(`+${beat * sixteenthTime + 0.05}`);
-                  });
-                },
-                BEAT_SIXTEETHS_COUNT * sixteenthTime,
-                '+0.05',
-                DRUM_LOOP_LENGTH_S - BEAT_SIXTEETHS_COUNT * sixteenthTime + 0.5
-              );
-            }
-          });
-
-          Tone.Transport.scheduleOnce(() => {
-            playDrumLoop();
-          }, `+${DRUM_LOOP_LENGTH_S + 3}`);
-        };
-
-        Tone.Transport.scheduleOnce(() => {
-          playDrumLoop();
-        }, '+5');
-
-        const didgeridooAutoFilter = new Tone.AutoFilter({
-          frequency: 0.06,
-          octaves: 4,
-          filter: { type: 'bandpass' },
-        })
-          .set({ wet: 0.7 })
-          .start()
-          .connect(masterVol);
-
-        const chorus = new Tone.Chorus().connect(didgeridooAutoFilter);
-        const delay = new Tone.FeedbackDelay({
-          feedback: 0.8,
-          delayTime: 0.2,
-        }).connect(chorus);
-        const reverb = new Tone.Freeverb({ roomSize: 0.7, wet: 0.5 }).connect(
-          delay
+      Tone.Transport.scheduleOnce(() => {
+        volume.volume.linearRampToValueAtTime(
+          MIN_DRUMS_VOLUME_DB,
+          `+${DRUM_LOOP_LENGTH_S / 2}`
         );
+      }, `+${DRUM_LOOP_LENGTH_S / 2}`);
+      const sixteenthTime = Math.random() * 0.05 + 0.1;
 
-        const playDigeridoo = () => {
-          const index = Math.floor(Math.random() * didgeridooSamples.length);
-          const buffer = didgeridoo.get(index);
-          let playbackRate = 1;
-          if (Math.random() < 0.1) {
-            playbackRate -= 0.2;
+      const hatPattern = getPattern(0.9, 0.5, 0.1);
+      const snarePattern = getPattern(0.5, 0.25, 0.1);
+      const kickPattern = getPattern(0.5, 0.2, 0.05);
+
+      [hats, snare, kick].forEach(({ newSound }) => newSound());
+
+      [[hats, hatPattern], [snare, snarePattern], [kick, kickPattern]].forEach(
+        ([inst, pattern], i) => {
+          if (i > 0 || Math.random() < 0.25) {
+            Tone.Transport.scheduleRepeat(
+              () => {
+                pattern.forEach(beat => {
+                  inst.play(`+${beat * sixteenthTime + 0.05}`);
+                });
+              },
+              BEAT_SIXTEETHS_COUNT * sixteenthTime,
+              '+0.05',
+              DRUM_LOOP_LENGTH_S - BEAT_SIXTEETHS_COUNT * sixteenthTime + 0.5
+            );
           }
-          if (Math.random() < 0.1) {
-            playbackRate -= 0.2;
-          }
-          const source = new Tone.BufferSource({
-            buffer,
-            playbackRate,
-          }).connect(reverb);
-          source.onended = () => source.dispose();
-          source.start('+1');
-          Tone.Transport.scheduleOnce(() => {
-            playDigeridoo();
-          }, `+${Math.random() < 0.03 ? Math.random() * 10 + 10 : Math.random() * 5 + 5}`);
-        };
+        }
+      );
 
-        Tone.Transport.scheduleOnce(() => {
-          playDigeridoo();
-        }, '+1');
+      Tone.Transport.scheduleOnce(() => {
+        playDrumLoop();
+      }, `+${DRUM_LOOP_LENGTH_S + 3}`);
+    };
 
-        return () => {
-          [
-            masterVol,
-            drumsAutoFilter,
-            volume,
-            hatVolume,
-            didgeridooAutoFilter,
-            chorus,
-            delay,
-            reverb,
-          ].forEach(node => {
-            node.dispose();
-          });
-          Tone.context.latencyHint = 'balanced';
-        };
+    Tone.Transport.scheduleOnce(() => {
+      playDrumLoop();
+    }, '+5');
+
+    const didgeridooAutoFilter = new Tone.AutoFilter({
+      frequency: 0.06,
+      octaves: 4,
+      filter: { type: 'bandpass' },
+    })
+      .set({ wet: 0.7 })
+      .start()
+      .connect(masterVol);
+
+    const chorus = new Tone.Chorus().connect(didgeridooAutoFilter);
+    const delay = new Tone.FeedbackDelay({
+      feedback: 0.8,
+      delayTime: 0.2,
+    }).connect(chorus);
+    const reverb = new Tone.Freeverb({ roomSize: 0.7, wet: 0.5 }).connect(
+      delay
+    );
+
+    const playDigeridoo = () => {
+      const index = Math.floor(Math.random() * didgeridooSamples.length);
+      const buffer = didgeridoo.get(index);
+      let playbackRate = 1;
+      if (Math.random() < 0.1) {
+        playbackRate -= 0.2;
+      }
+      if (Math.random() < 0.1) {
+        playbackRate -= 0.2;
+      }
+      const source = new Tone.BufferSource({
+        buffer,
+        playbackRate,
+      }).connect(reverb);
+      source.onended = () => source.dispose();
+      source.start('+1');
+      Tone.Transport.scheduleOnce(() => {
+        playDigeridoo();
+      }, `+${Math.random() < 0.03 ? Math.random() * 10 + 10 : Math.random() * 5 + 5}`);
+    };
+
+    Tone.Transport.scheduleOnce(() => {
+      playDigeridoo();
+    }, '+1');
+
+    return () => {
+      [
+        masterVol,
+        drumsAutoFilter,
+        volume,
+        hatVolume,
+        didgeridooAutoFilter,
+        chorus,
+        delay,
+        reverb,
+      ].forEach(node => {
+        node.dispose();
       });
-    }
-  );
+      Tone.context.latencyHint = 'balanced';
+    };
+  });
+};
 
 export default makePiece;

@@ -2,7 +2,6 @@ import Tone from 'tone';
 import { Scale, Note, Chord } from 'tonal';
 import { of, from, Observable } from 'rxjs';
 import { repeat, mergeMap, filter } from 'rxjs/operators';
-import fetchSpecFile from '@generative-music/samples.generative.fm/browser-client';
 
 const toss = (pcs = [], octaves = []) =>
   octaves.reduce(
@@ -120,112 +119,98 @@ const notes$ = scheduledNote().pipe(
   humanize()
 );
 
-const makeGetSampledInstrument = (sampleSpec, format) => (
-  instrumentName,
-  options
-) =>
+const makeGetSampledInstrument = samples => (instrumentName, options) =>
   new Promise(resolve => {
     const instrument = new Tone.Sampler(
-      sampleSpec.samples[instrumentName][format],
+      samples[instrumentName],
       Object.assign({}, options, { onload: () => resolve(instrument) })
     );
   });
 
-const makePiece = ({
-  audioContext,
-  destination,
-  preferredFormat,
-  sampleSource = {},
-}) =>
-  fetchSpecFile(sampleSource.baseUrl, sampleSource.specFilename)
-    .then(specFile => {
-      if (Tone.context !== audioContext) {
-        Tone.setContext(audioContext);
-      }
-      const getSampledInstrument = makeGetSampledInstrument(
-        specFile,
-        preferredFormat
+const makePiece = ({ audioContext, destination, samples }) => {
+  if (Tone.context !== audioContext) {
+    Tone.setContext(audioContext);
+  }
+  const getSampledInstrument = makeGetSampledInstrument(samples);
+  return Promise.all([
+    getSampledInstrument('vsco2-piano-mf'),
+    getSampledInstrument('vsco2-violin-arcvib', {
+      release: 4,
+      curve: 'linear',
+      volume: -15,
+    }),
+    getSampledInstrument('sso-cor-anglais', {
+      volume: -40,
+    }),
+  ]).then(([piano, violin, corAnglais]) => {
+    const pianoVerb = new Tone.Freeverb({ roomSize: 0.5, wet: 0.6 });
+    piano.chain(pianoVerb, destination);
+
+    const violinVerb = new Tone.Freeverb({ roomSize: 0.9, wet: 1 });
+    const violinDelay = new Tone.FeedbackDelay({
+      feedback: 0.75,
+      delayTime: 0.08,
+      wet: 0.5,
+    });
+    violin.chain(violinVerb, violinDelay, destination);
+
+    const corAnglaisVerb = new Tone.Freeverb({ roomSize: 0.9, wet: 1 });
+    const corAnglaisDelay1 = new Tone.FeedbackDelay({
+      feedback: 0.75,
+      delayTime: 0.5,
+      wet: 0.5,
+    });
+    const corAnglaisDelay2 = new Tone.FeedbackDelay({
+      feedback: 0.7,
+      delayTime: 5,
+      wet: 0.5,
+    });
+    corAnglais.chain(
+      corAnglaisVerb,
+      corAnglaisDelay1,
+      corAnglaisDelay2,
+      destination
+    );
+
+    const notes = ['C4', 'E4', 'G4', 'C5', 'E5', 'G5'];
+    const intervals = notes.map(() => Math.random() * 10 + 10);
+    const minInterval = Math.min(...intervals);
+    notes.forEach((note, i) => {
+      const interval = intervals[i];
+      Tone.Transport.scheduleRepeat(
+        () => corAnglais.triggerAttack(note, '+1'),
+        interval,
+        interval - minInterval
       );
-      return Promise.all([
-        getSampledInstrument('vsco2-piano-mf'),
-        getSampledInstrument('vsco2-violin-arcvib', {
-          release: 4,
-          curve: 'linear',
-          volume: -15,
-        }),
-        getSampledInstrument('sso-cor-anglais', {
-          volume: -40,
-        }),
-      ]);
-    })
-    .then(([piano, violin, corAnglais]) => {
-      const pianoVerb = new Tone.Freeverb({ roomSize: 0.5, wet: 0.6 });
-      piano.chain(pianoVerb, destination);
-
-      const violinVerb = new Tone.Freeverb({ roomSize: 0.9, wet: 1 });
-      const violinDelay = new Tone.FeedbackDelay({
-        feedback: 0.75,
-        delayTime: 0.08,
-        wet: 0.5,
-      });
-      violin.chain(violinVerb, violinDelay, destination);
-
-      const corAnglaisVerb = new Tone.Freeverb({ roomSize: 0.9, wet: 1 });
-      const corAnglaisDelay1 = new Tone.FeedbackDelay({
-        feedback: 0.75,
-        delayTime: 0.5,
-        wet: 0.5,
-      });
-      const corAnglaisDelay2 = new Tone.FeedbackDelay({
-        feedback: 0.7,
-        delayTime: 5,
-        wet: 0.5,
-      });
-      corAnglais.chain(
+    });
+    let lastViolinTimeS = Tone.now();
+    const noteSubscription = notes$.subscribe(note => {
+      if (
+        Math.random() < 0.1 &&
+        Note.oct(note) > 3 &&
+        Tone.now() - lastViolinTimeS > 20
+      ) {
+        lastViolinTimeS = Tone.now();
+        violin.triggerAttack(note, '+1');
+      } else {
+        piano.triggerAttack(note, '+1');
+      }
+    });
+    return () => {
+      [
+        piano,
+        violin,
+        corAnglais,
+        pianoVerb,
+        violinVerb,
+        violinDelay,
         corAnglaisVerb,
         corAnglaisDelay1,
         corAnglaisDelay2,
-        destination
-      );
-
-      const notes = ['C4', 'E4', 'G4', 'C5', 'E5', 'G5'];
-      const intervals = notes.map(() => Math.random() * 10 + 10);
-      const minInterval = Math.min(...intervals);
-      notes.forEach((note, i) => {
-        const interval = intervals[i];
-        Tone.Transport.scheduleRepeat(
-          () => corAnglais.triggerAttack(note, '+1'),
-          interval,
-          interval - minInterval
-        );
-      });
-      let lastViolinTimeS = Tone.now();
-      const noteSubscription = notes$.subscribe(note => {
-        if (
-          Math.random() < 0.1 &&
-          Note.oct(note) > 3 &&
-          Tone.now() - lastViolinTimeS > 20
-        ) {
-          lastViolinTimeS = Tone.now();
-          violin.triggerAttack(note, '+1');
-        } else {
-          piano.triggerAttack(note, '+1');
-        }
-      });
-      return () => {
-        [
-          piano,
-          violin,
-          corAnglais,
-          pianoVerb,
-          violinVerb,
-          violinDelay,
-          corAnglaisVerb,
-          corAnglaisDelay1,
-          corAnglaisDelay2,
-        ].forEach(node => node.dispose());
-        noteSubscription.unsubscribe();
-      };
-    });
+      ].forEach(node => node.dispose());
+      noteSubscription.unsubscribe();
+    };
+  });
+};
 
 export default makePiece;

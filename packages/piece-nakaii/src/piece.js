@@ -1,6 +1,5 @@
 import Tone from 'tone';
 import { Distance, Note } from 'tonal';
-import fetchSpecFile from '@generative-music/samples.generative.fm';
 
 const findClosest = (note, samplesByNote) => {
   const noteMidi = Note.midi(note);
@@ -78,81 +77,69 @@ const getPhrase = () =>
     );
   }, []);
 
-const makePiece = ({
-  audioContext,
-  destination,
-  preferredFormat,
-  sampleSource = {},
-}) =>
-  fetchSpecFile(sampleSource.baseUrl, sampleSource.specFilename).then(
-    ({ samples }) => {
-      if (Tone.context !== audioContext) {
-        Tone.setContext(audioContext);
+const makePiece = ({ audioContext, destination, samples }) => {
+  if (Tone.context !== audioContext) {
+    Tone.setContext(audioContext);
+  }
+  const masterVol = new Tone.Volume(5).connect(destination);
+  const volume = new Tone.Volume().connect(masterVol);
+  const volLfo = new Tone.LFO(0.001, -100, -5).set({
+    phase: 90,
+  });
+  volLfo.connect(volume.volume);
+  volLfo.start();
+  return Promise.all([
+    getCustomSampler(masterVol, samples['vsco2-piano-mf']),
+    getCustomSampler(volume, samples['vsco2-violins-susvib'], 36),
+  ]).then(([piano, violins]) => {
+    const playRandomPhrase = () => {
+      let phrase = getPhrase();
+      if (Math.random() < 0.5) {
+        phrase = phrase.map(
+          note => `${note[0]}${Number.parseInt(note[1], 10) + 1}`
+        );
       }
-      const masterVol = new Tone.Volume(5).connect(destination);
-      const volume = new Tone.Volume().connect(masterVol);
-      const volLfo = new Tone.LFO(0.001, -100, -5).set({
-        phase: 90,
-      });
-      volLfo.connect(volume.volume);
-      volLfo.start();
-      return Promise.all([
-        getCustomSampler(masterVol, samples['vsco2-piano-mf'][preferredFormat]),
-        getCustomSampler(
-          volume,
-          samples['vsco2-violins-susvib'][preferredFormat],
-          36
-        ),
-      ]).then(([piano, violins]) => {
-        const playRandomPhrase = () => {
-          let phrase = getPhrase();
-          if (Math.random() < 0.5) {
-            phrase = phrase.map(
-              note => `${note[0]}${Number.parseInt(note[1], 10) + 1}`
-            );
-          }
-          const multiplier = Math.random() + 1.75;
-          phrase.forEach((note, i) => {
-            const offset = Math.random() * 0.1 - 0.05 + 1;
-            if (i <= 2) {
-              piano.triggerAttack(note, `+${i * multiplier + offset}`);
-            } else if (i >= 3 && i <= 5) {
-              piano.triggerAttack(
-                note,
-                `+${3 * multiplier + ((i - 3) * multiplier) / 3 + offset}`
-              );
-            } else if (i < phrase.length - 1 || Math.random() < 0.95) {
-              piano.triggerAttack(
-                note,
-                `+${4.5 * multiplier + ((i - 4.5) * multiplier) / 2 + offset}`
-              );
-            }
-          });
-
-          Tone.Transport.scheduleOnce(() => {
-            playRandomPhrase();
-          }, `+${Math.random() * 5 + multiplier * phrase.length + 3}`);
-        };
-
-        playRandomPhrase();
-
-        ['C4', 'G3', 'C5'].forEach(note => {
-          const play = () => {
-            violins.triggerAttack(note, '+1');
-
-            Tone.Transport.scheduleOnce(() => {
-              play();
-            }, `+${Math.random() * 30 + 30}`);
-          };
-          play();
-        });
-        return () => {
-          [masterVol, volume, volLfo, piano, violins].forEach(node =>
-            node.dispose()
+      const multiplier = Math.random() + 1.75;
+      phrase.forEach((note, i) => {
+        const offset = Math.random() * 0.1 - 0.05 + 1;
+        if (i <= 2) {
+          piano.triggerAttack(note, `+${i * multiplier + offset}`);
+        } else if (i >= 3 && i <= 5) {
+          piano.triggerAttack(
+            note,
+            `+${3 * multiplier + ((i - 3) * multiplier) / 3 + offset}`
           );
-        };
+        } else if (i < phrase.length - 1 || Math.random() < 0.95) {
+          piano.triggerAttack(
+            note,
+            `+${4.5 * multiplier + ((i - 4.5) * multiplier) / 2 + offset}`
+          );
+        }
       });
-    }
-  );
+
+      Tone.Transport.scheduleOnce(() => {
+        playRandomPhrase();
+      }, `+${Math.random() * 5 + multiplier * phrase.length + 3}`);
+    };
+
+    playRandomPhrase();
+
+    ['C4', 'G3', 'C5'].forEach(note => {
+      const play = () => {
+        violins.triggerAttack(note, '+1');
+
+        Tone.Transport.scheduleOnce(() => {
+          play();
+        }, `+${Math.random() * 30 + 30}`);
+      };
+      play();
+    });
+    return () => {
+      [masterVol, volume, volLfo, piano, violins].forEach(node =>
+        node.dispose()
+      );
+    };
+  });
+};
 
 export default makePiece;

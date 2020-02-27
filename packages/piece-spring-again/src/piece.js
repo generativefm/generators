@@ -1,6 +1,5 @@
 import Tone from 'tone';
 import { Scale, Note } from 'tonal';
-import fetchSampleSpec from '@generative-music/samples.generative.fm/browser-client';
 
 const getInstrument = samplesByNote =>
   new Promise(resolve => {
@@ -40,73 +39,65 @@ const repeat = (fn, interval) => {
   schedule('+0');
 };
 
-const makePiece = ({
-  audioContext,
-  destination,
-  preferredFormat,
-  sampleSource = {},
-}) =>
-  fetchSampleSpec(sampleSource.baseUrl, sampleSource.specFilename)
-    .then(({ samples }) => {
-      if (Tone.context !== audioContext) {
-        Tone.setContext(audioContext);
-      }
-      Tone.context.latencyHint = 'interactive';
-      return Promise.all([
-        getInstrument(samples['vsco2-piano-mf'][preferredFormat]),
-        getInstrument(samples['vsco2-violins-susvib'][preferredFormat]),
-        getInstrument(samples['vsco2-cello-susvib-f'][preferredFormat]),
-      ]);
-    })
-    .then(([piano, violins, cello]) => {
-      const volume = new Tone.Volume(-5);
-      const delay = new Tone.FeedbackDelay({ feedback: 0.5, delayTime: 0.44 });
-      const reverb = new Tone.Freeverb({
-        roomSize: 0.7,
-        wet: 1,
-        dampening: 6000,
-      });
-      piano.chain(reverb, delay, volume, destination);
-      const playableNotes = NOTES.filter(
-        note => Note.oct(note) < 5 || Note.pc(note) === 'C'
-      );
-      const phrase = [
-        playableNotes[Math.floor(Math.random() * playableNotes.length)],
-      ];
-      for (let i = 1; i < Math.random() * 5 + 5; i += 1) {
-        phrase.push(melodyFromNote(phrase[phrase.length - 1]));
-      }
-
-      repeat(() => {
-        phrase.forEach((note, i) => {
-          piano.triggerAttack(note, `+${i / NOTES_PER_SECOND}`);
-        });
-      }, phrase.length / NOTES_PER_SECOND);
-      repeat(() => {
-        const index = Math.floor(Math.random() * phrase.length);
-        phrase[index] = melodyFromNote(phrase[index]);
-      }, (phrase.length / NOTES_PER_SECOND) * 2);
-      violins.chain(volume);
-      violins.volume.value = -2;
-      cello.chain(volume);
-
-      cello.volume.value = -8;
-      repeat(() => {
-        if (Math.random() < 0.9) {
-          const note = phrase[Math.floor(Math.random() * phrase.length)];
-          violins.triggerAttack(note);
-          const pc = Note.pc(note);
-          if (Math.random() < 0.2) {
-            cello.triggerAttack(`${pc}${1}`);
-          }
-        }
-      }, (phrase.length * 5) / NOTES_PER_SECOND);
-      return () => {
-        Tone.context.latencyHint = 'balanced';
-        [piano, violins, cello, reverb, delay, volume].forEach(node =>
-          node.dispose()
-        );
-      };
+const makePiece = ({ audioContext, destination, samples }) => {
+  if (Tone.context !== audioContext) {
+    Tone.setContext(audioContext);
+  }
+  Tone.context.latencyHint = 'interactive';
+  return Promise.all([
+    getInstrument(samples['vsco2-piano-mf']),
+    getInstrument(samples['vsco2-violins-susvib']),
+    getInstrument(samples['vsco2-cello-susvib-f']),
+  ]).then(([piano, violins, cello]) => {
+    const volume = new Tone.Volume(-5);
+    const delay = new Tone.FeedbackDelay({ feedback: 0.5, delayTime: 0.44 });
+    const reverb = new Tone.Freeverb({
+      roomSize: 0.7,
+      wet: 1,
+      dampening: 6000,
     });
+    piano.chain(reverb, delay, volume, destination);
+    const playableNotes = NOTES.filter(
+      note => Note.oct(note) < 5 || Note.pc(note) === 'C'
+    );
+    const phrase = [
+      playableNotes[Math.floor(Math.random() * playableNotes.length)],
+    ];
+    for (let i = 1; i < Math.random() * 5 + 5; i += 1) {
+      phrase.push(melodyFromNote(phrase[phrase.length - 1]));
+    }
+
+    repeat(() => {
+      phrase.forEach((note, i) => {
+        piano.triggerAttack(note, `+${i / NOTES_PER_SECOND}`);
+      });
+    }, phrase.length / NOTES_PER_SECOND);
+    repeat(() => {
+      const index = Math.floor(Math.random() * phrase.length);
+      phrase[index] = melodyFromNote(phrase[index]);
+    }, (phrase.length / NOTES_PER_SECOND) * 2);
+    violins.chain(volume);
+    violins.volume.value = -2;
+    cello.chain(volume);
+
+    cello.volume.value = -8;
+    repeat(() => {
+      if (Math.random() < 0.9) {
+        const note = phrase[Math.floor(Math.random() * phrase.length)];
+        violins.triggerAttack(note);
+        const pc = Note.pc(note);
+        if (Math.random() < 0.2) {
+          cello.triggerAttack(`${pc}${1}`);
+        }
+      }
+    }, (phrase.length * 5) / NOTES_PER_SECOND);
+    return () => {
+      Tone.context.latencyHint = 'balanced';
+      [piano, violins, cello, reverb, delay, volume].forEach(node =>
+        node.dispose()
+      );
+    };
+  });
+};
 
 export default makePiece;

@@ -1,6 +1,5 @@
 import Tone from 'tone';
 import { Scale, Note } from 'tonal';
-import fetchSpecFile from '@generative-music/samples.generative.fm/browser-client';
 
 const tonic = Note.names()[Math.floor(Math.random() * Note.names().length)];
 const scalePitchClasses = Scale.notes(tonic, 'major');
@@ -73,26 +72,18 @@ const getSampledInstrument = samplesByNote =>
     });
   });
 
-const makePiece = ({
-  audioContext,
-  destination,
-  preferredFormat,
-  sampleSource = {},
-}) =>
-  fetchSpecFile(sampleSource.baseUrl, sampleSource.specFilename)
-    .then(({ samples }) => {
-      if (Tone.context !== audioContext) {
-        Tone.setContext(audioContext);
-      }
-      return getSampledInstrument(samples['vsco2-piano-mf'][preferredFormat]);
-    })
-    .then(piano => {
-      const reverb = new Tone.Freeverb({ roomSize: 0.6 });
-      piano.chain(reverb, destination);
-      playProgression(piano);
-      return () => {
-        [reverb, piano].forEach(node => node.dispose());
-      };
-    });
+const makePiece = ({ audioContext, destination, samples }) => {
+  if (Tone.context !== audioContext) {
+    Tone.setContext(audioContext);
+  }
+  return getSampledInstrument(samples['vsco2-piano-mf']).then(piano => {
+    const reverb = new Tone.Freeverb({ roomSize: 0.6 });
+    piano.chain(reverb, destination);
+    playProgression(piano);
+    return () => {
+      [reverb, piano].forEach(node => node.dispose());
+    };
+  });
+};
 
 export default makePiece;

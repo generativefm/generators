@@ -1,6 +1,5 @@
 import { Note, Distance } from 'tonal';
 import Tone from 'tone';
-import fetchSpecFile from '@generative-music/samples.generative.fm';
 import pickRandomFromArray from './pick-random-from-array';
 
 const NUM_POTENTIAL_TONIC_PITCH_CLASSES = 5;
@@ -69,53 +68,42 @@ const startInterval = (
   );
 };
 
-const getBowls = (samplesSpec, format) =>
+const getBowls = samples =>
   new Promise(resolve => {
-    const piano = new Tone.Sampler(
-      samplesSpec.samples['kasper-singing-bowls'][format],
-      {
-        onload: () => resolve(piano),
-      }
-    );
+    const piano = new Tone.Sampler(samples['kasper-singing-bowls'], {
+      onload: () => resolve(piano),
+    });
   });
 
-const makePiece = ({
-  audioContext,
-  destination,
-  preferredFormat,
-  sampleSource = {},
-}) =>
-  fetchSpecFile(sampleSource.baseUrl, sampleSource.specFilename)
-    .then(specFile => {
-      if (Tone.context !== audioContext) {
-        Tone.setContext(audioContext);
-      }
-      return getBowls(specFile, preferredFormat);
-    })
-    .then(bowls => {
-      const volume = new Tone.Volume(VOLUME_ADJUSTMENT);
-      const delay = new Tone.FeedbackDelay({
-        wet: 0.5,
-        delayTime: 20,
-        feedback: 0.8,
-      });
-      bowls.chain(delay, volume, destination);
-      startInterval(
-        lowNotes,
-        MIN_LOW_NOTE_INTERVAL_S,
-        MIN_LOW_NOTE_DELAY_S,
-        bowls
-      );
-      startInterval(
-        highNotes,
-        MIN_HIGH_NOTE_INTERVAL_S,
-        MIN_HIGH_NOTE_DELAY_S,
-        bowls
-      );
-
-      return () => {
-        [bowls, volume, delay].forEach(node => node.dispose());
-      };
+const makePiece = ({ audioContext, destination, samples }) => {
+  if (Tone.context !== audioContext) {
+    Tone.setContext(audioContext);
+  }
+  return getBowls(samples).then(bowls => {
+    const volume = new Tone.Volume(VOLUME_ADJUSTMENT);
+    const delay = new Tone.FeedbackDelay({
+      wet: 0.5,
+      delayTime: 20,
+      feedback: 0.8,
     });
+    bowls.chain(delay, volume, destination);
+    startInterval(
+      lowNotes,
+      MIN_LOW_NOTE_INTERVAL_S,
+      MIN_LOW_NOTE_DELAY_S,
+      bowls
+    );
+    startInterval(
+      highNotes,
+      MIN_HIGH_NOTE_INTERVAL_S,
+      MIN_HIGH_NOTE_DELAY_S,
+      bowls
+    );
+
+    return () => {
+      [bowls, volume, delay].forEach(node => node.dispose());
+    };
+  });
+};
 
 export default makePiece;

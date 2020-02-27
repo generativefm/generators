@@ -3,7 +3,6 @@ import pickRandom from 'pick-random';
 import randomNumber from 'random-number';
 import shuffle from 'shuffle-array';
 import Tone from 'tone';
-import fetchSampleSpec from '@generative-music/samples.generative.fm/browser-client';
 
 const P_SPAWN_TWO = 0.33;
 // eslint-disable-next-line no-magic-numbers
@@ -102,35 +101,24 @@ const startPinwheelChain = instrument => {
   generatePinwheel();
 };
 
-const getPiano = (samplesSpec, format) =>
+const getPiano = samples =>
   new Promise(resolve => {
-    const piano = new Tone.Sampler(
-      samplesSpec.samples['vsco2-piano-mf'][format],
-      {
-        onload: () => resolve(piano),
-      }
-    );
+    const piano = new Tone.Sampler(samples['vsco2-piano-mf'], {
+      onload: () => resolve(piano),
+    });
   });
 
-const makePiece = ({
-  audioContext,
-  destination,
-  preferredFormat,
-  sampleSource = {},
-}) =>
-  fetchSampleSpec(sampleSource.baseUrl, sampleSource.specFilename)
-    .then(sampleSpec => {
-      if (Tone.context !== audioContext) {
-        Tone.setContext(audioContext);
-      }
-      return getPiano(sampleSpec, preferredFormat);
-    })
-    .then(piano => {
-      piano.connect(destination);
-      startPinwheelChain(piano);
-      return () => {
-        piano.dispose();
-      };
-    });
+const makePiece = ({ audioContext, destination, samples }) => {
+  if (Tone.context !== audioContext) {
+    Tone.setContext(audioContext);
+  }
+  return getPiano(samples).then(piano => {
+    piano.connect(destination);
+    startPinwheelChain(piano);
+    return () => {
+      piano.dispose();
+    };
+  });
+};
 
 export default makePiece;

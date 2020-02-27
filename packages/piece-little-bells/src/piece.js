@@ -1,6 +1,5 @@
 import { Chord } from 'tonal';
 import Tone from 'tone';
-import fetchSampleSpec from '@generative-music/samples.generative.fm';
 
 const PITCH_CLASSES = ['F', 'F', 'G', 'G#', 'A', 'A#', 'B'];
 const BASE_P_TO_PLAY = 0.1;
@@ -42,42 +41,34 @@ const makeChordInterval = instrument => (tonic, interval) => {
 const pitchClass =
   PITCH_CLASSES[Math.floor(Math.random() * PITCH_CLASSES.length)];
 
-const getGlock = (samplesSpec, format) =>
+const getGlock = samples =>
   new Promise(resolve => {
-    const piano = new Tone.Sampler(samplesSpec.samples['vsco2-glock'][format], {
+    const piano = new Tone.Sampler(samples['vsco2-glock'], {
       onload: () => resolve(piano),
     });
   });
 
-const makePiece = ({
-  audioContext,
-  destination,
-  preferredFormat,
-  sampleSource = {},
-}) =>
-  fetchSampleSpec(sampleSource.baseUrl, sampleSource.specFilename)
-    .then(sampleSpec => {
-      if (Tone.context !== audioContext) {
-        Tone.setContext(audioContext);
-      }
-      return getGlock(sampleSpec, preferredFormat);
-    })
-    .then(glock => {
-      const delay = new Tone.FeedbackDelay({
-        delayTime: 8,
-        feedback: 0.7,
-        wet: 0.5,
-      });
-      const reverb = new Tone.Freeverb({ roomSize: 0.9, dampening: 2000 });
-      glock.chain(delay, reverb, destination);
-
-      const chordInterval = makeChordInterval(glock);
-      chordInterval(`${pitchClass}4`, LOWER_INTERVAL_TIME);
-      chordInterval(`${pitchClass}5`, HIGHER_INTERVAL_TIME);
-
-      return () => {
-        [glock, delay, reverb].forEach(node => node.dispose());
-      };
+const makePiece = ({ audioContext, destination, samples }) => {
+  if (Tone.context !== audioContext) {
+    Tone.setContext(audioContext);
+  }
+  return getGlock(samples).then(glock => {
+    const delay = new Tone.FeedbackDelay({
+      delayTime: 8,
+      feedback: 0.7,
+      wet: 0.5,
     });
+    const reverb = new Tone.Freeverb({ roomSize: 0.9, dampening: 2000 });
+    glock.chain(delay, reverb, destination);
+
+    const chordInterval = makeChordInterval(glock);
+    chordInterval(`${pitchClass}4`, LOWER_INTERVAL_TIME);
+    chordInterval(`${pitchClass}5`, HIGHER_INTERVAL_TIME);
+
+    return () => {
+      [glock, delay, reverb].forEach(node => node.dispose());
+    };
+  });
+};
 
 export default makePiece;

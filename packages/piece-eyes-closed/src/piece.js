@@ -1,5 +1,4 @@
 import Tone from 'tone';
-import fetchSpecFile from '@generative-music/samples.generative.fm';
 import { Distance, Note } from 'tonal';
 
 const findClosest = (samplesByNote, note) => {
@@ -61,79 +60,69 @@ const getBuffer = url =>
 const PHRASE = [['G#5', 1], ['F#5', 2], ['D#5', 3.5], ['C#5', 4], ['D#5', 4.5]];
 const CHORD = ['G#3', 'G#4'];
 
-const makePiece = ({
-  audioContext,
-  destination,
-  preferredFormat,
-  sampleSource = {},
-}) =>
-  fetchSpecFile(sampleSource.baseUrl, sampleSource.specFilename).then(
-    ({ samples }) => {
-      if (Tone.context !== audioContext) {
-        Tone.setContext(audioContext);
-      }
-      const danTranhLfo = new Tone.AutoFilter(Math.random() / 100 + 0.01, 200);
-      const pianoLfo = new Tone.AutoFilter(Math.random() / 100 + 0.01, 400);
+const makePiece = ({ audioContext, destination, samples }) => {
+  if (Tone.context !== audioContext) {
+    Tone.setContext(audioContext);
+  }
+  const danTranhLfo = new Tone.AutoFilter(Math.random() / 100 + 0.01, 200);
+  const pianoLfo = new Tone.AutoFilter(Math.random() / 100 + 0.01, 400);
 
-      [danTranhLfo, pianoLfo].forEach(lfo => {
-        lfo.connect(destination);
-        lfo.start();
-      });
-      return Promise.all([
-        getBuffer(samples['dan-tranh-gliss-ps'][preferredFormat][0]),
-        getCustomSampler(pianoLfo, samples['vsco2-piano-mf'][preferredFormat]),
-      ]).then(([danTranh, piano]) => {
-        const playDanTranh = () => {
-          const offset = Math.pow(Math.random(), 3) * 120;
-          const duration = Math.random() * 60 + 60;
-          const source = new Tone.BufferSource(danTranh)
-            .set({
-              fadeIn: 5,
-              fadeOut: 5,
-            })
-            .connect(danTranhLfo);
-          source.start('+1', offset, duration);
-          Tone.Transport.scheduleOnce(() => {
-            playDanTranh();
-          }, `+${1 + duration - 5}`);
-        };
-
+  [danTranhLfo, pianoLfo].forEach(lfo => {
+    lfo.connect(destination);
+    lfo.start();
+  });
+  return Promise.all([
+    getBuffer(samples['dan-tranh-gliss-ps'][0]),
+    getCustomSampler(pianoLfo, samples['vsco2-piano-mf']),
+  ]).then(([danTranh, piano]) => {
+    const playDanTranh = () => {
+      const offset = Math.pow(Math.random(), 3) * 120;
+      const duration = Math.random() * 60 + 60;
+      const source = new Tone.BufferSource(danTranh)
+        .set({
+          fadeIn: 5,
+          fadeOut: 5,
+        })
+        .connect(danTranhLfo);
+      source.start('+1', offset, duration);
+      Tone.Transport.scheduleOnce(() => {
         playDanTranh();
+      }, `+${1 + duration - 5}`);
+    };
 
-        const schedulePhrase = () => {
-          Tone.Transport.scheduleOnce(() => {
-            const multiplier = Math.pow(Math.random(), 2);
-            PHRASE.slice(0, Math.ceil(Math.random() * PHRASE.length)).forEach(
-              ([note, time], i) => {
-                piano.triggerAttack(
-                  note,
-                  `+${time * (1 + multiplier) + i * multiplier}`
-                );
-              }
+    playDanTranh();
+
+    const schedulePhrase = () => {
+      Tone.Transport.scheduleOnce(() => {
+        const multiplier = Math.pow(Math.random(), 2);
+        PHRASE.slice(0, Math.ceil(Math.random() * PHRASE.length)).forEach(
+          ([note, time], i) => {
+            piano.triggerAttack(
+              note,
+              `+${time * (1 + multiplier) + i * multiplier}`
             );
-            schedulePhrase();
-          }, `+${Math.random() * 60 + 30}`);
-        };
+          }
+        );
         schedulePhrase();
+      }, `+${Math.random() * 60 + 30}`);
+    };
+    schedulePhrase();
 
-        const scheduleChord = () => {
-          Tone.Transport.scheduleOnce(() => {
-            CHORD.forEach(note => {
-              piano.triggerAttack(note, `+${1 + Math.random() / 10 - 0.05}`);
-            });
-            scheduleChord();
-          }, `+${Math.random() * 60 + 30}`);
-        };
-
+    const scheduleChord = () => {
+      Tone.Transport.scheduleOnce(() => {
+        CHORD.forEach(note => {
+          piano.triggerAttack(note, `+${1 + Math.random() / 10 - 0.05}`);
+        });
         scheduleChord();
+      }, `+${Math.random() * 60 + 30}`);
+    };
 
-        return () => {
-          [danTranhLfo, pianoLfo, danTranh, piano].forEach(node =>
-            node.dispose()
-          );
-        };
-      });
-    }
-  );
+    scheduleChord();
+
+    return () => {
+      [danTranhLfo, pianoLfo, danTranh, piano].forEach(node => node.dispose());
+    };
+  });
+};
 
 export default makePiece;

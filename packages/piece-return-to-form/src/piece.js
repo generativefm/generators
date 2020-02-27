@@ -1,5 +1,4 @@
 import Tone from 'tone';
-import fetchSpecFile from '@generative-music/samples.generative.fm';
 import { Distance, Note } from 'tonal';
 
 const INTERVALS = ['1P', '3M', '4P', '5P'];
@@ -34,74 +33,63 @@ const shuffle = array => {
   return array;
 };
 
-const makePiece = ({
-  audioContext,
-  destination,
-  preferredFormat,
-  sampleSource = {},
-}) =>
-  fetchSpecFile(sampleSource.baseUrl, sampleSource.specFilename).then(
-    ({ samples }) => {
-      if (Tone.context !== audioContext) {
-        Tone.setContext(audioContext);
-      }
-      return getSampledInstrument(
-        samples['vsco2-piano-mf'][preferredFormat]
-      ).then(piano => {
-        const delay = new Tone.FeedbackDelay({
-          delayTime: NOTE_TIME_S / 2,
-          feedback: 0.7,
-          wet: 0.3,
-        }).connect(destination);
-        const reverb = new Tone.Freeverb({ roomSize: 0.5 }).connect(delay);
-        piano.connect(reverb);
-        let tonics = STARTING_TONICS;
+const makePiece = ({ audioContext, destination, samples }) => {
+  if (Tone.context !== audioContext) {
+    Tone.setContext(audioContext);
+  }
+  return getSampledInstrument(samples['vsco2-piano-mf']).then(piano => {
+    const delay = new Tone.FeedbackDelay({
+      delayTime: NOTE_TIME_S / 2,
+      feedback: 0.7,
+      wet: 0.3,
+    }).connect(destination);
+    const reverb = new Tone.Freeverb({ roomSize: 0.5 }).connect(delay);
+    piano.connect(reverb);
+    let tonics = STARTING_TONICS;
 
-        const play = () => {
-          if (Math.random() < 0.2 || false) {
-            const up =
-              (tonics.some(tonic => Note.oct(tonic) <= 2) ||
-                Math.random() < 0.5) &&
-              !tonics.some(tonic => Note.oct(tonic) >= 5);
-            const change = Math.random() < 0.5 ? '5P' : '3M';
-            tonics = tonics.map(tonic =>
-              Distance.transpose(tonic, `${up ? '' : '-'}${change}`)
+    const play = () => {
+      if (Math.random() < 0.2 || false) {
+        const up =
+          (tonics.some(tonic => Note.oct(tonic) <= 2) || Math.random() < 0.5) &&
+          !tonics.some(tonic => Note.oct(tonic) >= 5);
+        const change = Math.random() < 0.5 ? '5P' : '3M';
+        tonics = tonics.map(tonic =>
+          Distance.transpose(tonic, `${up ? '' : '-'}${change}`)
+        );
+      }
+      shuffle(
+        tonics.reduce(
+          (notes, tonic) =>
+            notes.concat(
+              INTERVALS.map(interval =>
+                Note.simplify(Distance.transpose(tonic, interval), false)
+              )
+            ),
+          []
+        )
+      )
+        .slice(0, 5)
+        .forEach((note, i) => {
+          for (let j = 0; j < 4; j += 1) {
+            piano.triggerAttack(
+              note,
+              `+${i * NOTE_TIME_S + j * 8 * NOTE_TIME_S}`
             );
           }
-          shuffle(
-            tonics.reduce(
-              (notes, tonic) =>
-                notes.concat(
-                  INTERVALS.map(interval =>
-                    Note.simplify(Distance.transpose(tonic, interval), false)
-                  )
-                ),
-              []
-            )
-          )
-            .slice(0, 5)
-            .forEach((note, i) => {
-              for (let j = 0; j < 4; j += 1) {
-                piano.triggerAttack(
-                  note,
-                  `+${i * NOTE_TIME_S + j * 8 * NOTE_TIME_S}`
-                );
-              }
-            });
-          Tone.Transport.scheduleOnce(() => {
-            play();
-          }, `+${32 * NOTE_TIME_S}`);
-        };
-
+        });
+      Tone.Transport.scheduleOnce(() => {
         play();
+      }, `+${32 * NOTE_TIME_S}`);
+    };
 
-        return () => {
-          [piano, delay, reverb].forEach(node => {
-            node.dispose();
-          });
-        };
+    play();
+
+    return () => {
+      [piano, delay, reverb].forEach(node => {
+        node.dispose();
       });
-    }
-  );
+    };
+  });
+};
 
 export default makePiece;
