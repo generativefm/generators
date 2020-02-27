@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-eyes-closed",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "2.36.0",
+  "version": "3.0.0",
   "generativeFmManifest": "eyes-closed.gfm.manifest.json",
   "repository": {
     "type": "git",

@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-stream-of-consciousness",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "0.0.0",
+  "version": "3.0.0",
   "generativeFmManifest": "stream-of-consciousness.gfm.manifest.json",
   "repository": {
     "type": "git",

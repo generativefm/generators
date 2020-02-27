@@ -27,6 +27,5 @@
   "devDependencies": {
     "tone": "^13.4.9"
   },
-  "version": "2.36.0",
-  "dependencies": {}
+  "version": "3.0.0"
 }
