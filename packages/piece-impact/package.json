@@ -21,7 +21,7 @@
   "peerDependencies": {
     "tone": "^13.4.9"
   },
-  "version": "3.0.0",
+  "version": "3.0.1",
   "gitHead": "8ed39368a8376ff9ea366fe8e1ab01820553a037",
   "devDependencies": {
     "tone": "^13.4.9"
