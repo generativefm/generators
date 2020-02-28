@@ -24,6 +24,9 @@ const getBuffer = url =>
       onload: () => resolve(newBuffer),
       onerror: err => reject(err),
     });
+    if (url instanceof AudioBuffer) {
+      resolve(newBuffer);
+    }
   });
 
 const buffersToObj = (buffers, notes) =>

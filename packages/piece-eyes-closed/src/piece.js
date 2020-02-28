@@ -55,6 +55,9 @@ const getCustomSampler = (destination, samplesByNote, semitoneChange = -24) =>
 const getBuffer = url =>
   new Promise(resolve => {
     const buffer = new Tone.Buffer(url, () => resolve(buffer));
+    if (url instanceof AudioBuffer) {
+      resolve(buffer);
+    }
   });
 
 const PHRASE = [['G#5', 1], ['F#5', 2], ['D#5', 3.5], ['C#5', 4], ['D#5', 4.5]];

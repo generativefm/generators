@@ -59,6 +59,9 @@ const getBuffer = url =>
     const buffer = new Tone.Buffer(url, () => {
       resolve(buffer);
     });
+    if (url instanceof AudioBuffer) {
+      resolve(buffer);
+    }
   });
 
 const getRandomPhase = () => Math.random() * 360;

@@ -15,6 +15,9 @@ const getGuitarSounds = samples =>
       url =>
         new Promise(resolve => {
           const buffer = new Tone.Buffer(url, () => resolve(buffer));
+          if (url instanceof AudioBuffer) {
+            resolve(url);
+          }
         })
     )
   );

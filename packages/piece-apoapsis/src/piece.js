@@ -68,9 +68,11 @@ const makePiece = ({ audioContext, destination, samples }) => {
     Reflect.ownKeys(pianoSamples).map(
       note =>
         new Promise(resolve => {
-          const buffer = new Tone.Buffer(pianoSamples[note], () =>
-            resolve(buffer)
-          );
+          const url = pianoSamples[note];
+          const buffer = new Tone.Buffer(url, () => resolve(buffer));
+          if (url instanceof AudioBuffer) {
+            resolve(buffer);
+          }
         })
     )
   )
