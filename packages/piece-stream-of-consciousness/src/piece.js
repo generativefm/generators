@@ -176,20 +176,11 @@ const makePiece = ({ audioContext, destination, samples }) => {
 
   // create piece
   return Promise.all([
-    getBuffers(samples['snare-brush-stir'], './samples/snare-brush-stir/'),
-    getBuffers(samples['snare-brush-hit-p'], './samples/snare-brush-hit-p/'),
-    getBuffers(samples['ride-brush-p'], './samples/ride-brush-p/'),
-    reverseSampler(
-      samples['vsco2-piano-mf'],
-      './samples/vsco2-piano-mf/',
-      pianoVerb
-    ),
-    pitchShiftSampler(
-      samples['vsco2-piano-mf'],
-      './samples/vsco2-piano-mf/',
-      pianoVerb,
-      -24
-    ),
+    getBuffers(samples['snare-brush-stir']),
+    getBuffers(samples['snare-brush-hit-p']),
+    getBuffers(samples['ride-brush-p']),
+    reverseSampler(samples['vsco2-piano-mf'], pianoVerb),
+    pitchShiftSampler(samples['vsco2-piano-mf'], pianoVerb, -24),
     new Tone.Reverb(15)
       .set({ wet: 0.6 })
       .connect(destination)
