@@ -2,9 +2,14 @@
   "name": "@generative-music/utilities",
   "version": "0.0.0",
   "description": "A collection of common utilities for Web Audio API generative music systems",
-  "main": "index.js",
+  "main": "dist/cjs.js",
+  "module": "dist/esm.js",
+  "files": [
+    "dist/esm.js"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "karma start",
+    "test:watch": "karma start --no-single-run"
   },
   "repository": {
     "type": "git",
@@ -36,9 +41,5 @@
   },
   "peerDependencies": {
     "tone": "^13.8.25"
-  },
-  "scripts": {
-    "test": "karma start",
-    "test:watch": "karma start --no-single-run"
   }
 }
