@@ -14,24 +14,29 @@ const globPromise = (pattern, options) =>
     })
   );
 
-const makeConfig = (
+const makePieceConfig = (
   dirname,
   dependencies = {},
-  peerDependencies = {},
-  format
+  peerDependencies = {}
 ) => ({
   input: `${dirname}/src/piece.js`,
-  output: {
-    file: `${dirname}/dist/${format}.js`,
-    format,
-  },
+  output: [
+    {
+      file: `${dirname}/dist/esm.js`,
+      format: 'esm',
+    },
+    {
+      file: `${dirname}/dist/cjs.js`,
+      format: 'cjs',
+    },
+  ],
   external: ['rxjs/operators']
     .concat(Reflect.ownKeys(dependencies))
     .concat(Reflect.ownKeys(peerDependencies)),
   plugins: [json(), babel({ exclude: 'node_modules/**' })],
 });
 
-const configsPromise = globPromise('./packages/piece-*').then(dirnames =>
+const pieceConfigsPromise = globPromise('./packages/piece-*').then(dirnames =>
   dirnames.reduce((buildConfigs, dirname) => {
     const {
       dependencies,
@@ -39,11 +44,26 @@ const configsPromise = globPromise('./packages/piece-*').then(dirnames =>
       //eslint-disable-next-line global-require
     } = require(`${dirname}/package.json`);
     return buildConfigs.concat(
-      ['esm', 'cjs'].map(format =>
-        makeConfig(dirname, dependencies, peerDependencies, format)
-      )
+      makePieceConfig(dirname, dependencies, peerDependencies)
     );
   }, [])
 );
 
-module.exports = configsPromise;
+const utilitiesConfig = {
+  input: 'packages/utilities/src/index.js',
+  output: [
+    {
+      format: 'esm',
+      file: 'packages/utilities/dist/esm.js',
+    },
+    {
+      format: 'cjs',
+      file: 'packages/utilities/dist/cjs.js',
+    },
+  ],
+  external: ['tone'],
+};
+
+module.exports = pieceConfigsPromise.then(pieceConfigs =>
+  pieceConfigs.concat(utilitiesConfig)
+);
