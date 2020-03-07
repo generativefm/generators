@@ -9,62 +9,8 @@ const pitchShiftSampler = (samplesByNote, destination, semitoneChange = 0) => {
     ])
   );
   const activeSources = [];
-  return getBuffers(samplesByNote).then(buffers => {
-    Reflect.ownKeys(samplesByNote).forEach(note => {
-      buffers.get(note).reverse = true;
-    });
-    return {
-      play(note, time) {
-        const midi = new Tone.Midi(note);
-        let buffer;
-        let interval;
-        for (let i = 0; !buffer && i < 24; i += 1) {
-          //eslint-disable-next-line no-loop-func
-          [i, -i].some(transposition => {
-            const transposedMidi = midi.transpose(transposition);
-            if (midiNoteMap.has(transposedMidi.toMidi())) {
-              buffer = buffers.get(transposedMidi.toNote());
-              interval = -transposition;
-              return true;
-            }
-            return false;
-          });
-        }
-        if (buffer) {
-          const playbackRate = Tone.intervalToFrequencyRatio(
-            interval + semitoneChange
-          );
-          const source = new Tone.BufferSource(buffer).set({
-            playbackRate,
-            onended: () => {
-              const i = activeSources.indexOf(buffer);
-              if (i >= 0) {
-                activeSources.splice(i, 1);
-              }
-            },
-          });
-          source.connect(destination);
-          source.start(time);
-        }
-      },
-      dispose: () => {
-        [buffers, ...activeSources].forEach(node => node.dispose());
-        activeSources.splice(0, activeSources.length);
-      },
-    };
-  });
-};
-
-const reverseSampler = (samplesByNote, destination) => {
-  const midiNoteMap = new Map(
-    Reflect.ownKeys(samplesByNote).map(note => [
-      new Tone.Midi(note).toMidi(),
-      note,
-    ])
-  );
-  const activeSources = [];
   return getBuffers(samplesByNote).then(buffers => ({
-    play(note, time, duration) {
+    play(note, time) {
       const midi = new Tone.Midi(note);
       let buffer;
       let interval;
@@ -81,7 +27,9 @@ const reverseSampler = (samplesByNote, destination) => {
         });
       }
       if (buffer) {
-        const playbackRate = Tone.intervalToFrequencyRatio(interval);
+        const playbackRate = Tone.intervalToFrequencyRatio(
+          interval + semitoneChange
+        );
         const source = new Tone.BufferSource(buffer).set({
           playbackRate,
           onended: () => {
@@ -92,17 +40,7 @@ const reverseSampler = (samplesByNote, destination) => {
           },
         });
         source.connect(destination);
-        const adjustedDuration = duration * playbackRate;
-        const bufferDuration = buffer.duration;
-        if (bufferDuration > adjustedDuration) {
-          const offset = bufferDuration - adjustedDuration;
-          source.start(time, offset);
-        } else {
-          const waitTime = duration - bufferDuration / playbackRate;
-          Tone.Transport.scheduleOnce(() => {
-            source.start(time);
-          }, `+${waitTime}`);
-        }
+        source.start(time);
       }
     },
     dispose: () => {
@@ -110,6 +48,68 @@ const reverseSampler = (samplesByNote, destination) => {
       activeSources.splice(0, activeSources.length);
     },
   }));
+};
+
+const reverseSampler = (samplesByNote, destination) => {
+  const midiNoteMap = new Map(
+    Reflect.ownKeys(samplesByNote).map(note => [
+      new Tone.Midi(note).toMidi(),
+      note,
+    ])
+  );
+  const activeSources = [];
+  return getBuffers(samplesByNote).then(buffers => {
+    Reflect.ownKeys(samplesByNote).forEach(note => {
+      buffers.get(note).reverse = true;
+    });
+    return {
+      play(note, time, duration) {
+        const midi = new Tone.Midi(note);
+        let buffer;
+        let interval;
+        for (let i = 0; !buffer && i < 24; i += 1) {
+          //eslint-disable-next-line no-loop-func
+          [i, -i].some(transposition => {
+            const transposedMidi = midi.transpose(transposition);
+            if (midiNoteMap.has(transposedMidi.toMidi())) {
+              buffer = buffers.get(transposedMidi.toNote());
+              interval = -transposition;
+              return true;
+            }
+            return false;
+          });
+        }
+        if (buffer) {
+          const playbackRate = Tone.intervalToFrequencyRatio(interval);
+          const source = new Tone.BufferSource(buffer).set({
+            playbackRate,
+            onended: () => {
+              const i = activeSources.indexOf(buffer);
+              if (i >= 0) {
+                activeSources.splice(i, 1);
+              }
+            },
+          });
+          source.connect(destination);
+          const adjustedDuration = duration * playbackRate;
+          const bufferDuration = buffer.duration;
+          if (bufferDuration > adjustedDuration) {
+            const offset = bufferDuration - adjustedDuration;
+            source.start(time, offset);
+          } else {
+            const waitTime = duration - bufferDuration / playbackRate;
+            Tone.Transport.scheduleOnce(() => {
+              source.start(time);
+            }, `+${waitTime}`);
+          }
+        }
+      },
+      dispose: () => {
+        [buffers, ...activeSources].forEach(node => node.dispose());
+        activeSources.splice(0, activeSources.length);
+      },
+    };
+  });
 };
 
 const chords = [
