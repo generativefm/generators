@@ -1,6 +1,6 @@
 import Tone from 'tone';
 import { Note, Distance, Chord } from 'tonal';
-import { getBuffers } from '@generative-music/piece-utilities';
+import { getBuffers } from '@generative-music/utilities';
 
 const findClosest = (samplesByNote, note) => {
   const noteMidi = Note.midi(note);

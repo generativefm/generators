@@ -1,5 +1,5 @@
 import Tone from 'tone';
-import { getBuffer, getBuffers } from '@generative-music/utilites';
+import { getBuffer, getBuffers } from '@generative-music/utilities';
 
 const pitchShiftSampler = (samplesByNote, destination, semitoneChange = 0) => {
   const midiNoteMap = new Map(

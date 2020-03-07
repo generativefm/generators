@@ -1,6 +1,6 @@
 import Tone from 'tone';
 import { Chord, Note, Distance } from 'tonal';
-import { getBuffers } from '@generative-music/piece-utilities';
+import { getBuffers } from '@generative-music/utilities';
 
 const NOON_SEMITONE_CHANGE = 15;
 const MIDNIGHT_SEMITONE_CHANGE = 30;

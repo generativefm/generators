@@ -1,5 +1,5 @@
 import Tone from 'tone';
-import { getBuffers } from '@generative-music/piece-utilities';
+import { getBuffers } from '@generative-music/utilities';
 
 const DRUM_LOOP_LENGTH_S = 75;
 const BEAT_SIXTEETHS_COUNT = 32;

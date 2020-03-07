@@ -1,6 +1,6 @@
 import Tone from 'tone';
 import { Note, Distance } from 'tonal';
-import { getBuffers } from '@generative-music/piece-utilities';
+import { getBuffers } from '@generative-music/utilities';
 
 const NOTES = ['C2', 'E2', 'G2', 'C3', 'E3', 'G3', 'C4', 'E4', 'G4'];
 
