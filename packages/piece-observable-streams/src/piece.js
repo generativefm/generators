@@ -2,6 +2,7 @@ import Tone from 'tone';
 import { Scale, Note, Chord } from 'tonal';
 import { of, from, Observable } from 'rxjs';
 import { repeat, mergeMap, filter } from 'rxjs/operators';
+import { getSampler } from '@generative-music/utilities';
 
 const toss = (pcs = [], octaves = []) =>
   octaves.reduce(
@@ -120,12 +121,7 @@ const notes$ = scheduledNote().pipe(
 );
 
 const makeGetSampledInstrument = samples => (instrumentName, options) =>
-  new Promise(resolve => {
-    const instrument = new Tone.Sampler(
-      samples[instrumentName],
-      Object.assign({}, options, { onload: () => resolve(instrument) })
-    );
-  });
+  getSampler(samples[instrumentName], options);
 
 const makePiece = ({ audioContext, destination, samples }) => {
   if (Tone.context !== audioContext) {

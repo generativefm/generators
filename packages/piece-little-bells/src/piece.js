@@ -1,5 +1,6 @@
 import { Chord } from 'tonal';
 import Tone from 'tone';
+import { getSampler } from '@generative-music/utilities';
 
 const PITCH_CLASSES = ['F', 'F', 'G', 'G#', 'A', 'A#', 'B'];
 const BASE_P_TO_PLAY = 0.1;
@@ -41,12 +42,7 @@ const makeChordInterval = instrument => (tonic, interval) => {
 const pitchClass =
   PITCH_CLASSES[Math.floor(Math.random() * PITCH_CLASSES.length)];
 
-const getGlock = samples =>
-  new Promise(resolve => {
-    const piano = new Tone.Sampler(samples['vsco2-glock'], {
-      onload: () => resolve(piano),
-    });
-  });
+const getGlock = samples => getSampler(samples['vsco2-glock']);
 
 const makePiece = ({ audioContext, destination, samples }) => {
   if (Tone.context !== audioContext) {

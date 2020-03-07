@@ -1,53 +1,44 @@
 import Tone from 'tone';
 import { Chord } from 'tonal';
+import { getBuffers, getSampler } from '@generative-music/utilities';
 
-const getStrings = samplesByNote =>
-  new Promise(resolve => {
-    const strings = new Tone.Sampler(samplesByNote, {
-      onload: () => resolve(strings),
-    });
-  });
+const getPercussionInstrument = samples => {
+  const percussionInstrument = buffers => {
+    const sources = [];
+    let destination;
 
-const getPercussionInstrument = samples =>
-  new Promise(resolve => {
-    const percussionInstrument = buffers => {
-      const sources = [];
-      let destination;
-
-      const triggerAttack = time => {
-        const buffer = buffers.get(Math.floor(Math.random() * samples.length));
-        const source = new Tone.BufferSource(buffer)
-          .set({
-            onended: () => {
-              const i = sources.indexOf(source);
-              if (i >= 0) {
-                source.dispose();
-                sources.splice(i, 1);
-              }
-            },
-          })
-          .connect(destination);
-        sources.push(source);
-        source.start(time);
-      };
-
-      const dispose = () => {
-        sources.forEach(node => node.dispose());
-        sources.splice(0, sources.length);
-        buffers.dispose();
-      };
-
-      const connect = node => {
-        destination = node;
-      };
-
-      return { triggerAttack, dispose, connect };
+    const triggerAttack = time => {
+      const buffer = buffers.get(Math.floor(Math.random() * samples.length));
+      const source = new Tone.BufferSource(buffer)
+        .set({
+          onended: () => {
+            const i = sources.indexOf(source);
+            if (i >= 0) {
+              source.dispose();
+              sources.splice(i, 1);
+            }
+          },
+        })
+        .connect(destination);
+      sources.push(source);
+      source.start(time);
     };
 
-    const buffers = new Tone.Buffers(samples, {
-      onload: () => resolve(percussionInstrument(buffers)),
-    });
-  });
+    const dispose = () => {
+      sources.forEach(node => node.dispose());
+      sources.splice(0, sources.length);
+      buffers.dispose();
+    };
+
+    const connect = node => {
+      destination = node;
+    };
+
+    return { triggerAttack, dispose, connect };
+  };
+
+  return getBuffers(samples).then(buffers => percussionInstrument(buffers));
+};
 
 const makePiece = ({ audioContext, destination, samples }) => {
   if (Tone.context !== audioContext) {
@@ -56,7 +47,7 @@ const makePiece = ({ audioContext, destination, samples }) => {
   Tone.context.latencyHint = 'interactive';
   return Promise.all([
     new Tone.Reverb({ decay: 15, wet: 0.5 }).generate(),
-    getStrings(samples['vsco2-cellos-susvib-mp']),
+    getSampler(samples['vsco2-cellos-susvib-mp']),
     ...[
       'vcsl-bassdrum-hit-f',
       'vcsl-bassdrum-hit-ff',

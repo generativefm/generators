@@ -1,5 +1,6 @@
 import Tone from 'tone';
 import { Distance } from 'tonal';
+import { getBuffers } from '@generative-music/utilities';
 
 const findClosest = (samplesByNote, note) => {
   const noteMidi = new Tone.Midi(note).toMidi();
@@ -18,13 +19,6 @@ const findClosest = (samplesByNote, note) => {
   }
   return note;
 };
-
-const getBuffers = samplesByNote =>
-  new Promise(resolve => {
-    const buffers = new Tone.Buffers(samplesByNote, {
-      onload: () => resolve(buffers),
-    });
-  });
 
 const NOTES = ['C3', 'F3', 'G3', 'C4', 'F4', 'G4', 'C5', 'E5', 'G5', 'C6'];
 

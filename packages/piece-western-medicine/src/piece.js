@@ -1,5 +1,6 @@
 import Tone from 'tone';
 import { Distance, Note } from 'tonal';
+import { getBuffers } from '@generative-music/utilities';
 
 const toss = (pcs = [], octaves = []) =>
   octaves.reduce(
@@ -24,15 +25,6 @@ const findClosest = (note, samplesByNote) => {
   }
   return note;
 };
-
-const getBuffers = samplesByNote =>
-  new Promise(resolve => {
-    const buffers = new Tone.Buffers(samplesByNote, {
-      onload: () => {
-        resolve(buffers);
-      },
-    });
-  });
 
 const getCustomSampler = (samplesByNote, destination) => {
   const activeSources = [];

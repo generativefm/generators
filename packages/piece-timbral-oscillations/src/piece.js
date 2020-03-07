@@ -1,5 +1,6 @@
 import { Scale, Note } from 'tonal';
 import Tone from 'tone';
+import { getSampler } from '@generative-music/utilities';
 
 const OCTAVES = [3, 4, 5, 6];
 const MAX_STEP_DISTANCE = 2;
@@ -40,18 +41,11 @@ const generatePhrase = (
   return phrase;
 };
 
-const getSampledInstrument = samplesByNote =>
-  new Promise(resolve => {
-    const instrument = new Tone.Sampler(samplesByNote, {
-      onload: () => resolve(instrument),
-    });
-  });
-
 const makePiece = ({ audioContext, destination, samples }) => {
   if (Tone.context !== audioContext) {
     Tone.setContext(audioContext);
   }
-  return getSampledInstrument(samples['vsco2-piano-mf']).then(piano => {
+  return getSampler(samples['vsco2-piano-mf']).then(piano => {
     const reverb = new Tone.Freeverb({ roomSize: 0.7 });
 
     const delayFudge = Math.random() * 3;

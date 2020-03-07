@@ -1,4 +1,5 @@
 import Tone from 'tone';
+import { getSampler } from '@generative-music/utilities';
 import { minor7th } from './theory/chords';
 import combineNotesWithOctaves from './combine-notes-with-octaves';
 
@@ -74,13 +75,6 @@ const generateTiming = (instruments, getPlayProbability) => {
   });
 };
 
-const getSampledInstrument = samplesByNote =>
-  new Promise(resolve => {
-    const instrument = new Tone.Sampler(samplesByNote, {
-      onload: () => resolve(instrument),
-    });
-  });
-
 const lemniscate = ({ audioContext, destination, samples }) => {
   if (Tone.context !== audioContext) {
     Tone.setContext(audioContext);
@@ -88,26 +82,27 @@ const lemniscate = ({ audioContext, destination, samples }) => {
   const firstPan = new Tone.Panner(-1).connect(destination);
   const secondPan = new Tone.Panner(1).connect(destination);
   const pianoSamples = samples[INSTRUMENT_NAME];
-  return Promise.all([
-    getSampledInstrument(pianoSamples),
-    getSampledInstrument(pianoSamples),
-  ]).then(instruments => {
-    const [firstInstrument, secondInstrument] = instruments;
-    firstInstrument.chain(firstPan);
-    secondInstrument.chain(secondPan);
-    const tick = makeTick([firstPan, secondPan]);
-    generateTiming(
-      [firstInstrument, secondInstrument],
-      () => centerProbability,
-      'both'
-    );
-    generateTiming([firstInstrument], () => 1 - centerProbability);
-    generateTiming([secondInstrument], () => 1 - centerProbability);
-    Tone.Transport.scheduleOnce(tick, TICK_INTERVAL_SECONDS);
-    return () => {
-      instruments.concat([firstPan, secondPan]).forEach(node => node.dispose());
-    };
-  });
+  return Promise.all([getSampler(pianoSamples), getSampler(pianoSamples)]).then(
+    instruments => {
+      const [firstInstrument, secondInstrument] = instruments;
+      firstInstrument.chain(firstPan);
+      secondInstrument.chain(secondPan);
+      const tick = makeTick([firstPan, secondPan]);
+      generateTiming(
+        [firstInstrument, secondInstrument],
+        () => centerProbability,
+        'both'
+      );
+      generateTiming([firstInstrument], () => 1 - centerProbability);
+      generateTiming([secondInstrument], () => 1 - centerProbability);
+      Tone.Transport.scheduleOnce(tick, TICK_INTERVAL_SECONDS);
+      return () => {
+        instruments
+          .concat([firstPan, secondPan])
+          .forEach(node => node.dispose());
+      };
+    }
+  );
 };
 
 export default lemniscate;

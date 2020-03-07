@@ -1,68 +1,54 @@
 import Tone from 'tone';
+import { getBuffer, getBuffers } from '@generative-music/utilites';
 
-const pitchShiftSampler = (samplesByNote, destination, semitoneChange = 0) =>
-  new Promise(resolve => {
-    const midiNoteMap = new Map(
-      Reflect.ownKeys(samplesByNote).map(note => [
-        new Tone.Midi(note).toMidi(),
-        note,
-      ])
-    );
-    const activeSources = [];
-    const buffers = new Tone.Buffers(samplesByNote, {
-      onload: () => {
-        resolve({
-          play(note, time) {
-            const midi = new Tone.Midi(note);
-            let buffer;
-            let interval;
-            for (let i = 0; !buffer && i < 24; i += 1) {
-              //eslint-disable-next-line no-loop-func
-              [i, -i].some(transposition => {
-                const transposedMidi = midi.transpose(transposition);
-                if (midiNoteMap.has(transposedMidi.toMidi())) {
-                  buffer = buffers.get(transposedMidi.toNote());
-                  interval = -transposition;
-                  return true;
-                }
-                return false;
-              });
+const pitchShiftSampler = (samplesByNote, destination, semitoneChange = 0) => {
+  const midiNoteMap = new Map(
+    Reflect.ownKeys(samplesByNote).map(note => [
+      new Tone.Midi(note).toMidi(),
+      note,
+    ])
+  );
+  const activeSources = [];
+  return getBuffers(samplesByNote).then(buffers => ({
+    play(note, time) {
+      const midi = new Tone.Midi(note);
+      let buffer;
+      let interval;
+      for (let i = 0; !buffer && i < 24; i += 1) {
+        //eslint-disable-next-line no-loop-func
+        [i, -i].some(transposition => {
+          const transposedMidi = midi.transpose(transposition);
+          if (midiNoteMap.has(transposedMidi.toMidi())) {
+            buffer = buffers.get(transposedMidi.toNote());
+            interval = -transposition;
+            return true;
+          }
+          return false;
+        });
+      }
+      if (buffer) {
+        const playbackRate = Tone.intervalToFrequencyRatio(
+          interval + semitoneChange
+        );
+        const source = new Tone.BufferSource(buffer).set({
+          playbackRate,
+          onended: () => {
+            const i = activeSources.indexOf(buffer);
+            if (i >= 0) {
+              activeSources.splice(i, 1);
             }
-            if (buffer) {
-              const playbackRate = Tone.intervalToFrequencyRatio(
-                interval + semitoneChange
-              );
-              const source = new Tone.BufferSource(buffer).set({
-                playbackRate,
-                onended: () => {
-                  const i = activeSources.indexOf(buffer);
-                  if (i >= 0) {
-                    activeSources.splice(i, 1);
-                  }
-                },
-              });
-              source.connect(destination);
-              source.start(time);
-            }
-          },
-          dispose: () => {
-            [buffers, ...activeSources].forEach(node => node.dispose());
-            activeSources.splice(0, activeSources.length);
           },
         });
-      },
-    });
-  });
-
-const getBuffer = url =>
-  new Promise(resolve => {
-    const buffer = new Tone.Buffer(url, () => {
-      resolve(buffer);
-    });
-    if (url instanceof AudioBuffer) {
-      resolve(buffer);
-    }
-  });
+        source.connect(destination);
+        source.start(time);
+      }
+    },
+    dispose: () => {
+      [buffers, ...activeSources].forEach(node => node.dispose());
+      activeSources.splice(0, activeSources.length);
+    },
+  }));
+};
 
 const getRandomPhase = () => Math.random() * 360;
 

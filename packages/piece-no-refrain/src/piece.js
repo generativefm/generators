@@ -1,12 +1,5 @@
 import Tone from 'tone';
-
-const getSampler = samplesByNote =>
-  new Promise(resolve => {
-    const sampler = new Tone.Sampler(samplesByNote, {
-      attack: 0.12,
-      onload: () => resolve(sampler),
-    });
-  });
+import { getSampler } from '@generative-music/utilities';
 
 const makePiece = ({ audioContext, destination, samples }) => {
   if (Tone.context !== audioContext) {

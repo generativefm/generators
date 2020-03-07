@@ -1,18 +1,12 @@
 import Tone from 'tone';
 import { Note, Distance } from 'tonal';
+import { getBuffers } from '@generative-music/piece-utilities';
 
 const toss = (pcs = [], octaves = []) =>
   octaves.reduce(
     (notes, octave) => notes.concat(pcs.map(pc => `${pc}${octave}`)),
     []
   );
-
-const getBuffers = samplesByNote =>
-  new Promise(resolve => {
-    const buffers = new Tone.Buffers(samplesByNote, {
-      onload: () => resolve(buffers),
-    });
-  });
 
 const getReversedBuffers = (buffers, samplesByNote) =>
   new Tone.Buffers(

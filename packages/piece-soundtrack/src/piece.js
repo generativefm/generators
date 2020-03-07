@@ -1,5 +1,6 @@
 import Tone from 'tone';
 import { Distance, Note } from 'tonal';
+import { getBuffers } from '@generative-music/utilities';
 
 const findClosest = (note, samplesByNote) => {
   const noteMidi = Note.midi(note);
@@ -24,40 +25,35 @@ const getCustomSampler = (
   samplesByNote,
   semitoneChange = 24,
   offset = 0
-) =>
-  new Promise(resolve => {
-    const activeSources = [];
-    const buffers = new Tone.Buffers(samplesByNote, {
-      onload: () => {
-        resolve({
-          triggerAttack: (note, time = Tone.now()) => {
-            const closestSample = findClosest(note, samplesByNote);
-            const difference = Distance.semitones(closestSample, note);
-            const buffer = buffers.get(closestSample);
-            const playbackRate = Tone.intervalToFrequencyRatio(
-              difference - semitoneChange + Math.random() * 0.1 - 0.05
-            );
-            const bufferSource = new Tone.BufferSource(buffer)
-              .set({
-                playbackRate,
-                onended: () => {
-                  const i = activeSources.indexOf(bufferSource);
-                  if (i >= 0) {
-                    activeSources.splice(i, 1);
-                  }
-                },
-              })
-              .connect(destination);
-            activeSources.push(bufferSource);
-            bufferSource.start(time, offset);
+) => {
+  const activeSources = [];
+  return getBuffers(samplesByNote).then(buffers => ({
+    triggerAttack: (note, time = Tone.now()) => {
+      const closestSample = findClosest(note, samplesByNote);
+      const difference = Distance.semitones(closestSample, note);
+      const buffer = buffers.get(closestSample);
+      const playbackRate = Tone.intervalToFrequencyRatio(
+        difference - semitoneChange + Math.random() * 0.1 - 0.05
+      );
+      const bufferSource = new Tone.BufferSource(buffer)
+        .set({
+          playbackRate,
+          onended: () => {
+            const i = activeSources.indexOf(bufferSource);
+            if (i >= 0) {
+              activeSources.splice(i, 1);
+            }
           },
-          dispose: () => {
-            [buffers, ...activeSources].forEach(node => node.dispose());
-          },
-        });
-      },
-    });
-  });
+        })
+        .connect(destination);
+      activeSources.push(bufferSource);
+      bufferSource.start(time, offset);
+    },
+    dispose: () => {
+      [buffers, ...activeSources].forEach(node => node.dispose());
+    },
+  }));
+};
 
 const SECOND_NOTES = ['D', 'Eb', 'F', 'G', 'A'];
 const OCTAVES = [2, 3, 4];

@@ -1,4 +1,5 @@
 import Tone from 'tone';
+import { getSampler } from '@generative-music/utilities';
 
 const NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 const pcTranspose = (note, semitones) => {
@@ -23,14 +24,6 @@ const transpose = (note, semitones) => {
   }
   return note;
 };
-
-const getSampler = (samplesByNote, baseUrl = '') =>
-  new Promise(resolve => {
-    const sampler = new Tone.Sampler(samplesByNote, {
-      baseUrl,
-      onload: () => resolve(sampler),
-    });
-  });
 
 const TREMOLO_PATTERN = [
   true,

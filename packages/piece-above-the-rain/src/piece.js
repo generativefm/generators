@@ -1,25 +1,5 @@
 import Tone from 'tone';
-
-const getBuffers = (samplesByNote, opts = {}) =>
-  new Promise(resolve => {
-    const buffers = new Tone.Buffers(
-      samplesByNote,
-      Object.assign({}, opts, { onload: () => resolve(buffers) })
-    );
-  });
-
-const getSampler = (samplesByNote, opts) =>
-  new Promise(resolve => {
-    const sampler = new Tone.Sampler(
-      samplesByNote,
-      Object.assign(
-        {
-          onload: () => resolve(sampler),
-        },
-        opts
-      )
-    );
-  });
+import { getBuffers, getSampler } from '@generative-music/utilities';
 
 const makePiece = ({ audioContext, destination, samples }) => {
   if (Tone.context !== audioContext) {

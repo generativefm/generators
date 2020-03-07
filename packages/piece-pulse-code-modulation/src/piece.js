@@ -1,9 +1,8 @@
 import Tone from 'tone';
 import { Distance, Note } from 'tonal';
+import { getBuffers, getSampler } from '@generative-music/utilities';
 import findClosestSample from './find-closest-sample';
-import getBuffers from './get-buffers';
 import uniquePitchClasses from './unique-pitch-classes';
-import getSampler from './get-sampler';
 import pickRandom from './pick-random';
 import getSimilarNotes from './get-similar-notes';
 

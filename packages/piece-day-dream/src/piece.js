@@ -1,5 +1,6 @@
 import Tone from 'tone';
 import { Chord, Note, Distance } from 'tonal';
+import { getBuffers } from '@generative-music/piece-utilities';
 
 const NOON_SEMITONE_CHANGE = 15;
 const MIDNIGHT_SEMITONE_CHANGE = 30;
@@ -21,13 +22,6 @@ const findClosest = (note, samplesByNote) => {
   }
   return note;
 };
-
-const getBuffers = samplesByNote =>
-  new Promise(resolve => {
-    const buffers = new Tone.Buffers(samplesByNote, {
-      onload: () => resolve(buffers),
-    });
-  });
 
 const NOTES = [4, 5, 6].reduce(
   (allNotes, octave) => allNotes.concat(Chord.notes(`C${octave}`, 'm7')),

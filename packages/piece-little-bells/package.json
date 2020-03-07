@@ -4,6 +4,7 @@
   "description": "",
   "main": "dist/cjs.js",
   "dependencies": {
+    "@generative-music/utilities": "^0.1.0",
     "tonal": "^2.1.2"
   },
   "peerDependencies": {

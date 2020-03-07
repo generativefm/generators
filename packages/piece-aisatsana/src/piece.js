@@ -1,5 +1,6 @@
 import Chain from 'markov-chains';
 import Tone from 'tone';
+import { getSampler } from '@generative-music/utilities';
 import instructions from './instructions.json';
 
 const BPM = 102;
@@ -38,12 +39,7 @@ const phrasesWithIndex = phrases.map(phrase =>
 
 const chain = new Chain(phrasesWithIndex);
 
-const getPiano = samples =>
-  new Promise(resolve => {
-    const piano = new Tone.Sampler(samples['vsco2-piano-mf'], {
-      onload: () => resolve(piano),
-    });
-  });
+const getPiano = samples => getSampler(samples['vsco2-piano-mf']);
 
 const makePiece = ({ destination, audioContext, samples }) => {
   if (audioContext !== Tone.context) {

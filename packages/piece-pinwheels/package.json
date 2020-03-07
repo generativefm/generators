@@ -14,6 +14,7 @@
   },
   "homepage": "https://github.com/generative-music/piece-pinwheels#readme",
   "dependencies": {
+    "@generative-music/utilities": "^0.1.0",
     "pick-random": "^2.0.0",
     "random-number": "0.0.9",
     "shuffle-array": "^1.0.1",

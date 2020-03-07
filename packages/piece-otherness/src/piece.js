@@ -1,5 +1,6 @@
 import Tone from 'tone';
 import { Note } from 'tonal';
+import { getSampler } from '@generative-music/utilities';
 
 const OCTAVES = [2, 3, 4];
 const notes = OCTAVES.reduce(
@@ -19,18 +20,11 @@ const playNote = (instrument, sineSynth, lastNoteMidi) => {
   }, `+${Math.random() * 10 + 10}`);
 };
 
-const getSampledInstrument = samplesByNote =>
-  new Promise(resolve => {
-    const instrument = new Tone.Sampler(samplesByNote, {
-      onload: () => resolve(instrument),
-    });
-  });
-
 const makePiece = ({ audioContext, destination, samples }) => {
   if (Tone.context !== audioContext) {
     Tone.setContext(audioContext);
   }
-  return getSampledInstrument(samples.otherness).then(instrument => {
+  return getSampler(samples.otherness).then(instrument => {
     const volume = new Tone.Volume(-5).connect(destination);
     const sineSynth = new Tone.MonoSynth({
       oscillator: { type: 'sine' },

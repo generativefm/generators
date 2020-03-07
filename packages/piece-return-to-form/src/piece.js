@@ -1,16 +1,10 @@
 import Tone from 'tone';
 import { Distance, Note } from 'tonal';
+import { getSampler } from '@generative-music/utilities';
 
 const INTERVALS = ['1P', '3M', '4P', '5P'];
 const STARTING_TONICS = ['C3', 'C4'];
 const NOTE_TIME_S = 2;
-
-const getSampledInstrument = samplesByNote =>
-  new Promise(resolve => {
-    const sampler = new Tone.Sampler(samplesByNote, {
-      onload: () => resolve(sampler),
-    });
-  });
 
 // https://stackoverflow.com/a/2450976
 const shuffle = array => {
@@ -37,7 +31,7 @@ const makePiece = ({ audioContext, destination, samples }) => {
   if (Tone.context !== audioContext) {
     Tone.setContext(audioContext);
   }
-  return getSampledInstrument(samples['vsco2-piano-mf']).then(piano => {
+  return getSampler(samples['vsco2-piano-mf']).then(piano => {
     const delay = new Tone.FeedbackDelay({
       delayTime: NOTE_TIME_S / 2,
       feedback: 0.7,

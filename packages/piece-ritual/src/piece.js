@@ -1,12 +1,6 @@
 import Tone from 'tone';
 import { Note, Distance } from 'tonal';
-
-const getBuffers = buffersById =>
-  new Promise(resolve => {
-    const buffers = new Tone.Buffers(buffersById, {
-      onload: () => resolve(buffers),
-    });
-  });
+import { getBuffers } from '@generative-music/utilities';
 
 const findClosest = (note, samplesByNote) => {
   const noteMidi = Note.midi(note);
@@ -26,44 +20,39 @@ const findClosest = (note, samplesByNote) => {
   return note;
 };
 
-const getCustomSampler = (samplesByNote, semitoneChange = 24) =>
-  new Promise(resolve => {
-    const activeSources = [];
-    let destination;
-    const buffers = new Tone.Buffers(samplesByNote, {
-      onload: () => {
-        resolve({
-          triggerAttack: (note, time = Tone.now()) => {
-            const closestSample = findClosest(note, samplesByNote);
-            const difference = Distance.semitones(closestSample, note);
-            const buffer = buffers.get(closestSample);
-            const playbackRate = Tone.intervalToFrequencyRatio(
-              difference - semitoneChange + Math.random() * 0.1 - 0.05
-            );
-            const bufferSource = new Tone.BufferSource(buffer)
-              .set({
-                playbackRate,
-                onended: () => {
-                  const i = activeSources.indexOf(bufferSource);
-                  if (i >= 0) {
-                    activeSources.splice(i, 1);
-                  }
-                },
-              })
-              .connect(destination);
-            activeSources.push(bufferSource);
-            bufferSource.start(time);
+const getCustomSampler = (samplesByNote, semitoneChange = 24) => {
+  const activeSources = [];
+  let destination;
+  return getBuffers(samplesByNote).then(buffers => ({
+    triggerAttack: (note, time = Tone.now()) => {
+      const closestSample = findClosest(note, samplesByNote);
+      const difference = Distance.semitones(closestSample, note);
+      const buffer = buffers.get(closestSample);
+      const playbackRate = Tone.intervalToFrequencyRatio(
+        difference - semitoneChange + Math.random() * 0.1 - 0.05
+      );
+      const bufferSource = new Tone.BufferSource(buffer)
+        .set({
+          playbackRate,
+          onended: () => {
+            const i = activeSources.indexOf(bufferSource);
+            if (i >= 0) {
+              activeSources.splice(i, 1);
+            }
           },
-          dispose: () => {
-            [buffers, ...activeSources].forEach(node => node.dispose());
-          },
-          connect: dest => {
-            destination = dest;
-          },
-        });
-      },
-    });
-  });
+        })
+        .connect(destination);
+      activeSources.push(bufferSource);
+      bufferSource.start(time);
+    },
+    dispose: () => {
+      [buffers, ...activeSources].forEach(node => node.dispose());
+    },
+    connect: dest => {
+      destination = dest;
+    },
+  }));
+};
 
 const getPercussionSampler = sampleUrls =>
   getBuffers(sampleUrls).then(buffers => {

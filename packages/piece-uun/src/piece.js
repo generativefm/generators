@@ -1,11 +1,5 @@
 import Tone from 'tone';
-
-const getSampler = samplesByNote =>
-  new Promise(resolve => {
-    const sampler = new Tone.Sampler(samplesByNote, {
-      onload: () => resolve(sampler),
-    });
-  });
+import { getSampler } from '@generative-music/utilities';
 
 const NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 const pcTranspose = (note, semitones) => {

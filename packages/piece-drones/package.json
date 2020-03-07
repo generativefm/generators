@@ -26,6 +26,7 @@
     "tone": "^13.4.9"
   },
   "dependencies": {
+    "@generative-music/utilities": "^0.1.0",
     "tonal": "^2.2.1"
   },
   "gitHead": "8ed39368a8376ff9ea366fe8e1ab01820553a037"

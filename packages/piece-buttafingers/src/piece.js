@@ -1,76 +1,65 @@
 import Tone from 'tone';
 import { Note, Distance } from 'tonal';
+import { getBuffers } from '@generative-music/utilities';
 
 const NOTES = ['C4', 'E4', 'F4', 'G4', 'B5', 'A5'];
 const PITCH_CHANGES = [-36, -24];
 
-const getPitchShiftedSampler = (samplesByNote, changeInSemitones = 0) =>
-  new Promise(resolve => {
-    const disposableNodes = [];
-    const disposeNode = node => {
-      node.dispose();
-      const i = disposableNodes.findIndex(n => n === node);
-      if (i >= 0) {
-        disposableNodes.splice(i, 1);
+const getPitchShiftedSampler = (samplesByNote, changeInSemitones = 0) => {
+  const disposableNodes = [];
+  const disposeNode = node => {
+    node.dispose();
+    const i = disposableNodes.findIndex(n => n === node);
+    if (i >= 0) {
+      disposableNodes.splice(i, 1);
+    }
+  };
+  const findClosest = note => {
+    const noteMidi = Note.midi(note);
+    const maxInterval = 96;
+    let interval = 0;
+    while (interval <= maxInterval) {
+      const higherNote = Note.fromMidi(noteMidi + interval);
+      if (samplesByNote[higherNote]) {
+        return higherNote;
       }
-    };
-    const findClosest = note => {
-      const noteMidi = Note.midi(note);
-      const maxInterval = 96;
-      let interval = 0;
-      while (interval <= maxInterval) {
-        const higherNote = Note.fromMidi(noteMidi + interval);
-        if (samplesByNote[higherNote]) {
-          return higherNote;
-        }
-        const lowerNote = Note.fromMidi(noteMidi - interval);
-        if (samplesByNote[lowerNote]) {
-          return lowerNote;
-        }
-        interval += 1;
+      const lowerNote = Note.fromMidi(noteMidi - interval);
+      if (samplesByNote[lowerNote]) {
+        return lowerNote;
       }
-      return note;
-    };
-    let destination;
-    const buffers = new Tone.Buffers(samplesByNote, {
-      onload: () => {
-        resolve({
-          triggerAttack: (note, time) => {
-            const closestSample = findClosest(note);
-            const difference = Distance.semitones(note, closestSample);
-            const bufferSource = new Tone.BufferSource(
-              buffers.get(closestSample)
-            ).connect(destination);
-            const playbackRate = Tone.intervalToFrequencyRatio(
-              -difference + changeInSemitones
-            );
-            bufferSource.set({
-              playbackRate,
-              onended: () => disposeNode(bufferSource),
-              fadeIn: 3,
-              fadeOut: 3,
-            });
-            disposableNodes.push(bufferSource);
-            bufferSource.start(time);
-          },
-          connect: node => {
-            destination = node;
-          },
-          dispose: () => {
-            buffers.dispose();
-            disposableNodes.forEach(node => node.dispose());
-          },
-        });
-      },
-    });
-  });
-
-const getBuffers = samplesByNote =>
-  new Promise(resolve => {
-    const buffers = new Tone.Buffers(samplesByNote, {
-      onload: () => resolve(buffers),
-    });
-  });
+      interval += 1;
+    }
+    return note;
+  };
+  let destination;
+  return getBuffers(samplesByNote).then(buffers => ({
+    triggerAttack: (note, time) => {
+      const closestSample = findClosest(note);
+      const difference = Distance.semitones(note, closestSample);
+      const bufferSource = new Tone.BufferSource(
+        buffers.get(closestSample)
+      ).connect(destination);
+      const playbackRate = Tone.intervalToFrequencyRatio(
+        -difference + changeInSemitones
+      );
+      bufferSource.set({
+        playbackRate,
+        onended: () => disposeNode(bufferSource),
+        fadeIn: 3,
+        fadeOut: 3,
+      });
+      disposableNodes.push(bufferSource);
+      bufferSource.start(time);
+    },
+    connect: node => {
+      destination = node;
+    },
+    dispose: () => {
+      buffers.dispose();
+      disposableNodes.forEach(node => node.dispose());
+    },
+  }));
+};
 
 const makePiece = ({ audioContext, destination, samples }) => {
   if (Tone.context !== audioContext) {

@@ -1,12 +1,5 @@
 import Tone from 'tone';
-
-const getBuffer = url =>
-  new Promise(resolve => {
-    const buffer = new Tone.Buffer(url, () => resolve(buffer));
-    if (url instanceof AudioBuffer) {
-      resolve(buffer);
-    }
-  });
+import { getBuffer } from '@generative-music/utilities';
 
 const makePiece = ({ audioContext, destination, samples }) => {
   if (Tone.context !== audioContext) {

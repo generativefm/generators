@@ -27,5 +27,8 @@
   },
   "devDependencies": {
     "tone": "^13.8.25"
+  },
+  "dependencies": {
+    "@generative-music/utilities": "^0.1.0"
   }
 }

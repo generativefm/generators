@@ -1,4 +1,5 @@
 import Tone, { Transport, Sampler, Frequency, now } from 'tone';
+import { getBuffer } from '@generative-music/utilities';
 import { minor7th } from './theory/chords';
 import arpeggiateOnce from './arpeggiate-once';
 import getRandomElement from './get-random-element';
@@ -16,18 +17,6 @@ const REGULAR_ARPEGGIATE_MAX_TIME = 2;
 const EXTRA_NOTE_CHANCE_P = 0.3;
 const EXTRA_NOTE_VELOCITY = 0.3;
 const EXTRA_CHORD_CHANCE_P = 0.2;
-
-const getBuffer = url =>
-  new Promise((resolve, reject) => {
-    const newBuffer = new Tone.Buffer({
-      url,
-      onload: () => resolve(newBuffer),
-      onerror: err => reject(err),
-    });
-    if (url instanceof AudioBuffer) {
-      resolve(newBuffer);
-    }
-  });
 
 const buffersToObj = (buffers, notes) =>
   buffers.reduce((o, buffer, i) => {

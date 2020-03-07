@@ -25,6 +25,7 @@
     "tone": "^13.4.9"
   },
   "dependencies": {
+    "@generative-music/utilities": "^0.1.0",
     "markov-chains": "^1.0.2"
   },
   "peerDependencies": {

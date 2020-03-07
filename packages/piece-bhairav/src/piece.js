@@ -1,5 +1,6 @@
 import Tone from 'tone';
 import { Distance, Interval } from 'tonal';
+import { getSampler } from '@generative-music/utilities';
 
 const ragaBhairav = [
   [0, 2],
@@ -66,16 +67,6 @@ function* makeRagaGenerator(raga) {
     }
   }
 }
-
-const getSampler = (samplesByNote, opts = {}) =>
-  new Promise(resolve => {
-    const sampler = new Tone.Sampler(
-      samplesByNote,
-      Object.assign(opts, {
-        onload: () => resolve(sampler),
-      })
-    );
-  });
 
 const makePiece = ({ audioContext, destination, samples }) => {
   if (Tone.context !== audioContext) {

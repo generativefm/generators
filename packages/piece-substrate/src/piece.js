@@ -1,6 +1,7 @@
 import Tone from 'tone';
 import { Note, Distance, Chord } from 'tonal';
 import shuffle from 'shuffle-array';
+import { getBuffers } from '@generative-music/utilities';
 
 const findClosest = (samplesByNote, note) => {
   const noteMidi = Note.midi(note);
@@ -19,14 +20,6 @@ const findClosest = (samplesByNote, note) => {
   }
   return note;
 };
-
-const getBuffers = (samplesByNote, baseUrl = '') =>
-  new Promise(resolve => {
-    const buffers = new Tone.Buffers(samplesByNote, {
-      onload: () => resolve(buffers),
-      baseUrl,
-    });
-  });
 
 const OCTAVES = [3, 4];
 const getNotes = tonic =>

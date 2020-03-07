@@ -3,6 +3,7 @@ import pickRandom from 'pick-random';
 import randomNumber from 'random-number';
 import shuffle from 'shuffle-array';
 import Tone from 'tone';
+import { getSampler } from '@generative-music/utilities';
 
 const P_SPAWN_TWO = 0.33;
 // eslint-disable-next-line no-magic-numbers
@@ -101,12 +102,7 @@ const startPinwheelChain = instrument => {
   generatePinwheel();
 };
 
-const getPiano = samples =>
-  new Promise(resolve => {
-    const piano = new Tone.Sampler(samples['vsco2-piano-mf'], {
-      onload: () => resolve(piano),
-    });
-  });
+const getPiano = samples => getSampler(samples['vsco2-piano-mf']);
 
 const makePiece = ({ audioContext, destination, samples }) => {
   if (Tone.context !== audioContext) {

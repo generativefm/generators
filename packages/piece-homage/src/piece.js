@@ -1,5 +1,6 @@
 import Tone from 'tone';
 import { Note, Distance, Chord } from 'tonal';
+import { getBuffers } from '@generative-music/piece-utilities';
 
 const findClosest = (samplesByNote, note) => {
   const noteMidi = Note.midi(note);
@@ -18,13 +19,6 @@ const findClosest = (samplesByNote, note) => {
   }
   return note;
 };
-
-const getBuffers = samplesByNote =>
-  new Promise(resolve => {
-    const buffers = new Tone.Buffers(samplesByNote, {
-      onload: () => resolve(buffers),
-    });
-  });
 
 const makePiece = ({ audioContext, destination, samples }) => {
   if (Tone.context !== audioContext) {

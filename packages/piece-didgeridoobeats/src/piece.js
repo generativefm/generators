@@ -1,14 +1,10 @@
 import Tone from 'tone';
+import { getBuffers } from '@generative-music/piece-utilities';
 
 const DRUM_LOOP_LENGTH_S = 75;
 const BEAT_SIXTEETHS_COUNT = 32;
 const MIN_DRUMS_VOLUME_DB = -500;
 const MAX_DRUMS_VOLUME_DB = -10;
-
-const getBuffers = instrumentSamples =>
-  new Promise(resolve => {
-    const buffers = new Tone.Buffers(instrumentSamples, () => resolve(buffers));
-  });
 
 const getPattern = (quarterP, eighthP, sixteethP) => {
   const pattern = [];

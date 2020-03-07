@@ -1,25 +1,13 @@
 import Tone from 'tone';
+import { getBuffer, getSampler } from '@generative-music/utilities';
 
 const FLUTE_NOTES = ['C3', 'C4', 'G3', 'G4'];
 
-const getFlute = samples =>
-  new Promise(resolve => {
-    const flute = new Tone.Sampler(samples['vsco2-flute-susvib'], {
-      onload: () => resolve(flute),
-    });
-  });
+const getFlute = samples => getSampler(samples['vsco2-flute-susvib']);
 
 const getGuitarSounds = samples =>
   Promise.all(
-    samples['acoustic-guitar-chords-cmaj'].map(
-      url =>
-        new Promise(resolve => {
-          const buffer = new Tone.Buffer(url, () => resolve(buffer));
-          if (url instanceof AudioBuffer) {
-            resolve(url);
-          }
-        })
-    )
+    samples['acoustic-guitar-chords-cmaj'].map(url => getBuffer(url))
   );
 
 const makePiece = ({ audioContext, destination, samples }) => {

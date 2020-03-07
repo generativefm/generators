@@ -1,5 +1,6 @@
 import Tone from 'tone';
 import { Distance, Note } from 'tonal';
+import { getBuffer, getBuffers } from '@generative-music/utilities';
 
 const findClosest = (samplesByNote, note) => {
   const noteMidi = Note.midi(note);
@@ -19,46 +20,34 @@ const findClosest = (samplesByNote, note) => {
   return note;
 };
 
-const getCustomSampler = (destination, samplesByNote, semitoneChange = -24) =>
-  new Promise(resolve => {
-    const activeSources = [];
-    const buffers = new Tone.Buffers(samplesByNote, {
-      onload: () =>
-        resolve({
-          triggerAttack: (note, time = '+1') => {
-            const closestSample = findClosest(samplesByNote, note);
-            const difference = Distance.semitones(closestSample, note);
-            const buffer = buffers.get(closestSample);
-            const playbackRate = Tone.intervalToFrequencyRatio(
-              difference + semitoneChange
-            );
-            const source = new Tone.BufferSource(buffer)
-              .set({
-                playbackRate,
-                onended: () => {
-                  const i = activeSources.indexOf(buffer);
-                  if (i >= 0) {
-                    activeSources.splice(i, 1);
-                  }
-                },
-              })
-              .connect(destination);
-            source.start(time);
+const getCustomSampler = (destination, samplesByNote, semitoneChange = -24) => {
+  const activeSources = [];
+  return getBuffers(samplesByNote).then(buffers => ({
+    triggerAttack: (note, time = '+1') => {
+      const closestSample = findClosest(samplesByNote, note);
+      const difference = Distance.semitones(closestSample, note);
+      const buffer = buffers.get(closestSample);
+      const playbackRate = Tone.intervalToFrequencyRatio(
+        difference + semitoneChange
+      );
+      const source = new Tone.BufferSource(buffer)
+        .set({
+          playbackRate,
+          onended: () => {
+            const i = activeSources.indexOf(buffer);
+            if (i >= 0) {
+              activeSources.splice(i, 1);
+            }
           },
-          dispose: () => {
-            [buffers, ...activeSources].forEach(node => node.dispose());
-          },
-        }),
-    });
-  });
-
-const getBuffer = url =>
-  new Promise(resolve => {
-    const buffer = new Tone.Buffer(url, () => resolve(buffer));
-    if (url instanceof AudioBuffer) {
-      resolve(buffer);
-    }
-  });
+        })
+        .connect(destination);
+      source.start(time);
+    },
+    dispose: () => {
+      [buffers, ...activeSources].forEach(node => node.dispose());
+    },
+  }));
+};
 
 const PHRASE = [['G#5', 1], ['F#5', 2], ['D#5', 3.5], ['C#5', 4], ['D#5', 4.5]];
 const CHORD = ['G#3', 'G#4'];

@@ -1,5 +1,6 @@
 import Tone from 'tone';
 import { Scale, Note } from 'tonal';
+import { getSampler } from '@generative-music/utilities';
 
 const tonic = Note.names()[Math.floor(Math.random() * Note.names().length)];
 const scalePitchClasses = Scale.notes(tonic, 'major');
@@ -65,18 +66,11 @@ const playProgression = piano => {
   }, `+${Math.random() * 3 + (progression.length + 1) * perChordDelay}`);
 };
 
-const getSampledInstrument = samplesByNote =>
-  new Promise(resolve => {
-    const instrument = new Tone.Sampler(samplesByNote, {
-      onload: () => resolve(instrument),
-    });
-  });
-
 const makePiece = ({ audioContext, destination, samples }) => {
   if (Tone.context !== audioContext) {
     Tone.setContext(audioContext);
   }
-  return getSampledInstrument(samples['vsco2-piano-mf']).then(piano => {
+  return getSampler(samples['vsco2-piano-mf']).then(piano => {
     const reverb = new Tone.Freeverb({ roomSize: 0.6 });
     piano.chain(reverb, destination);
     playProgression(piano);

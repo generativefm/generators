@@ -2,6 +2,7 @@ import pickRandom from 'pick-random';
 import randomNumber from 'random-number';
 import * as tonal from 'tonal';
 import Tone from 'tone';
+import { getSampler } from '@generative-music/utilities';
 
 const CHORDS = ['m7', 'maj7', '7'];
 // eslint-disable-next-line no-magic-numbers
@@ -44,12 +45,7 @@ const makeScheduleChord = instrument => {
   return scheduleChord;
 };
 
-const getPiano = samples =>
-  new Promise(resolve => {
-    const piano = new Tone.Sampler(samples['vsco2-piano-mf'], {
-      onload: () => resolve(piano),
-    });
-  });
+const getPiano = samples => getSampler(samples['vsco2-piano-mf']);
 
 const makePiece = ({ audioContext, destination, samples }) => {
   if (Tone.context !== audioContext) {

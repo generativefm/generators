@@ -1,15 +1,5 @@
 import Tone from 'tone';
-
-const getSampler = (samplesByNote, baseUrl = '') =>
-  new Promise(resolve => {
-    const sampler = new Tone.Sampler(samplesByNote, {
-      baseUrl,
-      onload: () => resolve(sampler),
-      attack: 2,
-      release: 2,
-      curve: 'linear',
-    });
-  });
+import { getSampler } from '@generative-music/utilities';
 
 const randomIntBetween = (min, max) =>
   Math.floor(min + Math.random() * (max - min));
@@ -21,7 +11,11 @@ const makePiece = ({ audioContext, destination, samples }) => {
     Tone.setContext(audioContext);
   }
   return Promise.all([
-    getSampler(samples['vcsl-tenor-sax-vib']),
+    getSampler(samples['vcsl-tenor-sax-vib'], {
+      attack: 2,
+      release: 2,
+      curve: 'linear',
+    }),
     new Tone.Reverb(20).set({ wet: 0.9 }).generate(),
   ]).then(([sax, reverb]) => {
     const autoFilter = new Tone.AutoFilter(

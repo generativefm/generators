@@ -1,24 +1,11 @@
 import Tone from 'tone';
+import { getBuffers, getSampler } from '@generative-music/utilities';
 
 const toss = (pcs = [], octaves = []) =>
   octaves.reduce(
     (notes, octave) => notes.concat(pcs.map(pc => `${pc}${octave}`)),
     []
   );
-
-const getBuffers = samplesByNote =>
-  new Promise(resolve => {
-    const buffers = new Tone.Buffers(samplesByNote, {
-      onload: () => resolve(buffers),
-    });
-  });
-
-const getSampler = samplesByNote =>
-  new Promise(resolve => {
-    const piano = new Tone.Sampler(samplesByNote, {
-      onload: () => resolve(piano),
-    });
-  });
 
 const PIANO_NOTES = toss(['C#', 'D#'], [3, 4, 5, 6]);
 const GUITAR_NOTES = ['G2', 'C3', 'G3', 'C4'];

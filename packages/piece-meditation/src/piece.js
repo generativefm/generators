@@ -1,5 +1,6 @@
 import { Note, Distance } from 'tonal';
 import Tone from 'tone';
+import { getSampler } from '@generative-music/utilities';
 import pickRandomFromArray from './pick-random-from-array';
 
 const NUM_POTENTIAL_TONIC_PITCH_CLASSES = 5;
@@ -68,12 +69,7 @@ const startInterval = (
   );
 };
 
-const getBowls = samples =>
-  new Promise(resolve => {
-    const piano = new Tone.Sampler(samples['kasper-singing-bowls'], {
-      onload: () => resolve(piano),
-    });
-  });
+const getBowls = samples => getSampler(samples['kasper-singing-bowls']);
 
 const makePiece = ({ audioContext, destination, samples }) => {
   if (Tone.context !== audioContext) {

@@ -1,12 +1,6 @@
 import Tone from 'tone';
 import { Scale, Note } from 'tonal';
-
-const getInstrument = samplesByNote =>
-  new Promise(resolve => {
-    const instrument = new Tone.Sampler(samplesByNote, {
-      onload: () => resolve(instrument),
-    });
-  });
+import { getSampler } from '@generative-music/utilities';
 
 const toss = (pcs = [], octaves = []) =>
   octaves.reduce(
@@ -45,9 +39,9 @@ const makePiece = ({ audioContext, destination, samples }) => {
   }
   Tone.context.latencyHint = 'interactive';
   return Promise.all([
-    getInstrument(samples['vsco2-piano-mf']),
-    getInstrument(samples['vsco2-violins-susvib']),
-    getInstrument(samples['vsco2-cello-susvib-f']),
+    getSampler(samples['vsco2-piano-mf']),
+    getSampler(samples['vsco2-violins-susvib']),
+    getSampler(samples['vsco2-cello-susvib-f']),
   ]).then(([piano, violins, cello]) => {
     const volume = new Tone.Volume(-5);
     const delay = new Tone.FeedbackDelay({ feedback: 0.5, delayTime: 0.44 });

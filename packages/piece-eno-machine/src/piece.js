@@ -1,6 +1,7 @@
 import { Chord, Array } from 'tonal';
 import randomNumber from 'random-number';
 import Tone from 'tone';
+import { getSampler } from '@generative-music/utilities';
 
 const OCTAVES = [3, 4, 5];
 const MIN_REPEAT_S = 20;
@@ -12,12 +13,7 @@ const NOTES = Array.rotate(1, Chord.notes('DbM9')).reduce(
   []
 );
 
-const getPiano = samples =>
-  new Promise(resolve => {
-    const piano = new Tone.Sampler(samples['vsco2-piano-mf'], {
-      onload: () => resolve(piano),
-    });
-  });
+const getPiano = samples => getSampler(samples['vsco2-piano-mf']);
 
 const makePiece = ({ audioContext, destination, samples }) => {
   if (Tone.context !== audioContext) {

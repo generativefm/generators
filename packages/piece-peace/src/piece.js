@@ -1,11 +1,5 @@
 import Tone from 'tone';
-
-const getBuffers = samplesByNote =>
-  new Promise(resolve => {
-    const buffers = new Tone.Buffers(samplesByNote, {
-      onload: () => resolve(buffers),
-    });
-  });
+import { getBuffers } from '@generative-music/utilities';
 
 const NOTES = ['A3', 'C4', 'D4', 'E4', 'G4', 'A4'];
 

@@ -1,19 +1,13 @@
 import Tone from 'tone';
 import { Note } from 'tonal';
 import * as Range from 'tonal-range';
+import { getSampler } from '@generative-music/utilities';
 
 const MAX_STEP_DISTANCE = 3;
 const MAX_PHRASE_LENGTH = 3;
 const PHRASE_P_BASE = 0.5;
 
 const cMajorRange = Range.scale(['C', 'D', 'E', 'F', 'G', 'A', 'B']);
-
-const getSampledInstrument = samplesByNote =>
-  new Promise(resolve => {
-    const instrument = new Tone.Sampler(samplesByNote, {
-      onload: () => resolve(instrument),
-    });
-  });
 
 const getNextNotesForNote = (notes, note) => {
   const index = notes.findIndex(n => n === note);
@@ -104,7 +98,7 @@ const makeInstrumentComponent = (
       playPhrase();
     }, Math.random() * 10 + 10);
   };
-  return getSampledInstrument(samplesByNote).then(instrument => {
+  return getSampler(samplesByNote).then(instrument => {
     start(instrument);
     return instrument;
   });

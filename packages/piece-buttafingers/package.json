@@ -29,6 +29,7 @@
     "tone": "^13.4.9"
   },
   "dependencies": {
+    "@generative-music/utilities": "^0.1.0",
     "tonal": "^2.2.1"
   }
 }
