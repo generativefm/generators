@@ -9,7 +9,8 @@
   ],
   "scripts": {
     "test": "karma start",
-    "test:watch": "karma start --no-single-run"
+    "test:watch": "karma start --no-single-run",
+    "preversion": "npm test"
   },
   "repository": {
     "type": "git",
