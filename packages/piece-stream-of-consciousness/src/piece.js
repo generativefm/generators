@@ -9,45 +9,50 @@ const pitchShiftSampler = (samplesByNote, destination, semitoneChange = 0) => {
     ])
   );
   const activeSources = [];
-  return getBuffers(samplesByNote).then(buffers => ({
-    play(note, time) {
-      const midi = new Tone.Midi(note);
-      let buffer;
-      let interval;
-      for (let i = 0; !buffer && i < 24; i += 1) {
-        //eslint-disable-next-line no-loop-func
-        [i, -i].some(transposition => {
-          const transposedMidi = midi.transpose(transposition);
-          if (midiNoteMap.has(transposedMidi.toMidi())) {
-            buffer = buffers.get(transposedMidi.toNote());
-            interval = -transposition;
-            return true;
-          }
-          return false;
-        });
-      }
-      if (buffer) {
-        const playbackRate = Tone.intervalToFrequencyRatio(
-          interval + semitoneChange
-        );
-        const source = new Tone.BufferSource(buffer).set({
-          playbackRate,
-          onended: () => {
-            const i = activeSources.indexOf(buffer);
-            if (i >= 0) {
-              activeSources.splice(i, 1);
+  return getBuffers(samplesByNote).then(buffers => {
+    Reflect.ownKeys(samplesByNote).forEach(note => {
+      buffers.get(note).reverse = true;
+    });
+    return {
+      play(note, time) {
+        const midi = new Tone.Midi(note);
+        let buffer;
+        let interval;
+        for (let i = 0; !buffer && i < 24; i += 1) {
+          //eslint-disable-next-line no-loop-func
+          [i, -i].some(transposition => {
+            const transposedMidi = midi.transpose(transposition);
+            if (midiNoteMap.has(transposedMidi.toMidi())) {
+              buffer = buffers.get(transposedMidi.toNote());
+              interval = -transposition;
+              return true;
             }
-          },
-        });
-        source.connect(destination);
-        source.start(time);
-      }
-    },
-    dispose: () => {
-      [buffers, ...activeSources].forEach(node => node.dispose());
-      activeSources.splice(0, activeSources.length);
-    },
-  }));
+            return false;
+          });
+        }
+        if (buffer) {
+          const playbackRate = Tone.intervalToFrequencyRatio(
+            interval + semitoneChange
+          );
+          const source = new Tone.BufferSource(buffer).set({
+            playbackRate,
+            onended: () => {
+              const i = activeSources.indexOf(buffer);
+              if (i >= 0) {
+                activeSources.splice(i, 1);
+              }
+            },
+          });
+          source.connect(destination);
+          source.start(time);
+        }
+      },
+      dispose: () => {
+        [buffers, ...activeSources].forEach(node => node.dispose());
+        activeSources.splice(0, activeSources.length);
+      },
+    };
+  });
 };
 
 const reverseSampler = (samplesByNote, destination) => {
