@@ -21,12 +21,12 @@
   "peerDependencies": {
     "tone": "^13.4.9"
   },
-  "version": "3.0.0",
+  "version": "3.1.0",
   "gitHead": "8ed39368a8376ff9ea366fe8e1ab01820553a037",
   "devDependencies": {
     "tone": "^13.4.9"
   },
   "dependencies": {
-    "@generative-music/utilities": "^0.1.0"
+    "@generative-music/utilities": "^3.1.0"
   }
 }

@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-drones-2",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "generativeFmManifest": "drones-2.gfm.manifest.json",
   "repository": {
     "type": "git",
@@ -29,7 +29,7 @@
     "tone": "^13.4.9"
   },
   "dependencies": {
-    "@generative-music/utilities": "^0.1.0",
+    "@generative-music/utilities": "^3.1.0",
     "tonal": "^2.2.2"
   }
 }
