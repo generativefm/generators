@@ -59,9 +59,15 @@ const reverseSampler = (samplesByNote, destination) => {
   );
   const activeSources = [];
   return getBuffers(samplesByNote).then(buffers => {
-    Reflect.ownKeys(samplesByNote).forEach(note => {
-      buffers.get(note).reverse = true;
-    });
+    const reversedBuffersByNote = Object.keys(samplesByNote).reduce(
+      (byNote, note) => {
+        const reversed = new Tone.Buffer(buffers.get(note));
+        reversed.reverse = true;
+        byNote[note] = reversed;
+        return byNote;
+      }
+    );
+    const reversedBuffers = new Tone.Buffers(reversedBuffersByNote);
     return {
       play(note, time, duration) {
         const midi = new Tone.Midi(note);
@@ -72,7 +78,7 @@ const reverseSampler = (samplesByNote, destination) => {
           [i, -i].some(transposition => {
             const transposedMidi = midi.transpose(transposition);
             if (midiNoteMap.has(transposedMidi.toMidi())) {
-              buffer = buffers.get(transposedMidi.toNote());
+              buffer = reversedBuffers.get(transposedMidi.toNote());
               interval = -transposition;
               return true;
             }
@@ -105,7 +111,9 @@ const reverseSampler = (samplesByNote, destination) => {
         }
       },
       dispose: () => {
-        [buffers, ...activeSources].forEach(node => node.dispose());
+        [buffers, reversedBuffers, ...activeSources].forEach(node =>
+          node.dispose()
+        );
         activeSources.splice(0, activeSources.length);
       },
     };
