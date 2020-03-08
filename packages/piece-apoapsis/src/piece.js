@@ -44,8 +44,8 @@ const makePiece = ({ audioContext, destination, samples }) => {
     }),
   ]).then(([buffers, violins]) => {
     const reversePiano = new Tone.Sampler(
-      Reflect.ownKeys(pianoSamples).reduce((reverseConfig, note, i) => {
-        reverseConfig[note] = buffers[i];
+      Reflect.ownKeys(pianoSamples).reduce((reverseConfig, note) => {
+        reverseConfig[note] = buffers.get(note);
         reverseConfig[note].reverse = true;
         return reverseConfig;
       }, {})
@@ -92,6 +92,7 @@ const makePiece = ({ audioContext, destination, samples }) => {
         reverb,
         violinReverb,
         violins,
+        buffers,
         reversePiano,
       ].forEach(node => node.dispose());
     };
