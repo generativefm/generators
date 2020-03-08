@@ -61,7 +61,9 @@ const reverseSampler = (samplesByNote, destination) => {
   return getBuffers(samplesByNote).then(buffers => {
     const reversedBuffersByNote = Object.keys(samplesByNote).reduce(
       (byNote, note) => {
-        const reversed = new Tone.Buffer(buffers.get(note));
+        const reversed = new Tone.Buffer().fromArray(
+          buffers.get(note).toArray()
+        );
         reversed.reverse = true;
         byNote[note] = reversed;
         return byNote;
