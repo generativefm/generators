@@ -65,7 +65,8 @@ const reverseSampler = (samplesByNote, destination) => {
         reversed.reverse = true;
         byNote[note] = reversed;
         return byNote;
-      }
+      },
+      {}
     );
     const reversedBuffers = new Tone.Buffers(reversedBuffersByNote);
     return {
