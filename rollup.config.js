@@ -69,11 +69,11 @@ const makeOxalisConfig = {
   output: [
     {
       format: 'esm',
-      file: 'packages/utilities/dist/esm.js',
+      file: 'packages/make-piece-oxalis/dist/esm.js',
     },
     {
       format: 'cjs',
-      file: 'packages/utilities/dist/cjs.js',
+      file: 'packages/make-piece-oxalis/dist/cjs.js',
     },
   ],
   external: ['tone', '@generative-music/utilities'],
