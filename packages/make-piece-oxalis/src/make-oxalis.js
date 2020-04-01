@@ -8,7 +8,6 @@ const getReverb = () =>
     .generate();
 
 const makeOxalis = (notes = []) => ({ audioContext, destination, samples }) => {
-  console.log(getPrerenderedSampler);
   if (Tone.context !== audioContext) {
     Tone.setContext(audioContext);
   }
