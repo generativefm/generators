@@ -1,0 +1,12 @@
+{
+  "title": "Oxalis 1",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "oxalis-1",
+  "artistId": "alex-bainter",
+  "isRecordable": true,
+  "tags": ["piano", "acoustic", "calm"],
+  "releaseDate": "2020-03-31T00:00:00.000Z",
+  "visualizationType": "squareCut",
+  "sampleNames": ["vsco2-piano-mf", "vsco2-glock"]
+}
