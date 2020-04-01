@@ -12,13 +12,7 @@ const makeOxalis = (notes = []) => ({ audioContext, destination, samples }) => {
     Tone.setContext(audioContext);
   }
   return Promise.all([
-    getPrerenderedSampler(
-      notes,
-      samples['vsco2-piano-mf'],
-      getReverb,
-      15,
-      './samples/vsco2-piano-mf/'
-    ),
+    getPrerenderedSampler(notes, samples['vsco2-piano-mf'], getReverb, 15),
     getPrerenderedSampler(
       notes.slice(1).map(note => {
         const pc = note.slice(0, note.length - 1);
@@ -55,8 +49,6 @@ const makeOxalis = (notes = []) => ({ audioContext, destination, samples }) => {
       };
       play();
     });
-
-    Tone.Transport.start();
 
     return () => {
       [piano, glock, delay, glockVol].forEach(node => node.dispose());
