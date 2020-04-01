@@ -1,5 +1,5 @@
 import Tone from 'tone';
-import { getPrerenderedSampler } from '@generative-music/utilities';
+import getPrerenderedSampler from '@generative-music/utilities';
 
 const getReverb = () =>
   new Tone.Reverb(15)
