@@ -34,14 +34,14 @@ const makeOxalis = (notes = []) => ({ audioContext, destination, samples }) => {
       const play = () => {
         const isFirst = i === first;
         if (isFirst) {
-          piano.trigger(note);
+          piano.trigger(note, '+1');
         }
         Tone.Transport.scheduleOnce(() => {
-          piano.trigger(note);
+          piano.trigger(note, '+1');
           if (Math.random() < 0.05) {
             const pc = note.slice(0, note.length - 1);
             const oct = Number.parseInt(note.slice(-1), 10);
-            glock.trigger(`${pc}${Math.max(oct + 1, 5)}`);
+            glock.trigger(`${pc}${Math.max(oct + 1, 5)}`, '+1');
           }
           play();
         }, `+${Math.random() * 15 + (initialized || isFirst ? 15 : 0) * (i === 0 ? 3 : 1)}`);
