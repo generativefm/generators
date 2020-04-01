@@ -64,6 +64,21 @@ const utilitiesConfig = {
   external: ['tone'],
 };
 
+const makeOxalisConfig = {
+  input: 'packages/make-piece-oxalis/src/make-oxalis.js',
+  output: [
+    {
+      format: 'esm',
+      file: 'packages/utilities/dist/esm.js',
+    },
+    {
+      format: 'cjs',
+      file: 'packages/utilities/dist/cjs.js',
+    },
+  ],
+  external: ['tone', '@generative-music/utilities'],
+};
+
 module.exports = pieceConfigsPromise.then(pieceConfigs =>
-  pieceConfigs.concat(utilitiesConfig)
+  pieceConfigs.concat([utilitiesConfig, makeOxalisConfig])
 );

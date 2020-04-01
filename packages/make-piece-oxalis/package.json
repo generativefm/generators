@@ -1,0 +1,32 @@
+{
+  "name": "@generative-music/make-piece-oxalis",
+  "version": "3.1.7",
+  "description": "Create variations of the \"Oxalis\" generative music system",
+  "author": "Alex Bainter <alex@alexbainter.com> (https://alexbainter.com)",
+  "homepage": "https://github.com/generative-music/pieces-alex-bainter#readme",
+  "license": "MIT",
+  "main": "dist/cjs.js",
+  "module": "dist/esm.js",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/generative-music/pieces-alex-bainter.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/generative-music/pieces-alex-bainter/issues"
+  },
+  "devDependencies": {
+    "tone": "^13.8.25"
+  },
+  "dependencies": {
+    "@generative-music/utilities": "^3.1.0"
+  },
+  "peerDependencies": {
+    "tone": "^13.8.25"
+  }
+}
