@@ -20,6 +20,9 @@
   "bugs": {
     "url": "https://github.com/generative-music/pieces-alex-bainter/issues"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "devDependencies": {
     "tone": "^13.8.25"
   },
