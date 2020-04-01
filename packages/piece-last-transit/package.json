@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-last-transit",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "generativeFmManifest": "last-transit.gfm.manifest.json",
   "repository": {
     "type": "git",
@@ -29,6 +29,6 @@
     "tone": "^13.4.9"
   },
   "dependencies": {
-    "@generative-music/utilities": "^3.1.0"
+    "@generative-music/utilities": "^3.2.0"
   }
 }
