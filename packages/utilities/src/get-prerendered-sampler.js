@@ -1,13 +1,7 @@
 import Tone from 'tone';
 import getSampledBufferSource from './get-sampled-buffer-source';
 
-const renderNote = (
-  note,
-  samplesByNote,
-  getDestination,
-  renderTime,
-  baseUrl = ''
-) => {
+const renderNote = (note, samplesByNote, getDestination, renderTime) => {
   let resolvedDestination;
   //eslint-disable-next-line new-cap
   return Tone.Offline(() => {
@@ -16,7 +10,7 @@ const renderNote = (
         resolvedDestination = destination;
         return destination;
       }),
-      getSampledBufferSource(note, samplesByNote, baseUrl),
+      getSampledBufferSource(note, samplesByNote),
     ]).then(([destination, bufferSource]) => {
       bufferSource.connect(destination);
       bufferSource.start();
@@ -31,12 +25,11 @@ const getPrerenderedSampler = (
   renderedNotes,
   samplesByNote,
   getDestination,
-  renderTime,
-  baseUrl = ''
+  renderTime
 ) =>
   Promise.all(
     renderedNotes.map(note =>
-      renderNote(note, samplesByNote, getDestination, renderTime, baseUrl)
+      renderNote(note, samplesByNote, getDestination, renderTime)
     )
   ).then(renderedBuffers => {
     const buffersByMidi = renderedBuffers.reduce((byMidi, buffer, i) => {
