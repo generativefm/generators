@@ -1,6 +1,6 @@
 {
   "name": "@generative-music/piece-eno-machine",
-  "version": "3.2.3",
+  "version": "3.2.6",
   "description": "",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/generative-music/piece-eno-machine#readme",
   "dependencies": {
-    "@generative-music/utilities": "^3.2.3",
+    "@generative-music/utilities": "^3.2.6",
     "random-number": "0.0.9",
     "tonal": "^2.0.0"
   },

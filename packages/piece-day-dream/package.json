@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-day-dream",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "3.2.3",
+  "version": "3.2.6",
   "generativeFmManifest": "day-dream.gfm.manifest.json",
   "repository": {
     "type": "git",
@@ -29,7 +29,7 @@
     "tone": "^13.4.9"
   },
   "dependencies": {
-    "@generative-music/utilities": "^3.2.3",
+    "@generative-music/utilities": "^3.2.6",
     "tonal": "^2.2.2"
   }
 }
