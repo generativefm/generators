@@ -13,7 +13,7 @@ const renderNote = (note, samplesByNote, getDestination, renderTime) => {
       getSampledBufferSource(note, samplesByNote),
     ]).then(([destination, bufferSource]) => {
       bufferSource.connect(destination);
-      bufferSource.start();
+      bufferSource.start(0);
     });
   }, renderTime).then(buffer => {
     resolvedDestination.dispose();
