@@ -15,7 +15,7 @@
   },
   "scripts": {
     "lint": "eslint \".\"",
-    "build": "rollup -c",
+    "build": "rollup -c && node scripts/update-collection.js",
     "preversion": "npm run lint && npm run build",
     "postversion": "git push && git push --tags"
   },
