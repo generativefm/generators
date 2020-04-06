@@ -1,6 +1,6 @@
 {
   "name": "@generative-music/piece-pinwheels",
-  "version": "3.2.6",
+  "version": "3.3.0",
   "description": "",
   "main": "dist/cjs.js",
   "repository": {
@@ -14,7 +14,7 @@
   },
   "homepage": "https://github.com/generative-music/piece-pinwheels#readme",
   "dependencies": {
-    "@generative-music/utilities": "^3.2.6",
+    "@generative-music/utilities": "^3.3.0",
     "pick-random": "^2.0.0",
     "random-number": "0.0.9",
     "shuffle-array": "^1.0.1",

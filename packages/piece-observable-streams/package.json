@@ -19,14 +19,14 @@
   },
   "homepage": "https://github.com/generative-music/piece-observable-streams#readme",
   "dependencies": {
-    "@generative-music/utilities": "^3.2.6",
+    "@generative-music/utilities": "^3.3.0",
     "rxjs": "^6.4.0",
     "tonal": "^2.2.1"
   },
   "peerDependencies": {
     "tone": "^13.4.9"
   },
-  "version": "3.2.6",
+  "version": "3.3.0",
   "gitHead": "8ed39368a8376ff9ea366fe8e1ab01820553a037",
   "devDependencies": {
     "tone": "^13.4.9"

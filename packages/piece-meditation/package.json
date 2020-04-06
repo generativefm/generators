@@ -1,6 +1,6 @@
 {
   "name": "@generative-music/piece-meditation",
-  "version": "3.2.6",
+  "version": "3.3.0",
   "description": "",
   "main": "dist/cjs.js",
   "files": [
@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/generative-music/piece-meditation#readme",
   "dependencies": {
-    "@generative-music/utilities": "^3.2.6",
+    "@generative-music/utilities": "^3.3.0",
     "tonal": "^2.1.2"
   },
   "peerDependencies": {
