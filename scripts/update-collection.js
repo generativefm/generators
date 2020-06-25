@@ -36,8 +36,10 @@ fs.mkdir('./packages/pieces-alex-bainter/dist/', { recursive: true })
   .then(() => {
     console.log('Generated pieces-alex-bainter/esm.js');
   });
-spawn(
-  'npm',
-  ['i', '--prefix', './packages/pieces-alex-bainter'].concat(packageNames),
-  { stdio: 'inherit' }
-);
+// spawn(
+//   'npm',
+//   ['i', '--prefix', './packages/pieces-alex-bainter'].concat(
+//     packageNames.map(packageName => packageName)
+//   ),
+//   { stdio: 'inherit' }
+// );
