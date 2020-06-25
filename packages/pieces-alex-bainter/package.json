@@ -1,6 +1,6 @@
 {
   "name": "@generative-music/pieces-alex-bainter",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "description": "A collection of generative music systems by Alex Bainter",
   "main": "dist/esm.js",
   "module": "dist/esm.js",
@@ -64,7 +64,7 @@
     "@generative-music/piece-peace": "^3.3.0",
     "@generative-music/piece-pinwheels": "^3.3.0",
     "@generative-music/piece-pulse-code-modulation": "^3.3.0",
-    "@generative-music/piece-quarter-eyes": "^3.3.0",
+    "@generative-music/piece-quarter-eyes": "^3.4.0",
     "@generative-music/piece-remembering": "^3.3.0",
     "@generative-music/piece-return-to-form": "^3.3.0",
     "@generative-music/piece-ritual": "^3.3.0",
