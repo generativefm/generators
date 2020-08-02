@@ -22,14 +22,13 @@
   "homepage": "https://github.com/generative-music/piece-eno-machine#readme",
   "dependencies": {
     "@generative-music/utilities": "^3.3.0",
-    "random-number": "0.0.9",
     "tonal": "^2.0.0"
   },
   "peerDependencies": {
-    "tone": "^13.4.9"
+    "tone": "^14.7.39"
   },
   "gitHead": "8ed39368a8376ff9ea366fe8e1ab01820553a037",
   "devDependencies": {
-    "tone": "^13.4.9"
+    "tone": "^14.7.39"
   }
 }
