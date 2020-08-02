@@ -1,4 +1,4 @@
-import Tone from 'tone';
+import * as Tone from 'tone';
 import getSampledBufferSource from './get-sampled-buffer-source';
 
 const renderNote = (note, samplesByNote, getDestination, renderTime) => {

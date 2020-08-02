@@ -1,6 +1,4 @@
-/*eslint-env mocha*/
-import expect from 'chai/interface/expect';
-import Tone from 'tone';
+import * as Tone from 'tone';
 import getSampler from './get-sampler';
 
 describe('getSampler', () => {

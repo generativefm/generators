@@ -1,4 +1,4 @@
-import Tone from 'tone';
+import * as Tone from 'tone';
 
 const getBuffers = urlMap => {
   const urls = Array.isArray(urlMap) ? urlMap : Object.values(urlMap);
