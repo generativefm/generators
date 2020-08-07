@@ -26,7 +26,7 @@ const generateTiming = (instruments, getPlayProbability) => {
         const probability = getPlayProbability();
         if (random <= probability) {
           instruments.forEach(instrument =>
-            instrument.triggerAttackRelease(note, '+1')
+            instrument.triggerAttack(note, '+1')
           );
         }
       },
@@ -80,6 +80,9 @@ const activate = ({ destination, samples }) => {
             leftPanSignal,
             lfoMeter,
           ].forEach(node => node.dispose());
+          [firstInstrument, secondInstrument].forEach(sampler =>
+            sampler.releaseAll()
+          );
         };
       };
 
