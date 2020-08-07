@@ -2,9 +2,9 @@ import * as Tone from 'tone';
 
 const getBuffer = url =>
   url instanceof AudioBuffer
-    ? Promise.resolve(new Tone.Buffer(url))
+    ? Promise.resolve(new Tone.ToneAudioBuffer(url))
     : new Promise(resolve => {
-        const buffer = new Tone.Buffer(url, () => {
+        const buffer = new Tone.ToneAudioBuffer(url, () => {
           resolve(buffer);
         });
       });

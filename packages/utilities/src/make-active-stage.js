@@ -3,26 +3,26 @@ import noop from './noop';
 
 const makeActiveStage = (deactivate, schedule) => {
   let isDeactivated = false;
-  const disposeFns = [];
+  const endFns = [];
 
   const wrappedSchedule = () => {
     if (isDeactivated) {
       throw new Error("Can't schedule after deactivation");
     }
-    const dispose = schedule();
-    if (typeof dispose !== 'function') {
+    const end = schedule();
+    if (typeof end !== 'function') {
       return noop;
     }
-    let isDisposed = false;
+    let isEnded = false;
     const wrappedEnd = () => {
-      if (isDisposed) {
+      if (isEnded) {
         return undefinedValue;
       }
-      isDisposed = true;
-      disposeFns.splice(disposeFns.indexOf(wrappedEnd), 1);
-      return dispose();
+      isEnded = true;
+      endFns.splice(endFns.indexOf(wrappedEnd), 1);
+      return end();
     };
-    disposeFns.push(wrappedEnd);
+    endFns.push(wrappedEnd);
     return wrappedEnd;
   };
 
@@ -31,7 +31,7 @@ const makeActiveStage = (deactivate, schedule) => {
       return undefinedValue;
     }
     isDeactivated = true;
-    disposeFns.forEach(dispose => dispose());
+    endFns.forEach(end => end());
     return deactivate();
   };
 

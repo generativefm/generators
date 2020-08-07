@@ -10,12 +10,12 @@ describe('getBuffer', () => {
   });
   it('should resolve a string url with a Tone Buffer', () => {
     return getBuffer('./base/test-assets/noise-1s.ogg').then(result =>
-      expect(result).to.be.an.instanceOf(Tone.Buffer)
+      expect(result).to.be.an.instanceOf(Tone.ToneAudioBuffer)
     );
   });
   it('should resolve an AudioBuffer with a Tone Buffer', () => {
     return getBuffer(Tone.context.createBuffer(1, 44100, 44100)).then(result =>
-      expect(result).to.be.an.instanceOf(Tone.Buffer)
+      expect(result).to.be.an.instanceOf(Tone.ToneAudioBuffer)
     );
   });
 });

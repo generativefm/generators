@@ -2,7 +2,7 @@ import * as Tone from 'tone';
 import getBuffers from './get-buffers';
 
 describe('getBuffers', () => {
-  it('should return a promise that resolves to an instance of Tone.Buffers', () => {
+  it('should return a promise that resolves to an instance of ToneAudioBuffers', () => {
     const stringUrl = './base/test-assets/noise-1s.ogg';
     const audioBufferUrl = Tone.context.createBuffer(1, 44100, 44100);
     const urlMaps = [
@@ -21,7 +21,7 @@ describe('getBuffers', () => {
     });
     return Promise.all(results).then(resolvedResults => {
       resolvedResults.forEach(result => {
-        expect(result).to.be.an.instanceOf(Tone.Buffers);
+        expect(result).to.be.an.instanceOf(Tone.ToneAudioBuffers);
       });
     });
   });

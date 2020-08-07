@@ -33,31 +33,31 @@ describe('makeActiveStage', () => {
       deactivate();
       expect(deactivateParameter).to.have.property('callCount', 1);
     });
-    it('should call any uncalled dispose functions', () => {
-      const dispose = makeCallAwareFn();
-      const scheduleParameter = () => dispose;
+    it('should call any uncalled end functions', () => {
+      const end = makeCallAwareFn();
+      const scheduleParameter = () => end;
       const [deactivate, schedule] = makeActiveStage(noop, scheduleParameter);
       schedule();
       deactivate();
-      expect(dispose).to.have.property('called', true);
+      expect(end).to.have.property('called', true);
     });
-    it('should not call dispose functions which were already called', () => {
-      const dispose = makeCallAwareFn();
-      const scheduleParameter = () => dispose;
+    it('should not call end functions which were already called', () => {
+      const end = makeCallAwareFn();
+      const scheduleParameter = () => end;
       const [deactivate, schedule] = makeActiveStage(noop, scheduleParameter);
-      const disposeFromSchedule = schedule();
-      disposeFromSchedule();
+      const endFromSchedule = schedule();
+      endFromSchedule();
       deactivate();
-      expect(dispose).to.have.property('callCount', 1);
+      expect(end).to.have.property('callCount', 1);
     });
-    it('should not call dispose functions multiple times', () => {
-      const dispose = makeCallAwareFn();
-      const scheduleParameter = () => dispose;
+    it('should not call end functions multiple times', () => {
+      const end = makeCallAwareFn();
+      const scheduleParameter = () => end;
       const [deactivate, schedule] = makeActiveStage(noop, scheduleParameter);
       schedule();
       deactivate();
       deactivate();
-      expect(dispose).to.have.property('callCount', 1);
+      expect(end).to.have.property('callCount', 1);
     });
     it('should not attempt to call non-function results of scheduleParameter', () => {
       const scheduleParameter = () => 'NOT_A_FUNCTION';
@@ -68,13 +68,13 @@ describe('makeActiveStage', () => {
   });
   describe('schedule', () => {
     it('should call the scheduleParameter and return a function which calls the result', () => {
-      const dispose = makeCallAwareFn();
-      const scheduleResult = dispose;
+      const end = makeCallAwareFn();
+      const scheduleResult = end;
       const scheduleParameter = () => scheduleResult;
       const [, schedule] = makeActiveStage(noop, scheduleParameter);
-      const disposeFromSchedule = schedule();
-      disposeFromSchedule();
-      expect(dispose).to.have.property('called', true);
+      const endFromSchedule = schedule();
+      endFromSchedule();
+      expect(end).to.have.property('called', true);
     });
     it('should throw an error when called after deactivate was called', () => {
       const [deactivate, schedule] = makeActiveStage(noop, noop);
