@@ -14,17 +14,19 @@ activate({
   destination: toneContext.destination,
 }).then(([, schedule]) => {
   console.log('activated');
-  schedule();
+
+  let dispose = schedule();
 
   Tone.Transport.start();
 
   window.stop = () => {
     Tone.Transport.stop();
     Tone.Transport.cancel();
+    dispose();
   };
 
   window.start = () => {
-    schedule();
+    dispose = schedule();
 
     Tone.Transport.start();
   };
