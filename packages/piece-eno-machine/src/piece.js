@@ -30,6 +30,10 @@ const activate = ({ destination, samples }) => {
         const playNote = () => piano.triggerAttack(note, '+1');
         Tone.Transport.scheduleRepeat(playNote, interval, `+${delay}`);
       });
+
+      return () => {
+        piano.releaseAll();
+      };
     };
 
     const deactivate = () => {
