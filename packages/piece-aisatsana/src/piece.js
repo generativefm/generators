@@ -64,6 +64,9 @@ const activate = ({ destination, samples }) => {
         schedulePhrase,
         phraseLength * EIGHTH_NOTE_INTERVAL_S
       );
+      return () => {
+        piano.releaseAll();
+      };
     };
 
     const deactivate = () => {
