@@ -1,8 +1,12 @@
 import * as Tone from 'tone';
 
-const getSampler = (urlMap, opts = {}) => {
+const createSampler = (urlMap, opts = {}) => {
   const urls = Array.isArray(urlMap) ? urlMap : Object.values(urlMap);
-  if (urls.every(url => url instanceof AudioBuffer)) {
+  if (
+    urls.every(
+      url => url instanceof AudioBuffer || url instanceof Tone.ToneAudioBuffer
+    )
+  ) {
     return Promise.resolve(new Tone.Sampler(urlMap, opts));
   }
   return new Promise(resolve => {
@@ -15,4 +19,4 @@ const getSampler = (urlMap, opts = {}) => {
   });
 };
 
-export default getSampler;
+export default createSampler;

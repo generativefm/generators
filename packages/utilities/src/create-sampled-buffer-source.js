@@ -1,8 +1,8 @@
 import * as Tone from 'tone';
 import findClosest from './find-closest';
-import getBuffer from './get-buffer';
+import createBuffer from './create-buffer';
 
-const getSampledBufferSource = (note, samplesByNote) => {
+const createSampledBufferSource = (note, samplesByNote) => {
   const samplesByMidi = Object.keys(samplesByNote).reduce(
     (byMidi, sampledNote) => {
       byMidi.set(
@@ -18,10 +18,10 @@ const getSampledBufferSource = (note, samplesByNote) => {
   const playbackRate = Tone.intervalToFrequencyRatio(difference);
   const closestSampleUrl = samplesByMidi.get(midi - difference);
   const bufferSource = new Tone.BufferSource({ playbackRate });
-  return getBuffer(closestSampleUrl).then(buffer => {
+  return createBuffer(closestSampleUrl).then(buffer => {
     bufferSource.set({ buffer });
     return bufferSource;
   });
 };
 
-export default getSampledBufferSource;
+export default createSampledBufferSource;

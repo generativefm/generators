@@ -1,6 +1,6 @@
 import * as Tone from 'tone';
 
-const getBuffers = urlMap => {
+const createBuffers = urlMap => {
   const urls = Array.isArray(urlMap) ? urlMap : Object.values(urlMap);
   if (urls.every(url => url instanceof AudioBuffer)) {
     return Promise.resolve(new Tone.ToneAudioBuffers(urlMap));
@@ -12,4 +12,4 @@ const getBuffers = urlMap => {
   });
 };
 
-export default getBuffers;
+export default createBuffers;

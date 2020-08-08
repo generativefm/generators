@@ -9,6 +9,9 @@ const makeActiveStage = (deactivate, schedule) => {
     if (isDeactivated) {
       throw new Error("Can't schedule after deactivation");
     }
+    if (endFns.length > 0) {
+      console.warn("Rescheduling a piece that wasn't ended");
+    }
     const end = schedule();
     if (typeof end !== 'function') {
       return noop;

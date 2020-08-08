@@ -1,10 +1,13 @@
-import Tone, { Transport, Sampler, Frequency, now } from 'tone';
-import { getBuffer } from '@generative-music/utilities';
-import { minor7th } from './theory/chords';
+import * as Tone from 'tone';
+import {
+  createBuffer,
+  createSampler,
+  minor7th,
+  makePiece,
+  getRandomNumberBetween,
+  getRandomElement,
+} from '@generative-music/utilities';
 import arpeggiateOnce from './arpeggiate-once';
-import getRandomElement from './get-random-element';
-import getRandomBetween from './get-random-between';
-import getRandomIntBetween from './get-random-int-between';
 
 const INSTRUMENT = `vsco2-piano-mf`;
 
@@ -33,24 +36,24 @@ const makeNextNote = (
   const nextNote = () => {
     const note = getRandomElement(CHORD);
     const reverseNote = `${note}${getRandomElement(REVERSE_OCTAVES)}`;
-    const inversion = getRandomIntBetween(0, 4);
+    const inversion = Math.floor(getRandomNumberBetween(0, 4));
     const regularOctave = getRandomElement(REGULAR_OCTAVES);
     const regularNotes = minor7th(`${note}${regularOctave}`, inversion);
-    Transport.scheduleOnce(() => {
+    Tone.Transport.scheduleOnce(() => {
       reverseInstrument.triggerAttack(reverseNote);
       //eslint-disable-next-line new-cap
-      const midi = Frequency(reverseNote).toMidi();
-      if (typeof durationsByMidi[midi] === 'undefined') {
-        const [{ _stopTime, _startTime }] = reverseInstrument._activeSources[
-          midi
-        ];
-        durationsByMidi[midi] = _stopTime - _startTime;
+      const midi = Tone.Frequency(reverseNote).toMidi();
+      if (!durationsByMidi.has(midi)) {
+        const [bufferSource] = reverseInstrument._activeSources.get(midi);
+        const duration =
+          bufferSource.buffer.duration / bufferSource.playbackRate.value;
+        durationsByMidi.set(midi, duration);
       }
-      Transport.scheduleOnce(() => {
+      Tone.Transport.scheduleOnce(() => {
         arpeggiateOnce({
           instrument: regularInstrument,
           notes: regularNotes,
-          withinTime: getRandomBetween(
+          withinTime: getRandomNumberBetween(
             REGULAR_ARPEGGIATE_MIN_TIME,
             REGULAR_ARPEGGIATE_MAX_TIME
           ),
@@ -58,13 +61,13 @@ const makeNextNote = (
         nextNote();
         if (Math.random() < EXTRA_NOTE_CHANCE_P) {
           const extraNote = getRandomElement(regularNotes);
-          Transport.scheduleOnce(() => {
+          Tone.Transport.scheduleOnce(() => {
             regularInstrument.triggerAttack(
               extraNote,
-              now(),
+              Tone.now(),
               EXTRA_NOTE_VELOCITY
             );
-          }, `+${durationsByMidi[midi] / 4}`);
+          }, `+${durationsByMidi.get(midi) / 4}`);
         } else if (Math.random() < EXTRA_CHORD_CHANCE_P) {
           let extraChordOctave = regularOctave;
           while (
@@ -74,54 +77,67 @@ const makeNextNote = (
             extraChordOctave = getRandomElement(REGULAR_OCTAVES);
           }
           const extraNotes = minor7th(`${note}${extraChordOctave}`, inversion);
-          Transport.scheduleOnce(() => {
+          Tone.Transport.scheduleOnce(() => {
             arpeggiateOnce({
               instrument: regularInstrument,
               notes: extraNotes,
-              withinTime: getRandomBetween(
+              withinTime: getRandomNumberBetween(
                 REGULAR_ARPEGGIATE_MIN_TIME,
                 REGULAR_ARPEGGIATE_MAX_TIME
               ),
               velocity: EXTRA_NOTE_VELOCITY,
             });
-          }, `+${durationsByMidi[midi] / 4}`);
+          }, `+${durationsByMidi.get(midi) / 4}`);
         }
-      }, `+${durationsByMidi[midi]}`);
+      }, `+${durationsByMidi.get(midi)}`);
     }, `+1`);
   };
   return nextNote;
 };
 
-const piece = ({ audioContext, destination, samples }) => {
-  if (Tone.context !== audioContext) {
-    Tone.setContext(audioContext);
-  }
+const activate = ({ destination, samples }) => {
   const pianoSamples = samples[INSTRUMENT];
   const notes = Object.keys(pianoSamples);
-  const noteBuffers = notes.map(note => getBuffer(pianoSamples[note]));
-  return Promise.all(noteBuffers).then(buffers => {
-    const bufferCopies = buffers.map(buffer =>
-      new Tone.Buffer().fromArray(buffer.toArray())
-    );
-    const regularInstrument = new Sampler(buffersToObj(bufferCopies, notes));
-    buffers.forEach(buffer => {
-      buffer.reverse = true;
-    });
-    const reverseInstrument = new Sampler(buffersToObj(buffers, notes));
-    const durationsByMidi = {};
-    const nextNote = makeNextNote(
-      reverseInstrument,
-      regularInstrument,
-      durationsByMidi
-    );
-    nextNote();
-    [reverseInstrument, regularInstrument].forEach(i => i.connect(destination));
-    return () => {
-      [regularInstrument, reverseInstrument].forEach(instrument =>
-        instrument.dispose()
+  const noteBuffers = notes.map(note => createBuffer(pianoSamples[note]));
+  return Promise.all(noteBuffers)
+    .then(buffers => {
+      const reverseBuffers = buffers.map(buffer => {
+        const reverseBuffer = Tone.ToneAudioBuffer.fromArray(buffer.toArray());
+        reverseBuffer.reverse = true;
+        return reverseBuffer;
+      });
+      return Promise.all([
+        createSampler(buffersToObj(buffers, notes)),
+        createSampler(buffersToObj(reverseBuffers, notes)),
+      ]);
+    })
+    .then(([regularInstrument, reverseInstrument]) => {
+      [reverseInstrument, regularInstrument].forEach(instrument =>
+        instrument.connect(destination)
       );
-    };
-  });
+      const durationsByMidi = new Map();
+      const nextNote = makeNextNote(
+        reverseInstrument,
+        regularInstrument,
+        durationsByMidi
+      );
+
+      const schedule = () => {
+        nextNote();
+        return () =>
+          [regularInstrument, reverseInstrument].forEach(instrument =>
+            instrument.releaseAll()
+          );
+      };
+
+      const deactivate = () => {
+        [regularInstrument, reverseInstrument].forEach(instrument =>
+          instrument.dispose()
+        );
+      };
+
+      return [deactivate, schedule];
+    });
 };
 
-export default piece;
+export default makePiece(activate);

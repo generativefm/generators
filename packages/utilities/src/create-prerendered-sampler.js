@@ -1,5 +1,5 @@
 import * as Tone from 'tone';
-import getSampledBufferSource from './get-sampled-buffer-source';
+import createSampledBufferSource from './create-sampled-buffer-source';
 
 const renderNote = (note, samplesByNote, getDestination, renderTime) => {
   let resolvedDestination;
@@ -10,7 +10,7 @@ const renderNote = (note, samplesByNote, getDestination, renderTime) => {
         resolvedDestination = destination;
         return destination;
       }),
-      getSampledBufferSource(note, samplesByNote),
+      createSampledBufferSource(note, samplesByNote),
     ]).then(([destination, bufferSource]) => {
       bufferSource.connect(destination);
       bufferSource.start(0);
@@ -21,7 +21,7 @@ const renderNote = (note, samplesByNote, getDestination, renderTime) => {
   });
 };
 
-const getPrerenderedSampler = (
+const createPrerenderedSampler = (
   renderedNotes,
   samplesByNote,
   getDestination,
@@ -69,4 +69,4 @@ const getPrerenderedSampler = (
     };
   });
 
-export default getPrerenderedSampler;
+export default createPrerenderedSampler;

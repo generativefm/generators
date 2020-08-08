@@ -1,6 +1,6 @@
 import Chain from 'markov-chains';
 import * as Tone from 'tone';
-import { getSampler, makePiece } from '@generative-music/utilities';
+import { createSampler, makePiece } from '@generative-music/utilities';
 import instructions from './instructions.json';
 
 const BPM = 102;
@@ -11,7 +11,7 @@ const EIGHTH_NOTE_INTERVAL_S =
 const DELIMITER = ',';
 const SONG_LENGTH = 301;
 
-const getPiano = samples => getSampler(samples['vsco2-piano-mf']);
+const getPiano = samples => createSampler(samples['vsco2-piano-mf']);
 
 const activate = ({ destination, samples }) => {
   const notes = instructions.tracks[1].notes.slice(0);

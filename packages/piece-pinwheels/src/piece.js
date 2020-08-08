@@ -1,12 +1,14 @@
 import * as tonal from 'tonal';
-import pickRandom from 'pick-random';
-import randomNumber from 'random-number';
 import shuffle from 'shuffle-array';
-import Tone from 'tone';
-import { getSampler } from '@generative-music/utilities';
+import * as Tone from 'tone';
+import {
+  createSampler,
+  getRandomElement,
+  getRandomNumberBetween,
+  makePiece,
+} from '@generative-music/utilities';
 
 const P_SPAWN_TWO = 0.33;
-// eslint-disable-next-line no-magic-numbers
 const OCTAVES = [3, 4, 5];
 const TONICS = tonal.Note.names().reduce(
   (notesWithOctaves, noteName) =>
@@ -24,24 +26,22 @@ const MIN_DECELERATION_MULTIPLIER = 1.05;
 const MAX_DECELERATION_MULTIPLIER = 1.15;
 const CHORD_TYPE = 'm7';
 
-const randomBetween = (min, max, integer = false) =>
-  randomNumber({ min, max, integer });
-
 function* makeArrayLooper(arr) {
   for (let i = 0; i < arr.length; i === arr.length - 1 ? (i = 0) : (i += 1)) {
     yield arr[i];
   }
 }
 
-const getNewMaxDelay = () => randomBetween(MIN_MAX_DELAY_S, MAX_MAX_DELAY_S);
+const getNewMaxDelay = () =>
+  getRandomNumberBetween(MIN_MAX_DELAY_S, MAX_MAX_DELAY_S);
 
 const startPinwheelChain = instrument => {
   const generatePinwheel = (
-    tonic = pickRandom(TONICS)[0],
+    tonic = getRandomElement(TONICS),
     maxDelay = getNewMaxDelay(),
     spawnAnother = true
   ) => {
-    const inversion = randomBetween(0, MAX_INVERSION, true);
+    const inversion = Math.floor(0, MAX_INVERSION + 1);
     const intervals = tonal.Chord.intervals(CHORD_TYPE);
     const notes = intervals.map((interval, i) =>
       tonal.Distance.transpose(
@@ -50,10 +50,7 @@ const startPinwheelChain = instrument => {
       )
     );
     const noteGenerator = makeArrayLooper(shuffle(notes));
-    const minDelay = randomNumber({
-      min: MIN_MIN_DELAY_S,
-      max: MAX_MIN_DELAY_S,
-    });
+    const minDelay = getRandomNumberBetween(MIN_MIN_DELAY_S, MAX_MIN_DELAY_S);
     const playNextNote = (delay, multiplier) => {
       Tone.Transport.scheduleOnce(() => {
         instrument.triggerAttack(noteGenerator.next().value, '+1');
@@ -61,7 +58,7 @@ const startPinwheelChain = instrument => {
         if (nextDelay < minDelay) {
           playNextNote(
             nextDelay,
-            randomBetween(
+            getRandomNumberBetween(
               MIN_DECELERATION_MULTIPLIER,
               MAX_DECELERATION_MULTIPLIER
             )
@@ -70,7 +67,7 @@ const startPinwheelChain = instrument => {
           if (spawnAnother) {
             Tone.Transport.scheduleOnce(() => {
               if (Math.random() < P_SPAWN_TWO) {
-                const [nextLetter] = pickRandom(tonal.Note.names());
+                const nextLetter = getRandomElement(tonal.Note.names());
                 const shuffledOctaves = shuffle(OCTAVES.slice(0));
                 const delay1 = getNewMaxDelay();
                 const delay2 = getNewMaxDelay();
@@ -96,25 +93,30 @@ const startPinwheelChain = instrument => {
     };
     playNextNote(
       maxDelay,
-      randomBetween(MIN_ACCELERATION_MULTIPLIER, MAX_ACCELERATION_MULTIPLIER)
+      getRandomNumberBetween(
+        MIN_ACCELERATION_MULTIPLIER,
+        MAX_ACCELERATION_MULTIPLIER
+      )
     );
   };
   generatePinwheel();
 };
 
-const getPiano = samples => getSampler(samples['vsco2-piano-mf']);
+const getPiano = samples => createSampler(samples['vsco2-piano-mf']);
 
-const makePiece = ({ audioContext, destination, samples }) => {
-  if (Tone.context !== audioContext) {
-    Tone.setContext(audioContext);
-  }
-  return getPiano(samples).then(piano => {
+const activate = ({ destination, samples }) =>
+  getPiano(samples).then(piano => {
     piano.connect(destination);
-    startPinwheelChain(piano);
-    return () => {
+    const schedule = () => {
+      startPinwheelChain(piano);
+      return () => {
+        piano.releaseAll();
+      };
+    };
+    const deactivate = () => {
       piano.dispose();
     };
+    return [deactivate, schedule];
   });
-};
 
-export default makePiece;
+export default makePiece(activate);
