@@ -1,7 +1,8 @@
 import Chain from 'markov-chains';
 import * as Tone from 'tone';
-import { createSampler, makePiece } from '@generative-music/utilities';
+import { createSampler, wrapActivate } from '@generative-music/utilities';
 import instructions from './instructions.json';
+import { sampleNames } from '../aisatsana.gfm.manifest.json';
 
 const BPM = 102;
 const SECONDS_PER_MINUTE = 60;
@@ -13,7 +14,8 @@ const SONG_LENGTH = 301;
 
 const getPiano = samples => createSampler(samples['vsco2-piano-mf']);
 
-const activate = ({ destination, samples }) => {
+const activate = async ({ destination, sampleLibrary }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const notes = instructions.tracks[1].notes.slice(0);
   const eighthNotes = [];
 
@@ -42,39 +44,38 @@ const activate = ({ destination, samples }) => {
 
   const chain = new Chain(phrasesWithIndex);
 
-  return getPiano(samples).then(piano => {
-    piano.connect(destination);
+  const piano = await getPiano(samples);
+  piano.connect(destination);
 
-    const schedule = () => {
-      const schedulePhrase = () => {
-        const phrase = chain.walk();
-        phrase.forEach(str => {
-          const [t, ...names] = str.split(DELIMITER);
-          const parsedT = Number.parseInt(t, 10);
-          names.forEach(name => {
-            const waitTime = parsedT * EIGHTH_NOTE_INTERVAL_S;
-            piano.triggerAttack(
-              name,
-              `+${waitTime + 1 + Math.random() * 0.05 - 0.025}`
-            );
-          });
+  const schedule = () => {
+    const schedulePhrase = () => {
+      const phrase = chain.walk();
+      phrase.forEach(str => {
+        const [t, ...names] = str.split(DELIMITER);
+        const parsedT = Number.parseInt(t, 10);
+        names.forEach(name => {
+          const waitTime = parsedT * EIGHTH_NOTE_INTERVAL_S;
+          piano.triggerAttack(
+            name,
+            `+${waitTime + 1 + Math.random() * 0.05 - 0.025}`
+          );
         });
-      };
-      Tone.Transport.scheduleRepeat(
-        schedulePhrase,
-        phraseLength * EIGHTH_NOTE_INTERVAL_S
-      );
-      return () => {
-        piano.releaseAll();
-      };
+      });
     };
-
-    const deactivate = () => {
-      piano.dispose();
+    Tone.Transport.scheduleRepeat(
+      schedulePhrase,
+      phraseLength * EIGHTH_NOTE_INTERVAL_S
+    );
+    return () => {
+      piano.releaseAll();
     };
+  };
 
-    return [deactivate, schedule];
-  });
+  const deactivate = () => {
+    piano.dispose();
+  };
+
+  return [deactivate, schedule];
 };
 
-export default makePiece(activate);
+export default wrapActivate(activate);
