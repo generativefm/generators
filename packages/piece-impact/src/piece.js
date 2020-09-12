@@ -3,11 +3,12 @@ import {
   createBuffer,
   createSampler,
   minor7th,
-  makePiece,
+  wrapActivate,
   getRandomNumberBetween,
   getRandomElement,
 } from '@generative-music/utilities';
 import arpeggiateOnce from './arpeggiate-once';
+import { sampleNames } from '../impact.gfm.manifest.json';
 
 const INSTRUMENT = `vsco2-piano-mf`;
 
@@ -95,49 +96,50 @@ const makeNextNote = (
   return nextNote;
 };
 
-const activate = ({ destination, samples }) => {
+const activate = async ({ destination, sampleLibrary }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const pianoSamples = samples[INSTRUMENT];
   const notes = Object.keys(pianoSamples);
-  const noteBuffers = notes.map(note => createBuffer(pianoSamples[note]));
-  return Promise.all(noteBuffers)
-    .then(buffers => {
-      const reverseBuffers = buffers.map(buffer => {
-        const reverseBuffer = Tone.ToneAudioBuffer.fromArray(buffer.toArray());
-        reverseBuffer.reverse = true;
-        return reverseBuffer;
-      });
-      return Promise.all([
-        createSampler(buffersToObj(buffers, notes)),
-        createSampler(buffersToObj(reverseBuffers, notes)),
-      ]);
-    })
-    .then(([regularInstrument, reverseInstrument]) => {
-      [reverseInstrument, regularInstrument].forEach(instrument =>
-        instrument.connect(destination)
+  const buffers = await Promise.all(
+    notes.map(note => createBuffer(pianoSamples[note]))
+  );
+
+  const reverseBuffers = buffers.map(buffer => {
+    const reverseBuffer = Tone.ToneAudioBuffer.fromArray(buffer.toArray());
+    reverseBuffer.reverse = true;
+    return reverseBuffer;
+  });
+
+  const [regularInstrument, reverseInstrument] = await Promise.all([
+    createSampler(buffersToObj(buffers, notes)),
+    createSampler(buffersToObj(reverseBuffers, notes)),
+  ]);
+
+  [reverseInstrument, regularInstrument].forEach(instrument =>
+    instrument.connect(destination)
+  );
+  const durationsByMidi = new Map();
+  const nextNote = makeNextNote(
+    reverseInstrument,
+    regularInstrument,
+    durationsByMidi
+  );
+
+  const schedule = () => {
+    nextNote();
+    return () =>
+      [regularInstrument, reverseInstrument].forEach(instrument =>
+        instrument.releaseAll()
       );
-      const durationsByMidi = new Map();
-      const nextNote = makeNextNote(
-        reverseInstrument,
-        regularInstrument,
-        durationsByMidi
-      );
+  };
 
-      const schedule = () => {
-        nextNote();
-        return () =>
-          [regularInstrument, reverseInstrument].forEach(instrument =>
-            instrument.releaseAll()
-          );
-      };
+  const deactivate = () => {
+    [regularInstrument, reverseInstrument].forEach(instrument =>
+      instrument.dispose()
+    );
+  };
 
-      const deactivate = () => {
-        [regularInstrument, reverseInstrument].forEach(instrument =>
-          instrument.dispose()
-        );
-      };
-
-      return [deactivate, schedule];
-    });
+  return [deactivate, schedule];
 };
 
-export default makePiece(activate);
+export default wrapActivate(activate);
