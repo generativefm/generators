@@ -5,8 +5,9 @@ import {
   createSampler,
   getRandomElement,
   getRandomNumberBetween,
-  makePiece,
+  wrapActivate,
 } from '@generative-music/utilities';
+import { sampleNames } from '../pinwheels.gfm.manifest.json';
 
 const P_SPAWN_TWO = 0.33;
 const OCTAVES = [3, 4, 5];
@@ -104,19 +105,20 @@ const startPinwheelChain = instrument => {
 
 const getPiano = samples => createSampler(samples['vsco2-piano-mf']);
 
-const activate = ({ destination, samples }) =>
-  getPiano(samples).then(piano => {
-    piano.connect(destination);
-    const schedule = () => {
-      startPinwheelChain(piano);
-      return () => {
-        piano.releaseAll();
-      };
+const activate = async ({ destination, sampleLibrary }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
+  const piano = await getPiano(samples);
+  piano.connect(destination);
+  const schedule = () => {
+    startPinwheelChain(piano);
+    return () => {
+      piano.releaseAll();
     };
-    const deactivate = () => {
-      piano.dispose();
-    };
-    return [deactivate, schedule];
-  });
+  };
+  const deactivate = () => {
+    piano.dispose();
+  };
+  return [deactivate, schedule];
+};
 
-export default makePiece(activate);
+export default wrapActivate(activate);
