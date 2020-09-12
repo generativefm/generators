@@ -2,10 +2,11 @@ import * as tonal from 'tonal';
 import * as Tone from 'tone';
 import {
   createSampler,
-  makePiece,
+  wrapActivate,
   getRandomNumberBetween,
   getRandomElement,
 } from '@generative-music/utilities';
+import { sampleNames } from '../sevenths.gfm.manifest.json';
 
 const CHORDS = ['m7', 'maj7', '7'];
 // eslint-disable-next-line no-magic-numbers
@@ -49,20 +50,21 @@ const makeScheduleChord = instrument => {
 
 const getPiano = samples => createSampler(samples['vsco2-piano-mf']);
 
-const activate = ({ destination, samples }) =>
-  getPiano(samples).then(piano => {
-    piano.connect(destination);
-    const scheduleChord = makeScheduleChord(piano);
-    const schedule = () => {
-      scheduleChord();
-      return () => {
-        piano.releaseAll();
-      };
+const activate = async ({ destination, sampleLibrary }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
+  const piano = await getPiano(samples);
+  piano.connect(destination);
+  const scheduleChord = makeScheduleChord(piano);
+  const schedule = () => {
+    scheduleChord();
+    return () => {
+      piano.releaseAll();
     };
-    const deactivate = () => {
-      piano.dispose();
-    };
-    return [deactivate, schedule];
-  });
+  };
+  const deactivate = () => {
+    piano.dispose();
+  };
+  return [deactivate, schedule];
+};
 
-export default makePiece(activate);
+export default wrapActivate(activate);
