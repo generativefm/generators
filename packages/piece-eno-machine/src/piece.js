@@ -2,9 +2,10 @@ import { Chord, Array } from 'tonal';
 import * as Tone from 'tone';
 import {
   createSampler,
-  makePiece,
+  wrapActivate,
   getRandomNumberBetween,
 } from '@generative-music/utilities';
+import { sampleNames } from '../eno-machine.gfm.manifest.json';
 
 const OCTAVES = [3, 4, 5];
 const MIN_REPEAT_S = 20;
@@ -18,29 +19,29 @@ const NOTES = Array.rotate(1, Chord.notes('DbM9')).reduce(
 
 const getPiano = samples => createSampler(samples['vsco2-piano-mf']);
 
-const activate = ({ destination, samples }) => {
-  return getPiano(samples).then(piano => {
-    piano.connect(destination);
+const activate = async ({ destination, sampleLibrary }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
+  const piano = await getPiano(samples);
+  piano.connect(destination);
 
-    const schedule = () => {
-      NOTES.forEach(note => {
-        const interval = getRandomNumberBetween(MIN_REPEAT_S, MAX_REPEAT_S);
-        const delay = getRandomNumberBetween(0, MAX_REPEAT_S - MIN_REPEAT_S);
-        const playNote = () => piano.triggerAttack(note, '+1');
-        Tone.Transport.scheduleRepeat(playNote, interval, `+${delay}`);
-      });
+  const schedule = () => {
+    NOTES.forEach(note => {
+      const interval = getRandomNumberBetween(MIN_REPEAT_S, MAX_REPEAT_S);
+      const delay = getRandomNumberBetween(0, MAX_REPEAT_S - MIN_REPEAT_S);
+      const playNote = () => piano.triggerAttack(note, '+1');
+      Tone.Transport.scheduleRepeat(playNote, interval, `+${delay}`);
+    });
 
-      return () => {
-        piano.releaseAll();
-      };
+    return () => {
+      piano.releaseAll();
     };
+  };
 
-    const deactivate = () => {
-      piano.dispose();
-    };
+  const deactivate = () => {
+    piano.dispose();
+  };
 
-    return [deactivate, schedule];
-  });
+  return [deactivate, schedule];
 };
 
-export default makePiece(activate);
+export default wrapActivate(activate, ['vsco2-piano-mf']);
