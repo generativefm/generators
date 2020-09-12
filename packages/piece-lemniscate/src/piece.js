@@ -1,10 +1,11 @@
 import * as Tone from 'tone';
 import {
   createSampler,
-  makePiece,
+  wrapActivate,
   minor7th,
 } from '@generative-music/utilities';
 import combineNotesWithOctaves from './combine-notes-with-octaves';
+import { sampleNames } from '../lemniscate.gfm.manifest.json';
 
 const TONIC = 'A#';
 const OCTAVES = [2, 3, 4, 5, 6];
@@ -39,66 +40,67 @@ const generateTiming = (instruments, getPlayProbability) => {
   });
 };
 
-const activate = ({ destination, samples }) => {
+const activate = async ({ destination, sampleLibrary }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const rightPanner = new Tone.Panner().connect(destination);
   const leftPanner = new Tone.Panner().connect(destination);
   const pianoSamples = samples[INSTRUMENT_NAME];
-  return Promise.all([
+  const instruments = await Promise.all([
     createSampler(pianoSamples),
     createSampler(pianoSamples),
-  ]).then(instruments => {
-    const schedule = () => {
-      const primaryControlLfo = new Tone.LFO(1 / 480).set({ phase: 270 });
+  ]);
 
-      const negate = new Tone.Negate();
-      const rightPanSignal = new Tone.Add(1);
+  const schedule = () => {
+    const primaryControlLfo = new Tone.LFO(1 / 480).set({ phase: 270 });
 
-      primaryControlLfo.chain(negate, rightPanSignal);
-      rightPanSignal.connect(rightPanner.pan);
+    const negate = new Tone.Negate();
+    const rightPanSignal = new Tone.Add(1);
 
-      const leftPanSignal = new Tone.Negate();
-      rightPanSignal.connect(leftPanSignal);
-      leftPanSignal.connect(leftPanner.pan);
+    primaryControlLfo.chain(negate, rightPanSignal);
+    rightPanSignal.connect(rightPanner.pan);
 
-      const [firstInstrument, secondInstrument] = instruments;
-      firstInstrument.chain(rightPanner);
-      secondInstrument.chain(leftPanner);
+    const leftPanSignal = new Tone.Negate();
+    rightPanSignal.connect(leftPanSignal);
+    leftPanSignal.connect(leftPanner.pan);
 
-      const lfoMeter = new Tone.Meter({ normalRange: true });
-      primaryControlLfo.connect(lfoMeter);
+    const [firstInstrument, secondInstrument] = instruments;
+    firstInstrument.chain(rightPanner);
+    secondInstrument.chain(leftPanner);
 
-      generateTiming(
-        [firstInstrument, secondInstrument],
-        () => lfoMeter.getValue(),
-        'both'
+    const lfoMeter = new Tone.Meter({ normalRange: true });
+    primaryControlLfo.connect(lfoMeter);
+
+    generateTiming(
+      [firstInstrument, secondInstrument],
+      () => lfoMeter.getValue(),
+      'both'
+    );
+    generateTiming([firstInstrument], () => 1 - lfoMeter.getValue());
+    generateTiming([secondInstrument], () => 1 - lfoMeter.getValue());
+
+    primaryControlLfo.start();
+
+    return () => {
+      [
+        primaryControlLfo,
+        negate,
+        rightPanSignal,
+        leftPanSignal,
+        lfoMeter,
+      ].forEach(node => node.dispose());
+      [firstInstrument, secondInstrument].forEach(sampler =>
+        sampler.releaseAll()
       );
-      generateTiming([firstInstrument], () => 1 - lfoMeter.getValue());
-      generateTiming([secondInstrument], () => 1 - lfoMeter.getValue());
-
-      primaryControlLfo.start();
-
-      return () => {
-        [
-          primaryControlLfo,
-          negate,
-          rightPanSignal,
-          leftPanSignal,
-          lfoMeter,
-        ].forEach(node => node.dispose());
-        [firstInstrument, secondInstrument].forEach(sampler =>
-          sampler.releaseAll()
-        );
-      };
     };
+  };
 
-    const deactivate = () => {
-      instruments
-        .concat([leftPanner, rightPanner])
-        .forEach(node => node.dispose());
-    };
+  const deactivate = () => {
+    instruments
+      .concat([leftPanner, rightPanner])
+      .forEach(node => node.dispose());
+  };
 
-    return [deactivate, schedule];
-  });
+  return [deactivate, schedule];
 };
 
-export default makePiece(activate);
+export default wrapActivate(activate);
