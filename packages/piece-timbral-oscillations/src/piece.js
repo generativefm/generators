@@ -1,17 +1,19 @@
-import { Scale, Note } from 'tonal';
-import Tone from 'tone';
-import { getSampler } from '@generative-music/utilities';
+import * as Tone from 'tone';
+import {
+  createPrerenderedSampler,
+  wrapActivate,
+} from '@generative-music/utilities';
+import { sampleNames } from '../timbral-oscillations.gfm.manifest.json';
 
 const OCTAVES = [3, 4, 5, 6];
 const MAX_STEP_DISTANCE = 2;
 const MAX_PHRASE_LENGTH = 3;
 const PHRASE_P_BASE = 0.5;
-
-const pitchClasses = Scale.notes('C', 'major');
+const PITCH_CLASSES = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
 
 const notes = OCTAVES.reduce(
   (allNotes, octave) =>
-    allNotes.concat(pitchClasses.map(pc => `${pc}${octave}`)),
+    allNotes.concat(PITCH_CLASSES.map(pc => `${pc}${octave}`)),
   []
 );
 
@@ -41,19 +43,44 @@ const generatePhrase = (
   return phrase;
 };
 
-const makePiece = ({ audioContext, destination, samples }) => {
-  if (Tone.context !== audioContext) {
-    Tone.setContext(audioContext);
-  }
-  return getSampler(samples['vsco2-piano-mf']).then(piano => {
-    const reverb = new Tone.Freeverb({ roomSize: 0.7 });
+const playPhrase = piano => {
+  const phrase = generatePhrase();
+  phrase.forEach((note, i) => {
+    piano.triggerAttack(note, `+${i * 1.5}`);
+  });
+  Tone.Transport.scheduleOnce(() => {
+    playPhrase(piano);
+  }, `+${Math.random() * 10 + 10}`);
+};
 
+const activate = async ({ destination, sampleLibrary }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
+
+  const getPianoDestination = () =>
+    Promise.resolve(new Tone.Freeverb().toDestination());
+
+  const piano = await createPrerenderedSampler({
+    samples,
+    sampleLibrary,
+    notes: notes.filter((_, i) => i % 2 === 0),
+    sourceInstrumentName: 'vsco2-piano-mf',
+    renderedInstrumentName: 'vsco2-piano-mf->Freeverb',
+    renderLength: 3,
+    getDestination: getPianoDestination,
+  });
+
+  const schedule = () => {
     const delayFudge = Math.random() * 3;
     const delay = new Tone.FeedbackDelay({
       wet: 0.5,
       delayTime: 5 + delayFudge,
       feedback: 0.8 - delayFudge / 100,
     });
+    const synth = new Tone.MonoSynth({
+      oscillator: { type: 'sine' },
+      volume: -45,
+      envelope: { release: 3, attack: 0.5 },
+    }).chain(delay);
 
     const chorusLfo = new Tone.LFO({
       frequency: Math.random() / 100,
@@ -101,7 +128,6 @@ const makePiece = ({ audioContext, destination, samples }) => {
     piano.chain(
       pitchShift,
       delay,
-      reverb,
       chorus,
       autoFilter,
       tremolo,
@@ -109,40 +135,11 @@ const makePiece = ({ audioContext, destination, samples }) => {
       destination
     );
 
-    const synth = new Tone.MonoSynth({
-      oscillator: { type: 'sine' },
-      volume: -45,
-      envelope: { release: 3, attack: 0.5 },
-    }).chain(delay);
+    playPhrase(piano);
 
-    const playPhrase = (iterationsSinceLastSub = 6) => {
-      const phrase = generatePhrase();
-      const generateSub = iterationsSinceLastSub > 5 && Math.random() < 0.02;
-      if (generateSub) {
-        const lowestNoteMidi = phrase
-          .map(note => Note.midi(note))
-          .reduce(
-            (lowestFound, noteMidi) => Math.min(lowestFound, noteMidi),
-            Infinity
-          );
-        const lowestNote = Note.fromMidi(lowestNoteMidi);
-        const lowestNotePitchClass = Note.pc(lowestNote);
-        synth.triggerAttackRelease(`${lowestNotePitchClass}1`, 3);
-      }
-      phrase.forEach((note, i) => {
-        if (Tone.context.state !== 'running') {
-          Tone.context.resume();
-        }
-        piano.triggerAttack(note, `+${i * 1.5}`);
-      });
-      Tone.Transport.scheduleOnce(() => {
-        playPhrase(generateSub ? 0 : iterationsSinceLastSub + 1);
-      }, `+${Math.random() * 10 + 10}`);
-    };
-    playPhrase();
     return () => {
+      piano.releaseAll();
       [
-        reverb,
         delay,
         chorusLfo,
         chorus,
@@ -153,11 +150,16 @@ const makePiece = ({ audioContext, destination, samples }) => {
         tremoloLfo,
         tremolo,
         compressor,
-        piano,
         synth,
       ].forEach(node => node.dispose());
     };
-  });
+  };
+
+  const deactivate = () => {
+    piano.dispose();
+  };
+
+  return [deactivate, schedule];
 };
 
-export default makePiece;
+export default wrapActivate(activate);
