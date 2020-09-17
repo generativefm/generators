@@ -1,12 +1,16 @@
-import Tone from 'tone';
+import * as Tone from 'tone';
 import { Scale, Note } from 'tonal';
-import { getSampler } from '@generative-music/utilities';
+import {
+  createPrerenderedSampler,
+  wrapActivate,
+} from '@generative-music/utilities';
+import { sampleNames } from '../trees.gfm.manifest.json';
 
-const tonic = Note.names()[Math.floor(Math.random() * Note.names().length)];
-const scalePitchClasses = Scale.notes(tonic, 'major');
-const notes = [3, 4, 5, 6].reduce(
+const renderedNotes = [3, 4, 5, 6].reduce(
   (allNotes, octave) =>
-    allNotes.concat(scalePitchClasses.map(pc => `${pc}${octave}`)),
+    allNotes.concat(
+      ['C', 'D', 'E', 'F', 'G', 'A', 'B'].map(pc => `${pc}${octave}`)
+    ),
   []
 );
 
@@ -32,29 +36,33 @@ const getOffsetProgression = () => {
   return progression;
 };
 
-const makeOffsetProgressionToIndiciesProgression = startingIndex => offsetProgression =>
+const makeOffsetProgressionToIndiciesProgression = (
+  notes,
+  startingIndex
+) => offsetProgression =>
   offsetProgression.map(chord =>
     chord
       .map(offset => startingIndex + offset)
       .filter(index => index >= 0 && index < notes.length)
   );
 
-const indiciesProgressionToNoteProgression = indiciesProgression =>
+const makeIndiciesProgressionToNoteProgression = notes => indiciesProgression =>
   indiciesProgression.map(chord => chord.map(index => notes[index]));
 
 const pipe = (...fns) => x => fns.reduce((y, fn) => fn(y), x);
 
-const getProgression = () =>
+const getProgression = notes =>
   pipe(
     getOffsetProgression,
     makeOffsetProgressionToIndiciesProgression(
+      notes,
       Math.floor(Math.random() * notes.length)
     ),
-    indiciesProgressionToNoteProgression
+    makeIndiciesProgressionToNoteProgression(notes)
   )();
 
-const playProgression = piano => {
-  const progression = getProgression();
+const playProgression = (piano, notes) => {
+  const progression = getProgression(notes);
   const perChordDelay = Math.random() * 3 + 2;
   progression.forEach((chord, i) => {
     chord.forEach(note =>
@@ -62,22 +70,53 @@ const playProgression = piano => {
     );
   });
   Tone.Transport.scheduleOnce(() => {
-    playProgression(piano);
+    playProgression(piano, notes);
   }, `+${Math.random() * 3 + (progression.length + 1) * perChordDelay}`);
 };
 
-const makePiece = ({ audioContext, destination, samples }) => {
-  if (Tone.context !== audioContext) {
-    Tone.setContext(audioContext);
-  }
-  return getSampler(samples['vsco2-piano-mf']).then(piano => {
-    const reverb = new Tone.Freeverb({ roomSize: 0.6 });
-    piano.chain(reverb, destination);
-    playProgression(piano);
-    return () => {
-      [reverb, piano].forEach(node => node.dispose());
-    };
+const activate = async ({ destination, sampleLibrary }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
+
+  const getPianoDestination = () =>
+    Promise.resolve(new Tone.Freeverb({ roomSize: 0.6 }).toDestination());
+
+  const [[renderedInstrumentName, sourceInstrumentName]] = sampleNames;
+
+  const piano = await createPrerenderedSampler({
+    samples,
+    sourceInstrumentName,
+    renderedInstrumentName,
+    sampleLibrary,
+    notes: renderedNotes,
+    renderLength: 5,
+    getDestination: getPianoDestination,
   });
+
+  piano.connect(destination);
+
+  const schedule = () => {
+    const tonic = Note.names()[Math.floor(Math.random() * Note.names().length)];
+    const scalePitchClasses = Scale.notes(tonic, 'major');
+    const notes = [3, 4, 5, 6]
+      .reduce(
+        (allNotes, octave) =>
+          allNotes.concat(scalePitchClasses.map(pc => `${pc}${octave}`)),
+        []
+      )
+      .map(note => Note.simplify(note));
+
+    playProgression(piano, notes);
+
+    return () => {
+      piano.releaseAll();
+    };
+  };
+
+  const deactivate = () => {
+    piano.dispose();
+  };
+
+  return [deactivate, schedule];
 };
 
-export default makePiece;
+export default wrapActivate(activate);
