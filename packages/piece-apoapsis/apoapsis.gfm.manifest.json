@@ -6,14 +6,10 @@
   "id": "apoapsis",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": [
-    "calm",
-    "electronic",
-    "dream"
-  ],
+  "tags": ["calm", "electronic", "dream"],
   "releaseDate": "2019-02-01T00:00:00.000Z",
   "sampleNames": [
-    "vsco2-violins-susvib",
-    "vsco2-piano-mf"
+    ["apoapsis::vsco2-violins-susvib", "vsco2-violins-susvib"],
+    ["apoapsis::vsco2-piano-mf-reverse", "vsco2-piano-mf"]
   ]
 }
