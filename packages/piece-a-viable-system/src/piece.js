@@ -179,10 +179,12 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
   }
 
   const schedule = () => {
+    const delayTime = 10 + Math.random() * 2;
     const delay = new Tone.FeedbackDelay({
+      delayTime,
       feedback: 0.3 + Math.random() / 30,
       wet: 0.5,
-      delayTime: 10 + Math.random() * 2,
+      maxDelay: delayTime,
     });
     instruments.forEach((instrument, i) => {
       instrument.chain(delay, destination);
