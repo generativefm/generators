@@ -1,13 +1,13 @@
-import Tone from 'tone';
-import { Note } from 'tonal';
-import * as Range from 'tonal-range';
-import { getSampler } from '@generative-music/utilities';
+import * as Tone from 'tone';
+import {
+  createPrerenderedSampler,
+  wrapActivate,
+} from '@generative-music/utilities';
+import { sampleNames } from '../a-viable-system.gfm.manifest.json';
 
 const MAX_STEP_DISTANCE = 3;
 const MAX_PHRASE_LENGTH = 3;
 const PHRASE_P_BASE = 0.5;
-
-const cMajorRange = Range.scale(['C', 'D', 'E', 'F', 'G', 'A', 'B']);
 
 const getNextNotesForNote = (notes, note) => {
   const index = notes.findIndex(n => n === note);
@@ -37,99 +37,173 @@ const generatePhrase = (
   return phrase;
 };
 
-const getPossibleNotesForInstrument = (
-  samplesByNote,
-  octaves = [0, 1, 2, 3, 4, 5, 6, 7, 8]
-) => {
-  const sampledNotes = Object.keys(samplesByNote);
-  const lowestNote = sampledNotes.reduce(
-    (currentLowest, note) =>
-      Note.freq(note) < Note.freq(currentLowest) ? note : currentLowest,
-    Infinity
-  );
-  const highestNote = sampledNotes.reduce(
-    (currentHighest, note) =>
-      Note.freq(note) > Note.freq(currentHighest) ? note : currentHighest,
-    -Infinity
-  );
-
-  return cMajorRange([lowestNote, highestNote]).filter(note =>
-    octaves.includes(Note.oct(note))
-  );
-};
-
 const instrumentConfigs = {
   'vsco2-piano-mf': {
     isSingleNote: false,
     secondsBetweenNotes: 2,
-    octaves: [2, 3, 4, 5, 6],
+    notes: [
+      'C2',
+      'D2',
+      'E2',
+      'F2',
+      'G2',
+      'A2',
+      'B2',
+      'C3',
+      'D3',
+      'E3',
+      'F3',
+      'G3',
+      'A3',
+      'B3',
+      'C4',
+      'D4',
+      'E4',
+      'F4',
+      'G4',
+      'A4',
+      'B4',
+      'C5',
+      'D5',
+      'E5',
+      'F5',
+      'G5',
+      'A5',
+      'B5',
+      'C6',
+      'D6',
+      'E6',
+      'F6',
+      'G6',
+      'A6',
+      'B6',
+    ],
+    renderLength: 5,
   },
   'vsco2-contrabass-susvib': {
     isSingleNote: true,
+    notes: [
+      'G0',
+      'A0',
+      'B0',
+      'C1',
+      'D1',
+      'E1',
+      'F1',
+      'G1',
+      'A1',
+      'B1',
+      'C2',
+      'D2',
+      'E2',
+      'F2',
+      'G2',
+      'A2',
+      'B2',
+    ],
+    renderLength: 14,
   },
   'vsco2-violin-arcvib': {
     isSingleNote: false,
     secondsBetweenNotes: 8,
+    notes: [
+      'G3',
+      'A3',
+      'B3',
+      'C4',
+      'D4',
+      'E4',
+      'F4',
+      'G4',
+      'A4',
+      'B4',
+      'C5',
+      'D5',
+      'E5',
+      'F5',
+      'G5',
+      'A5',
+      'B5',
+      'C6',
+      'D6',
+      'E6',
+      'F6',
+      'G6',
+      'A6',
+      'B6',
+      'C7',
+    ],
+    renderLength: 15,
   },
 };
 
-const makeInstrumentComponent = (
-  samplesByNote,
-  instrumentName,
-  connectToNode
-) => {
-  const start = instrument => {
-    instrument.connect(connectToNode);
-    const { isSingleNote, secondsBetweenNotes, notes } = instrumentConfigs[
-      instrumentName
-    ];
-    const playPhrase = () => {
-      const phrase = generatePhrase(notes);
-      if (isSingleNote) {
-        instrument.triggerAttack(phrase[0], `+1`);
-      } else {
-        phrase.forEach((note, i) => {
-          instrument.triggerAttack(note, `+${i * secondsBetweenNotes + 1}`);
-        });
-      }
-    };
-
-    Tone.Transport.scheduleRepeat(() => {
-      playPhrase();
-    }, Math.random() * 10 + 10);
+const startInstrument = (instrument, instrumentConfig) => {
+  const { isSingleNote, secondsBetweenNotes, notes } = instrumentConfig;
+  const playPhrase = () => {
+    const phrase = generatePhrase(notes);
+    if (isSingleNote) {
+      instrument.triggerAttack(phrase[0], `+1`);
+    } else {
+      phrase.forEach((note, i) => {
+        instrument.triggerAttack(note, `+${i * secondsBetweenNotes + 1}`);
+      });
+    }
   };
-  return getSampler(samplesByNote).then(instrument => {
-    start(instrument);
-    return instrument;
-  });
+
+  Tone.Transport.scheduleRepeat(() => {
+    playPhrase();
+  }, Math.random() * 10 + 10);
 };
 
-const makePiece = ({ audioContext, destination, samples }) => {
-  if (Tone.context !== audioContext) {
-    Tone.setContext(audioContext);
+const activate = async ({ destination, sampleLibrary, onProgress }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
+  const instrumentNames = Object.keys(instrumentConfigs);
+  const getPrerenderedeDestination = () =>
+    Promise.resolve(new Tone.Freeverb({ roomSize: 0.6 }).toDestination());
+  const instruments = [];
+  for (let i = 0; i < instrumentNames.length; i += 1) {
+    const instrumentName = instrumentNames[i];
+    const { notes, renderLength } = instrumentConfigs[instrumentName];
+    //eslint-disable-next-line no-await-in-loop
+    const sampler = await createPrerenderedSampler({
+      notes: notes.filter((_, noteIndex) => noteIndex % 2 === 0),
+      samples,
+      sampleLibrary,
+      renderLength,
+      sourceInstrumentName: instrumentName,
+      renderedInstrumentName: `a-viable-system::${instrumentName}`,
+      getDestination: getPrerenderedeDestination,
+      onProgress: val => onProgress((1 / instrumentNames.length) * (val + i)),
+    });
+    instruments.push(sampler);
   }
-  const delay = new Tone.FeedbackDelay({
-    feedback: 0.3 + Math.random() / 30,
-    wet: 0.5,
-    delayTime: 10 + Math.random() * 2,
-  }).connect(destination);
-  const reverb = new Tone.Freeverb({ roomSize: 0.6 }).connect(delay);
-  return Promise.all(
-    Reflect.ownKeys(instrumentConfigs).map(instrumentName => {
-      const instrumentSamplesByNote = samples[instrumentName];
-      instrumentConfigs[instrumentName].notes = getPossibleNotesForInstrument(
-        instrumentSamplesByNote,
-        instrumentConfigs[instrumentName].octaves
-      );
-      return makeInstrumentComponent(
-        instrumentSamplesByNote,
-        instrumentName,
-        reverb
-      );
-    })
-  ).then(instruments => () => {
-    instruments.concat(delay, reverb).forEach(node => node.dispose());
-  });
+
+  const schedule = () => {
+    const delay = new Tone.FeedbackDelay({
+      feedback: 0.3 + Math.random() / 30,
+      wet: 0.5,
+      delayTime: 10 + Math.random() * 2,
+    });
+    instruments.forEach((instrument, i) => {
+      instrument.chain(delay, destination);
+      startInstrument(instrument, instrumentConfigs[instrumentNames[i]]);
+    });
+
+    return () => {
+      instruments.forEach(instrument => {
+        instrument.releaseAll();
+      });
+      delay.dispose();
+    };
+  };
+
+  const deactivate = () => {
+    instruments.forEach(instrument => {
+      instrument.dispose();
+    });
+  };
+
+  return [deactivate, schedule];
 };
 
-export default makePiece;
+export default wrapActivate(activate);
