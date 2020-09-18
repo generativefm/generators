@@ -74,7 +74,7 @@ const playProgression = (piano, notes) => {
   }, `+${Math.random() * 3 + (progression.length + 1) * perChordDelay}`);
 };
 
-const activate = async ({ destination, sampleLibrary }) => {
+const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
 
   const getPianoDestination = () =>
@@ -87,6 +87,7 @@ const activate = async ({ destination, sampleLibrary }) => {
     sourceInstrumentName,
     renderedInstrumentName,
     sampleLibrary,
+    onProgress,
     notes: renderedNotes,
     renderLength: 5,
     getDestination: getPianoDestination,
