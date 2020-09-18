@@ -3,20 +3,12 @@ import {
   createBuffers,
   createPrerenderedSampler,
   wrapActivate,
+  toss,
 } from '@generative-music/utilities';
 import { sampleNames } from '../apoapsis.gfm.manifest.json';
 
-const pianoNotes = [3, 4, 5].reduce(
-  (allNotes, octave) =>
-    allNotes.concat(['C', 'E', 'G', 'B'].map(pc => `${pc}${octave}`)),
-  []
-);
-
-const violinNotes = [2, 3, 4].reduce(
-  (allNotes, octave) =>
-    allNotes.concat(['C', 'E', 'G', 'B'].map(pc => `${pc}${octave}`)),
-  []
-);
+const pianoNotes = toss(['C', 'E', 'G', 'B'], [3, 4, 5]);
+const violinNotes = toss(['C', 'E', 'G', 'B'], [2, 3, 4]);
 
 const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
@@ -64,11 +56,12 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     sourceSamplerOptions: {
       release: 8,
       curve: 'linear',
-      volume: -35,
     },
   });
 
-  violins.connect(destination);
+  const violinVol = new Tone.Volume(-25);
+
+  violins.chain(violinVol, destination);
 
   const schedule = () => {
     const delay1 = new Tone.FeedbackDelay({
@@ -90,7 +83,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
       Tone.Transport.scheduleRepeat(
         () => violins.triggerAttack(note, '+1'),
         Math.random() * 120 + 60,
-        30
+        `+${Math.random() * 15 + 15}`
       );
     });
 
