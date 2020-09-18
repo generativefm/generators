@@ -53,7 +53,7 @@ const makeChordInterval = instrument => (
   );
 };
 
-const activate = async ({ destination, sampleLibrary }) => {
+const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const getGlockDestination = () =>
     Promise.resolve(
@@ -82,6 +82,7 @@ const activate = async ({ destination, sampleLibrary }) => {
     notes,
     samples,
     sampleLibrary,
+    onProgress,
     sourceInstrumentName: 'vsco2-glock',
     renderedInstrumentName: 'little-bells::vsco2-glock',
     renderLength: 3,
