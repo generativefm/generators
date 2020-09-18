@@ -8,5 +8,5 @@
   "isRecordable": true,
   "tags": ["piano", "electronic"],
   "releaseDate": "2019-01-02T00:00:00.000Z",
-  "sampleNames": [["vsco2-piano-mf->Freeverb", "vsco2-piano-mf"]]
+  "sampleNames": [["timbral-oscillations::vsco2-piano-mf", "vsco2-piano-mf"]]
 }

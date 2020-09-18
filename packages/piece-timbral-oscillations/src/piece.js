@@ -53,7 +53,7 @@ const playPhrase = piano => {
   }, `+${Math.random() * 10 + 10}`);
 };
 
-const activate = async ({ destination, sampleLibrary }) => {
+const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
 
   const getPianoDestination = () =>
@@ -62,9 +62,10 @@ const activate = async ({ destination, sampleLibrary }) => {
   const piano = await createPrerenderedSampler({
     samples,
     sampleLibrary,
+    onProgress,
     notes: notes.filter((_, i) => i % 2 === 0),
     sourceInstrumentName: 'vsco2-piano-mf',
-    renderedInstrumentName: 'vsco2-piano-mf->Freeverb',
+    renderedInstrumentName: 'timbral-oscillations::vsco2-piano-mf',
     renderLength: 3,
     getDestination: getPianoDestination,
   });
