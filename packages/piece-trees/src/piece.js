@@ -89,7 +89,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     sampleLibrary,
     onProgress,
     notes: renderedNotes,
-    renderLength: 5,
+    additionalRenderLength: 0,
     getDestination: getPianoDestination,
   });
 
