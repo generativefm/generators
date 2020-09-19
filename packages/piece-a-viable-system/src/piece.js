@@ -78,7 +78,6 @@ const instrumentConfigs = {
       'A6',
       'B6',
     ],
-    renderLength: 5,
   },
   'vsco2-contrabass-susvib': {
     isSingleNote: true,
@@ -101,7 +100,6 @@ const instrumentConfigs = {
       'A2',
       'B2',
     ],
-    renderLength: 14,
   },
   'vsco2-violin-arcvib': {
     isSingleNote: false,
@@ -133,7 +131,6 @@ const instrumentConfigs = {
       'B6',
       'C7',
     ],
-    renderLength: 15,
   },
 };
 
@@ -163,13 +160,13 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const instruments = [];
   for (let i = 0; i < instrumentNames.length; i += 1) {
     const instrumentName = instrumentNames[i];
-    const { notes, renderLength } = instrumentConfigs[instrumentName];
+    const { notes } = instrumentConfigs[instrumentName];
     //eslint-disable-next-line no-await-in-loop
     const sampler = await createPrerenderedSampler({
       notes: notes.filter((_, noteIndex) => noteIndex % 2 === 0),
       samples,
       sampleLibrary,
-      renderLength,
+      additionalRenderLength: 1,
       sourceInstrumentName: instrumentName,
       renderedInstrumentName: `a-viable-system::${instrumentName}`,
       getDestination: getPrerenderedeDestination,
