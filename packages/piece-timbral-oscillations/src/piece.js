@@ -66,7 +66,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     notes: notes.filter((_, i) => i % 2 === 0),
     sourceInstrumentName: 'vsco2-piano-mf',
     renderedInstrumentName: 'timbral-oscillations::vsco2-piano-mf',
-    renderLength: 3,
+    additionalRenderLength: 0,
     getDestination: getPianoDestination,
   });
 
