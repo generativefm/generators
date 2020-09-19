@@ -1,72 +1,64 @@
-import * as Tone from 'tone';
-import createSampledBufferSource from './create-sampled-buffer-source';
+import createSampler from './create-sampler';
+import createBuffer from './create-buffer';
+import sampleNote from './sample-note';
+import renderBuffer from './render-buffer';
+import noop from './noop';
 
-const renderNote = (note, samplesByNote, getDestination, renderTime) => {
-  let resolvedDestination;
-  //eslint-disable-next-line new-cap
-  return Tone.Offline(() => {
-    return Promise.all([
-      getDestination().then(destination => {
-        resolvedDestination = destination;
-        return destination;
-      }),
-      createSampledBufferSource(note, samplesByNote),
-    ]).then(([destination, bufferSource]) => {
-      bufferSource.connect(destination);
-      bufferSource.start(0);
-    });
-  }, renderTime).then(buffer => {
-    resolvedDestination.dispose();
-    return buffer;
-  });
-};
-
-const createPrerenderedSampler = (
-  renderedNotes,
+const renderNote = async ({
+  note,
   samplesByNote,
   getDestination,
-  renderTime
-) =>
-  Promise.all(
-    renderedNotes.map(note =>
-      renderNote(note, samplesByNote, getDestination, renderTime)
-    )
-  ).then(renderedBuffers => {
-    const buffersByMidi = renderedBuffers.reduce((byMidi, buffer, i) => {
-      const note = renderedNotes[i];
-      const midi = new Tone.Frequency(note).toMidi();
-      byMidi.set(midi, buffer);
-      return byMidi;
-    }, new Map());
-    const activeSources = [];
-    let output;
-    return {
-      trigger: (note, time) => {
-        const midi = new Tone.Frequency(note).toMidi();
-        if (!buffersByMidi.has(midi)) {
-          throw new Error(`Requested midi ${midi} (${note}) was not rendered`);
-        }
-        const buffer = buffersByMidi.get(midi);
-        const source = new Tone.BufferSource({ buffer })
-          .set({
-            onended: () => {
-              const i = activeSources.indexOf(source);
-              if (i >= 0) {
-                activeSources.splice(i, 1);
-              }
-            },
-          })
-          .connect(output);
-        activeSources.push(source);
-        source.start(time);
-      },
-      dispose: () => {
-        activeSources.forEach(source => source.dispose());
-      },
-      connect: node => {
-        output = node;
-      },
-    };
+  additionalRenderLength,
+  bufferSourceOptions = {},
+}) => {
+  const { playbackRate, sampledNote } = sampleNote({
+    note,
+    sampledNotes: Object.keys(samplesByNote),
   });
+  const noteBuffer = await createBuffer(samplesByNote[sampledNote]);
+  const renderedBuffer = await renderBuffer({
+    getDestination,
+    buffer: noteBuffer,
+    duration: noteBuffer.duration / playbackRate + additionalRenderLength,
+    bufferSourceOptions: Object.assign({}, bufferSourceOptions, {
+      playbackRate,
+    }),
+  });
+  noteBuffer.dispose();
+  return renderedBuffer;
+};
+
+const createPrerenderedSampler = async ({
+  notes,
+  samples,
+  sourceInstrumentName,
+  renderedInstrumentName,
+  sampleLibrary,
+  additionalRenderLength,
+  getDestination,
+  onProgress = noop,
+  bufferSourceOptions = {},
+} = {}) => {
+  if (samples[renderedInstrumentName]) {
+    return createSampler(samples[renderedInstrumentName]);
+  }
+  const samplesByNote = samples[sourceInstrumentName];
+  const renderedBuffersByNote = {};
+  for (let i = 0; i < notes.length; i += 1) {
+    const note = notes[i];
+    //eslint-disable-next-line no-await-in-loop
+    const buffer = await renderNote({
+      note,
+      samplesByNote,
+      getDestination,
+      additionalRenderLength,
+      bufferSourceOptions,
+    });
+    onProgress((i + 1) / notes.length);
+    renderedBuffersByNote[note] = buffer;
+  }
+  sampleLibrary.save([[renderedInstrumentName, renderedBuffersByNote]]);
+  return createSampler(renderedBuffersByNote);
+};
 
 export default createPrerenderedSampler;
