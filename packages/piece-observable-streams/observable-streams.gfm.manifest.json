@@ -8,5 +8,9 @@
   "isRecordable": true,
   "tags": ["happy", "piano", "strings", "acoustic", "melodic"],
   "releaseDate": "2019-02-11T00:00:00.000Z",
-  "sampleNames": ["vsco2-piano-mf", "vsco2-violin-arcvib", "sso-cor-anglais"]
+  "sampleNames": [
+    ["observable-streams::vsco2-piano-mf", "vsco2-piano-mf"],
+    ["observable-streams::vsco2-violin-arcvib", "vsco2-violin-arcvib"],
+    ["observable-streams::sso-cor-anglais", "sso-cor-anglais"]
+  ]
 }
