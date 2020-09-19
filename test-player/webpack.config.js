@@ -29,6 +29,16 @@ const config = {
       ),
     },
   },
+  module: {
+    rules: [
+      {
+        test: path.resolve(
+          './node_modules/@generative-music/web-provider/worker/save-worker.esm.js'
+        ),
+        use: 'worker-loader',
+      },
+    ],
+  },
   plugins: [
     new HtmlWebpackPlugin(),
     new EnvironmentPlugin({ SAMPLE_FILE_HOST: '//localhost:6969' }),
