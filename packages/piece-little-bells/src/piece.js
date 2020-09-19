@@ -85,7 +85,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     onProgress,
     sourceInstrumentName: 'vsco2-glock',
     renderedInstrumentName: 'little-bells::vsco2-glock',
-    renderLength: 3,
+    additionalRenderLength: 1,
     getDestination: getGlockDestination,
   });
 
