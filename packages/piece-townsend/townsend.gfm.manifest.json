@@ -6,15 +6,10 @@
   "id": "townsend",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": [
-    "calm",
-    "guitar",
-    "flute",
-    "acoustic"
-  ],
+  "tags": ["calm", "guitar", "flute", "acoustic"],
   "releaseDate": "2019-02-16T00:00:00.000Z",
   "sampleNames": [
-    "vsco2-flute-susvib",
-    "acoustic-guitar-chords-cmaj"
+    ["townsend::vsco2-flute-susvib", "vsco2-flute-susvib"],
+    ["townsend::acoustic-guitar-chords-cmaj", "acoustic-guitar-chords-cmaj"]
   ]
 }
