@@ -39,7 +39,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     sourceInstrumentName: 'vsco2-piano-mf-reverse',
     renderedInstrumentName: 'apoapsis::vsco2-piano-mf-reverse',
     sampleLibrary,
-    renderLength: 15,
+    additionalRenderLength: 1,
     getDestination: getPianoDestination,
     onProgress: val => onProgress(val * 0.5),
   });
@@ -50,11 +50,11 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     sourceInstrumentName: 'vsco2-violins-susvib',
     renderedInstrumentName: 'apoapsis::vsco2-violins-susvib',
     sampleLibrary,
-    renderLength: 14,
+    additionalRenderLength: 1,
     getDestination: getViolinDestination,
     onProgress: val => onProgress(val * 0.5 + 0.5),
-    sourceSamplerOptions: {
-      release: 8,
+    bufferSourceOptions: {
+      fadeOut: 8,
       curve: 'linear',
     },
   });
