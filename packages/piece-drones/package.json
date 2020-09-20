@@ -20,10 +20,10 @@
   },
   "homepage": "https://github.com/generative-music/piece-drones#readme",
   "devDependencies": {
-    "tone": "^13.4.9"
+    "tone": "^14.7.39"
   },
   "peerDependencies": {
-    "tone": "^13.4.9"
+    "tone": "^14.7.39"
   },
   "dependencies": {
     "@generative-music/utilities": "^3.3.0",
