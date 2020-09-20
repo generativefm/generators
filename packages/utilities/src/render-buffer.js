@@ -1,6 +1,6 @@
 import * as Tone from 'tone';
 
-const renderBuffer = async ({
+const _renderBuffer = async ({
   buffer,
   getDestination,
   duration,
@@ -24,5 +24,23 @@ const renderBuffer = async ({
   });
   return renderedBuffer;
 };
+
+const queue = [];
+const renderBuffer = options =>
+  new Promise(resolve => {
+    const renderFn = async () => {
+      const renderedBuffer = await _renderBuffer(options);
+      const index = queue.indexOf(renderFn);
+      queue.splice(index, 1);
+      resolve(renderedBuffer);
+      if (queue.length > 0) {
+        queue[0]();
+      }
+    };
+    queue.push(renderFn);
+    if (queue.length === 1) {
+      renderFn();
+    }
+  });
 
 export default renderBuffer;

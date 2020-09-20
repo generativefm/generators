@@ -20,20 +20,19 @@ const createPrerenderedBufferArray = async ({
   const sourceBuffers = await Promise.all(
     samples[sourceInstrumentName].map(buffer => createBuffer(buffer))
   );
-  const renderedBuffers = [];
-  for (let i = 0; i < sourceBuffers.length; i += 1) {
-    const buffer = sourceBuffers[i];
-    //eslint-disable-next-line no-await-in-loop
-    const renderedBuffer = await renderBuffer({
-      buffer,
-      getDestination,
-      bufferSourceOptions,
-      duration: buffer.duration + additionalRenderLength,
-    });
-    buffer.dispose();
-    renderedBuffers.push(renderedBuffer);
-    onProgress((i + 1) / sourceBuffers.length);
-  }
+  const renderedBuffers = await Promise.all(
+    sourceBuffers.map(async (buffer, i) => {
+      const renderedBuffer = await renderBuffer({
+        buffer,
+        getDestination,
+        bufferSourceOptions,
+        duration: buffer.duration + additionalRenderLength,
+      });
+      buffer.dispose();
+      onProgress((i + 1) / sourceBuffers.length);
+      return renderedBuffer;
+    })
+  );
   sampleLibrary.save([[renderedInstrumentName, renderedBuffers]]);
   return renderedBuffers;
 };

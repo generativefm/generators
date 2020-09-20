@@ -34,8 +34,8 @@ const createPrerenderedSampler = async ({
   sourceInstrumentName,
   renderedInstrumentName,
   sampleLibrary,
-  additionalRenderLength,
   getDestination,
+  additionalRenderLength = 0,
   onProgress = noop,
   bufferSourceOptions = {},
 } = {}) => {
@@ -44,19 +44,19 @@ const createPrerenderedSampler = async ({
   }
   const samplesByNote = samples[sourceInstrumentName];
   const renderedBuffersByNote = {};
-  for (let i = 0; i < notes.length; i += 1) {
-    const note = notes[i];
-    //eslint-disable-next-line no-await-in-loop
-    const buffer = await renderNote({
-      note,
-      samplesByNote,
-      getDestination,
-      additionalRenderLength,
-      bufferSourceOptions,
-    });
-    onProgress((i + 1) / notes.length);
-    renderedBuffersByNote[note] = buffer;
-  }
+  await Promise.all(
+    notes.map(async (note, i) => {
+      const buffer = await renderNote({
+        note,
+        samplesByNote,
+        getDestination,
+        additionalRenderLength,
+        bufferSourceOptions,
+      });
+      renderedBuffersByNote[note] = buffer;
+      onProgress((i + 1) / notes.length);
+    })
+  );
   sampleLibrary.save([[renderedInstrumentName, renderedBuffersByNote]]);
   return createSampler(renderedBuffersByNote);
 };
