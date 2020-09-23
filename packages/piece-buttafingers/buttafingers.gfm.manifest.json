@@ -6,13 +6,10 @@
   "id": "buttafingers",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": [
-    "drone",
-    "electronic"
-  ],
+  "tags": ["drone", "electronic"],
   "releaseDate": "2019-03-31T00:00:00.000Z",
   "sampleNames": [
     "vcsl-wine-glasses-slow",
-    "vcsl-claves"
+    ["buttafingers::vcsl-claves", "vcsl-claves"]
   ]
 }

@@ -11,6 +11,7 @@ import createPrerenderedBufferArray from './create-prerendered-buffer-array';
 import getClosestNote from './get-closest-note';
 import sampleNote from './sample-note';
 import createPrerenderedBuffers from './create-prerendered-buffers';
+import createPitchShiftedSampler from './create-pitch-shifted-sampler';
 
 export * from './theory';
 export {
@@ -27,4 +28,5 @@ export {
   getClosestNote,
   sampleNote,
   createPrerenderedBuffers,
+  createPitchShiftedSampler,
 };

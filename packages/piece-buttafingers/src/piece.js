@@ -1,108 +1,112 @@
-import Tone from 'tone';
-import { Note, Distance } from 'tonal';
-import { getBuffers } from '@generative-music/utilities';
+import * as Tone from 'tone';
+import {
+  wrapActivate,
+  createPrerenderedBuffers,
+  createPitchShiftedSampler,
+} from '@generative-music/utilities';
+import { sampleNames } from '../buttafingers.gfm.manifest.json';
 
 const NOTES = ['C4', 'E4', 'F4', 'G4', 'B5', 'A5'];
 const PITCH_CHANGES = [-36, -24];
 
-const getPitchShiftedSampler = (samplesByNote, changeInSemitones = 0) => {
-  const disposableNodes = [];
-  const disposeNode = node => {
-    node.dispose();
-    const i = disposableNodes.findIndex(n => n === node);
-    if (i >= 0) {
-      disposableNodes.splice(i, 1);
-    }
-  };
-  const findClosest = note => {
-    const noteMidi = Note.midi(note);
-    const maxInterval = 96;
-    let interval = 0;
-    while (interval <= maxInterval) {
-      const higherNote = Note.fromMidi(noteMidi + interval);
-      if (samplesByNote[higherNote]) {
-        return higherNote;
-      }
-      const lowerNote = Note.fromMidi(noteMidi - interval);
-      if (samplesByNote[lowerNote]) {
-        return lowerNote;
-      }
-      interval += 1;
-    }
-    return note;
-  };
-  let destination;
-  return getBuffers(samplesByNote).then(buffers => ({
-    triggerAttack: (note, time) => {
-      const closestSample = findClosest(note);
-      const difference = Distance.semitones(note, closestSample);
-      const bufferSource = new Tone.BufferSource(
-        buffers.get(closestSample)
-      ).connect(destination);
-      const playbackRate = Tone.intervalToFrequencyRatio(
-        -difference + changeInSemitones
-      );
-      bufferSource.set({
-        playbackRate,
-        onended: () => disposeNode(bufferSource),
-        fadeIn: 3,
-        fadeOut: 3,
-      });
-      disposableNodes.push(bufferSource);
-      bufferSource.start(time);
-    },
-    connect: node => {
-      destination = node;
-    },
-    dispose: () => {
-      buffers.dispose();
-      disposableNodes.forEach(node => node.dispose());
-    },
-  }));
-};
-
-const makePiece = ({ audioContext, destination, samples }) => {
-  if (Tone.context !== audioContext) {
-    Tone.setContext(audioContext);
-  }
-  const masterVol = new Tone.Volume(-7).connect(destination);
-  return Promise.all([
+const activate = async ({ destination, sampleLibrary, onProgress }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
+  const [wines, claves] = await Promise.all([
     Promise.all(
       NOTES.reduce(
         samplers =>
           samplers.concat(
-            PITCH_CHANGES.map(change =>
-              getPitchShiftedSampler(samples['vcsl-wine-glasses-slow'], change)
+            PITCH_CHANGES.map(pitchShift =>
+              createPitchShiftedSampler({
+                pitchShift,
+                samplesByNote: samples['vcsl-wine-glasses-slow'],
+                attack: 3,
+                release: 3,
+              })
             )
           ),
         []
       )
     ),
-    getBuffers(samples['vcsl-claves']),
-  ]).then(([wines, claves]) => {
-    const disposableNodes = [];
-    const disposeNode = node => {
-      node.dispose();
-      const i = disposableNodes.findIndex(n => n === node);
-      if (i >= 0) {
-        disposableNodes.splice(i, 1);
-      }
-    };
-    const compressor = new Tone.Compressor().connect(masterVol);
-    const filter = new Tone.Filter(1000);
-    filter.connect(compressor);
+    createPrerenderedBuffers({
+      samples,
+      sampleLibrary,
+      sourceInstrumentName: 'vcsl-claves',
+      renderedInstrumentName: 'buttafingers::vcsl-claves',
+      additionalRenderLength: 0,
+      getDestination: () =>
+        Promise.resolve(new Tone.Freeverb({ roomSize: 0.6 }).toDestination()),
+      onProgress,
+    }),
+  ]);
+  const disposableNodes = [];
+  const disposeNode = node => {
+    node.dispose();
+    const i = disposableNodes.indexOf(node);
+    if (i >= 0) {
+      disposableNodes.splice(i, 1);
+    }
+  };
+  const compressor = new Tone.Compressor().connect(destination);
+  const filter = new Tone.Filter(200, 'lowpass', -48);
+  filter.connect(compressor);
+
+  const claveSounds =
+    samples['vcsl-claves'] || samples['buttafingers::vcsl-claves'];
+
+  const claveVol = new Tone.Volume(-15);
+
+  const ballBounceClave = () => {
+    const panner = new Tone.Panner(Math.random() * 2 - 1).connect(claveVol);
+    disposableNodes.push(panner);
+    const buffer = claves.get(Math.floor(Math.random() * claveSounds.length));
+    let time = Math.random() + 1;
+    const deltaMultiplier = Math.random() * 0.1 + 0.75;
+    const playbackRate = Math.random() + 0.5;
+    for (
+      let delayDelta = 1;
+      delayDelta >= (1 - deltaMultiplier - 0.15) / 10;
+      delayDelta *= deltaMultiplier, time += delayDelta
+    ) {
+      const source = new Tone.ToneBufferSource(buffer)
+        .set({
+          playbackRate,
+          onended: () => {
+            disposeNode(source);
+          },
+        })
+        .connect(panner);
+      disposableNodes.push(source);
+      source.start(`+${time}`);
+    }
+    Tone.Transport.scheduleOnce(() => {
+      disposeNode(panner);
+    }, `+60`);
+    Tone.Transport.scheduleOnce(() => {
+      ballBounceClave();
+    }, `+${Math.random() * 10 + 10}`);
+  };
+
+  const schedule = () => {
+    const delay = new Tone.FeedbackDelay({
+      delayTime: 3,
+      feedback: 0.3,
+      wet: 0.2,
+    });
+
+    claveVol.connect(delay);
+
     const startDelays = wines.map(() => Math.random() * 60);
     const minStartDelay = Math.min(...startDelays);
     wines.forEach((wine, i) => {
-      const vol = new Tone.Volume().connect(filter);
+      const gain = new Tone.Gain().connect(filter);
       const lfo = new Tone.LFO({
-        min: -500,
-        max: 30,
         frequency: Math.random() / 100,
-        phase: Math.random() * 360,
+        phase: startDelays[i] === minStartDelay ? 270 : Math.random() * 360,
       });
-      lfo.connect(vol.volume).start();
-      wine.connect(vol);
+      lfo.connect(gain.gain).start();
+      wine.connect(gain);
+      disposableNodes.push(gain, lfo);
       const playNote = () => {
         wine.triggerAttack(NOTES[i], '+1');
         Tone.Transport.scheduleOnce(() => {
@@ -111,56 +115,32 @@ const makePiece = ({ audioContext, destination, samples }) => {
       };
       Tone.Transport.scheduleOnce(() => {
         playNote();
-      }, `+${startDelays[i] - minStartDelay + 1}`);
+      }, `+${startDelays[i] - minStartDelay}`);
     });
 
-    const claveSounds = samples['vcsl-claves'];
-    const delay = new Tone.FeedbackDelay({
-      delayTime: 3,
-      feedback: 0.3,
-      wet: 0.2,
-    }).connect(masterVol);
-    const reverb = new Tone.Freeverb({ roomSize: 0.6, wet: 1 }).connect(delay);
-    const ballBounceClave = () => {
-      const panner = new Tone.Panner(Math.random() * 2 - 1).connect(reverb);
-      disposableNodes.push(panner);
-      const buffer = claves.get(Math.floor(Math.random() * claveSounds.length));
-      let time = Math.random() + 1;
-      const deltaMultiplier = Math.random() * 0.1 + 0.75;
-      const playbackRate = Math.random() + 0.5;
-      for (
-        let delayDelta = 1;
-        delayDelta >= (1 - deltaMultiplier - 0.15) / 10;
-        delayDelta *= deltaMultiplier, time += delayDelta
-      ) {
-        const source = new Tone.BufferSource(buffer)
-          .set({
-            playbackRate,
-            volume: -35,
-            onended: () => disposeNode(source),
-          })
-          .connect(panner);
-        disposableNodes.push(source);
-        source.start(`+${time}`);
-      }
-      Tone.Transport.scheduleOnce(() => {
-        disposeNode(panner);
-      }, `+60`);
-      Tone.Transport.scheduleOnce(() => {
-        ballBounceClave();
-      }, `+${Math.random() * 10 + 10}`);
-    };
     Tone.Transport.scheduleOnce(() => {
-      ballBounceClave();
+      ballBounceClave(delay);
     }, `+${Math.random() * 10 + 10}`);
 
+    delay.connect(destination);
+
     return () => {
-      disposableNodes.forEach(node => disposeNode(node));
-      wines
-        .concat([claves, compressor, filter, delay, reverb])
-        .forEach(node => node.dispose());
+      wines.forEach(sampler => {
+        sampler.releaseAll();
+      });
+      disposableNodes.forEach(disposeNode);
+      delay.dispose();
     };
-  });
+  };
+
+  const deactivate = () => {
+    disposableNodes
+      .concat(wines)
+      .concat([claves, compressor, filter])
+      .forEach(disposeNode);
+  };
+
+  return [deactivate, schedule];
 };
 
-export default makePiece;
+export default wrapActivate(activate);
