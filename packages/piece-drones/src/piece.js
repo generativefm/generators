@@ -1,5 +1,4 @@
 import * as Tone from 'tone';
-import { Distance } from 'tonal';
 import {
   createBuffers,
   wrapActivate,
