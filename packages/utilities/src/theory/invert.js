@@ -1,4 +1,4 @@
-import interval from './interval';
+import transpose from './transpose';
 
 const invert = (notes, inversion = 0) => {
   const inverted = notes.slice(0);
@@ -11,7 +11,7 @@ const invert = (notes, inversion = 0) => {
     semitones = -semitones;
   }
   for (let i = 0; i < Math.abs(inversion); i += 1) {
-    addFn.call(inverted, interval(removeFn.call(inverted), semitones));
+    addFn.call(inverted, transpose(removeFn.call(inverted), semitones));
   }
   return inverted;
 };

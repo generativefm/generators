@@ -12,6 +12,7 @@ import getClosestNote from './get-closest-note';
 import sampleNote from './sample-note';
 import createPrerenderedBuffers from './create-prerendered-buffers';
 import createPitchShiftedSampler from './create-pitch-shifted-sampler';
+import shuffleArray from './shuffle-array';
 
 export * from './theory';
 export {
@@ -29,4 +30,5 @@ export {
   sampleNote,
   createPrerenderedBuffers,
   createPitchShiftedSampler,
+  shuffleArray,
 };
