@@ -1,21 +1,18 @@
-import { Chord, Array } from 'tonal';
 import * as Tone from 'tone';
 import {
   createSampler,
   wrapActivate,
   getRandomNumberBetween,
+  toss,
+  invert,
+  major9th,
 } from '@generative-music/utilities';
 import { sampleNames } from '../eno-machine.gfm.manifest.json';
 
 const OCTAVES = [3, 4, 5];
 const MIN_REPEAT_S = 20;
 const MAX_REPEAT_S = 60;
-
-const NOTES = Array.rotate(1, Chord.notes('DbM9')).reduce(
-  (withOctaves, note) =>
-    withOctaves.concat(OCTAVES.map(octave => `${note}${octave}`)),
-  []
-);
+const NOTES = toss(invert(major9th('Db'), 1), OCTAVES);
 
 const getPiano = samples => createSampler(samples['vsco2-piano-mf']);
 
