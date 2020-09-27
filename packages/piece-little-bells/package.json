@@ -4,8 +4,7 @@
   "description": "",
   "main": "dist/cjs.js",
   "dependencies": {
-    "@generative-music/utilities": "^3.3.0",
-    "tonal": "^2.1.2"
+    "@generative-music/utilities": "^3.3.0"
   },
   "peerDependencies": {
     "tone": "^13.4.9"

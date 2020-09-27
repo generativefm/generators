@@ -3,10 +3,13 @@ import * as Tone from 'tone';
 import {
   createPrerenderedSampler,
   wrapActivate,
+  minor7th,
+  toss,
+  simplifyNote,
 } from '@generative-music/utilities';
 import { sampleNames } from '../little-bells.gfm.manifest.json';
 
-const PITCH_CLASSES = ['F', 'F', 'G', 'G#', 'A', 'A#', 'B'];
+const PITCH_CLASSES = ['F', 'G', 'G#', 'A', 'A#', 'B'];
 const BASE_P_TO_PLAY = 0.1;
 const MODULO_DIVISOR_ONE = 4;
 const MODULO_DIVISOR_TWO = 2;
@@ -21,7 +24,7 @@ const makeChordInterval = instrument => (
   let hasPlayed = false;
   Tone.Transport.scheduleRepeat(
     () => {
-      const notes = Chord.notes(tonic, 'm7');
+      const notes = minor7th(tonic);
       const numNotesToPlay = Math.floor(Math.random() * (notes.length + 1));
       let playedNotes = 0;
       let beat = 1;
@@ -62,16 +65,11 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
 
   const notes = Array.from(
     new Set(
-      PITCH_CLASSES.reduce(
-        (arr, pc) =>
-          arr.concat(
-            [`${pc}4`, `${pc}5`]
-              .map(tonic => Chord.notes(tonic, 'm7'))
-              .flat()
-              .map(note => Tone.Midi(note).toMidi())
-          ),
-        []
-      )
+      toss(PITCH_CLASSES, [4, 5])
+        .sort()
+        .map(minor7th)
+        .flat()
+        .map(note => Tone.Midi(note).toMidi())
     )
   )
     .sort()
