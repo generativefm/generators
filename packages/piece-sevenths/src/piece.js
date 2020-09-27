@@ -1,14 +1,17 @@
-import * as tonal from 'tonal';
 import * as Tone from 'tone';
 import {
   createSampler,
   wrapActivate,
   getRandomNumberBetween,
   getRandomElement,
+  major7th,
+  minor7th,
+  dominant7th,
+  invert,
 } from '@generative-music/utilities';
 import { sampleNames } from '../sevenths.gfm.manifest.json';
 
-const CHORDS = ['m7', 'maj7', '7'];
+const CHORDS = [major7th, minor7th, dominant7th];
 // eslint-disable-next-line no-magic-numbers
 const OCTAVES = [2, 3, 4, 5];
 const MIN_ARPEGGIO_TIME_S = 0.25;
@@ -18,18 +21,25 @@ const MAX_NEXT_CHORD_TIME_S = 15;
 
 const makeScheduleChord = instrument => {
   const scheduleChord = () => {
-    const tonic = getRandomElement(tonal.Note.names());
-    const chordType = getRandomElement(CHORDS);
+    const pitchClass = getRandomElement([
+      'C',
+      'C#',
+      'D',
+      'D#',
+      'E',
+      'F',
+      'F#',
+      'G',
+      'G#',
+      'A',
+      'A#',
+      'B',
+    ]);
     const octave = getRandomElement(OCTAVES);
-    const octavedTonic = `${tonic}${octave}`;
-    const intervals = tonal.Chord.intervals(chordType);
+    const tonic = `${pitchClass}${octave}`;
+    const chord = getRandomElement(CHORDS);
     const inversion = Math.floor(getRandomNumberBetween(0, 4));
-    const notes = intervals.map((interval, i) =>
-      tonal.Distance.transpose(
-        octavedTonic,
-        i < inversion ? tonal.Interval.invert(interval) : interval
-      )
-    );
+    const notes = invert(chord(tonic), inversion);
     const chordTime =
       Math.random() * (MAX_NEXT_CHORD_TIME_S - MIN_NEXT_CHORD_TIME_S) +
       MIN_NEXT_CHORD_TIME_S;
