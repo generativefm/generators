@@ -1,18 +1,22 @@
 import * as Tone from 'tone';
-import { Scale, Note } from 'tonal';
 import {
   createPrerenderedSampler,
   wrapActivate,
+  transpose,
+  P1,
+  M2,
+  M3,
+  P4,
+  P5,
+  M6,
+  M7,
+  getRandomElement,
+  toss,
 } from '@generative-music/utilities';
 import { sampleNames } from '../trees.gfm.manifest.json';
 
-const renderedNotes = [3, 4, 5, 6].reduce(
-  (allNotes, octave) =>
-    allNotes.concat(
-      ['C', 'D', 'E', 'F', 'G', 'A', 'B'].map(pc => `${pc}${octave}`)
-    ),
-  []
-);
+const MAJOR_SCALE_INTERVALS = [P1, M2, M3, P4, P5, M6, M7];
+const OCTAVES = [3, 4, 5, 6];
 
 const getOffsetProgression = () => {
   const progression = [];
@@ -88,7 +92,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     renderedInstrumentName,
     sampleLibrary,
     onProgress,
-    notes: renderedNotes,
+    notes: toss(['C', 'E', 'G'], OCTAVES).concat(['B6']),
     additionalRenderLength: 0,
     getDestination: getPianoDestination,
   });
@@ -96,15 +100,22 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
   piano.connect(destination);
 
   const schedule = () => {
-    const tonic = Note.names()[Math.floor(Math.random() * Note.names().length)];
-    const scalePitchClasses = Scale.notes(tonic, 'major');
-    const notes = [3, 4, 5, 6]
-      .reduce(
-        (allNotes, octave) =>
-          allNotes.concat(scalePitchClasses.map(pc => `${pc}${octave}`)),
-        []
-      )
-      .map(note => Note.simplify(note));
+    const tonic = getRandomElement([
+      'C',
+      'C#',
+      'D',
+      'D#',
+      'E',
+      'F',
+      'F#',
+      'G',
+      'G#',
+      'A',
+      'A#',
+      'B',
+    ]);
+    const scalePitchClasses = MAJOR_SCALE_INTERVALS.map(transpose(tonic));
+    const notes = toss(scalePitchClasses, OCTAVES);
 
     playProgression(piano, notes);
 
