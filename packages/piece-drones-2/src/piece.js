@@ -1,63 +1,46 @@
-import Tone from 'tone';
-import { Note, Distance } from 'tonal';
-import { getBuffers } from '@generative-music/utilities';
+import * as Tone from 'tone';
+import {
+  createBuffers,
+  sampleNote,
+  wrapActivate,
+} from '@generative-music/utilities';
+import { sampleNames } from '../drones-2.gfm.manifest.json';
 
 const NOTES = ['C4', 'G4', 'C5', 'G5', 'E5'];
 
-const findClosest = (samplesByNote, note) => {
-  const noteMidi = Note.midi(note);
-  const maxInterval = 96;
-  let interval = 0;
-  while (interval <= maxInterval) {
-    const higherNote = Note.fromMidi(noteMidi + interval);
-    if (samplesByNote[higherNote]) {
-      return higherNote;
-    }
-    const lowerNote = Note.fromMidi(noteMidi - interval);
-    if (samplesByNote[lowerNote]) {
-      return lowerNote;
-    }
-    interval += 1;
-  }
-  return note;
-};
-
-const makePiece = ({ audioContext, destination, samples }) => {
-  if (Tone.context !== audioContext) {
-    Tone.setContext(audioContext);
-  }
-
+const activate = async ({ destination, sampleLibrary }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const samplesByNote = samples['vsco2-violins-susvib'];
+  const sampledNotes = Object.keys(samplesByNote);
 
-  return getBuffers(samplesByNote).then(buffers => {
-    const filter = new Tone.Filter(6000, 'lowpass', -48).connect(destination);
-    const disposableNodes = [filter, buffers];
+  const buffers = await createBuffers(samplesByNote);
 
-    const drone = (note, droneDestination, pitchShift = 0, reverse = false) => {
-      const closestSampledNote = findClosest(samplesByNote, note);
-      const difference = Distance.semitones(closestSampledNote, note);
-      const playbackRate = Tone.intervalToFrequencyRatio(
-        difference + pitchShift
-      );
-      const buffer = buffers.get(closestSampledNote);
-      if (!disposableNodes.includes(buffer)) {
-        disposableNodes.push(buffer);
-      }
-      const source = new Tone.BufferSource(buffer)
-        .set({
-          reverse,
-          playbackRate,
-          onended: () => {
-            const i = disposableNodes.indexOf(source);
-            if (i >= 0) {
-              source.dispose();
-              disposableNodes.splice(i, 1);
-            }
-          },
-        })
-        .connect(droneDestination);
-      source.start('+1');
-    };
+  const filter = new Tone.Filter(6000, 'lowpass', -48).connect(destination);
+  const activeSources = [];
+
+  const drone = (note, droneDestination, pitchShift = 0, reverse = false) => {
+    const { sampledNote, playbackRate } = sampleNote({
+      note,
+      sampledNotes,
+      pitchShift,
+    });
+    const buffer = buffers.get(sampledNote);
+    const source = new Tone.BufferSource(buffer)
+      .set({
+        reverse,
+        playbackRate,
+        onended: () => {
+          const i = activeSources.indexOf(source);
+          if (i >= 0) {
+            activeSources.splice(i, 1);
+          }
+        },
+      })
+      .connect(droneDestination);
+    source.start('+1');
+  };
+
+  const schedule = () => {
     const autoFilter = new Tone.AutoFilter(Math.random() / 10, 150, 4)
       .connect(filter)
       .start();
@@ -69,8 +52,6 @@ const makePiece = ({ audioContext, destination, samples }) => {
 
     frequencyLfo.connect(autoFilter.frequency);
     frequencyLfo.start();
-
-    disposableNodes.push(autoFilter, frequencyLfo);
 
     NOTES.forEach(note => {
       const playDrone = () => {
@@ -98,11 +79,18 @@ const makePiece = ({ audioContext, destination, samples }) => {
     startDrone('D5', filter, firstDroneDelay);
     startDrone('E5', filter, secondDroneDelay);
     startDrone('C5', filter, 60 + Math.random() * 60);
+
     return () => {
-      disposableNodes.forEach(node => node.dispose());
-      disposableNodes.splice(0, disposableNodes.length);
+      activeSources.forEach(source => source.dispose());
+      autoFilter.dispose();
+      frequencyLfo.dispose();
     };
-  });
+  };
+
+  const deactivate = () => {
+    filter.dispose();
+  };
+  return [deactivate, schedule];
 };
 
-export default makePiece;
+export default wrapActivate(activate);
