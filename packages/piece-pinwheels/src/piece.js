@@ -1,4 +1,3 @@
-import * as tonal from 'tonal';
 import shuffle from 'shuffle-array';
 import * as Tone from 'tone';
 import {
@@ -6,16 +5,29 @@ import {
   getRandomElement,
   getRandomNumberBetween,
   wrapActivate,
+  minor7th,
+  invert,
+  toss,
 } from '@generative-music/utilities';
 import { sampleNames } from '../pinwheels.gfm.manifest.json';
 
 const P_SPAWN_TWO = 0.33;
 const OCTAVES = [3, 4, 5];
-const TONICS = tonal.Note.names().reduce(
-  (notesWithOctaves, noteName) =>
-    notesWithOctaves.concat(OCTAVES.map(octave => `${noteName}${octave}`)),
-  []
-);
+const PITCH_CLASSES = [
+  'C',
+  'C#',
+  'D',
+  'D#',
+  'E',
+  'F',
+  'F#',
+  'G',
+  'G#',
+  'A',
+  'A#',
+  'B',
+];
+const TONICS = toss(PITCH_CLASSES, OCTAVES);
 const MIN_MAX_DELAY_S = 2;
 const MAX_MAX_DELAY_S = 5;
 const MIN_MIN_DELAY_S = 0.075;
@@ -25,7 +37,6 @@ const MIN_ACCELERATION_MULTIPLIER = 0.85;
 const MAX_ACCELERATION_MULTIPLIER = 0.95;
 const MIN_DECELERATION_MULTIPLIER = 1.05;
 const MAX_DECELERATION_MULTIPLIER = 1.15;
-const CHORD_TYPE = 'm7';
 
 function* makeArrayLooper(arr) {
   for (let i = 0; i < arr.length; i === arr.length - 1 ? (i = 0) : (i += 1)) {
@@ -43,13 +54,7 @@ const startPinwheelChain = instrument => {
     spawnAnother = true
   ) => {
     const inversion = Math.floor(0, MAX_INVERSION + 1);
-    const intervals = tonal.Chord.intervals(CHORD_TYPE);
-    const notes = intervals.map((interval, i) =>
-      tonal.Distance.transpose(
-        tonic,
-        i < inversion ? tonal.Interval.invert(interval) : interval
-      )
-    );
+    const notes = invert(minor7th(tonic), inversion);
     const noteGenerator = makeArrayLooper(shuffle(notes));
     const minDelay = getRandomNumberBetween(MIN_MIN_DELAY_S, MAX_MIN_DELAY_S);
     const playNextNote = (delay, multiplier) => {
@@ -68,17 +73,17 @@ const startPinwheelChain = instrument => {
           if (spawnAnother) {
             Tone.Transport.scheduleOnce(() => {
               if (Math.random() < P_SPAWN_TWO) {
-                const nextLetter = getRandomElement(tonal.Note.names());
-                const shuffledOctaves = shuffle(OCTAVES.slice(0));
+                const nextPitchClass = getRandomElement(PITCH_CLASSES);
+                const shuffledOctaves = shuffle(OCTAVES);
                 const delay1 = getNewMaxDelay();
                 const delay2 = getNewMaxDelay();
                 generatePinwheel(
-                  `${nextLetter}${shuffledOctaves.pop()}`,
+                  `${nextPitchClass}${shuffledOctaves.pop()}`,
                   delay1,
                   delay1 >= delay2
                 );
                 generatePinwheel(
-                  `${nextLetter}${shuffledOctaves.pop()}`,
+                  `${nextPitchClass}${shuffledOctaves.pop()}`,
                   delay2,
                   delay1 < delay2
                 );
