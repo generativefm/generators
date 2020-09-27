@@ -1,11 +1,9 @@
-import { Chord } from 'tonal';
 import * as Tone from 'tone';
 import {
   createPrerenderedSampler,
   wrapActivate,
   minor7th,
   toss,
-  simplifyNote,
 } from '@generative-music/utilities';
 import { sampleNames } from '../little-bells.gfm.manifest.json';
 
