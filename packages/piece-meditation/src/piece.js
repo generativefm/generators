@@ -1,13 +1,15 @@
-import { Note, Distance } from 'tonal';
 import * as Tone from 'tone';
 import {
   createSampler,
   wrapActivate,
   getRandomElement,
+  transpose,
+  P5,
+  M2,
+  P4,
 } from '@generative-music/utilities';
 import { sampleNames } from '../meditation.gfm.manifest.json';
 
-const NUM_POTENTIAL_TONIC_PITCH_CLASSES = 5;
 const P_SECOND_NOTE = 0.3;
 const SECOND_NOTE_DELAY_MULTIPLIER_S = 15;
 const MIN_SECOND_NOTE_DELAY_S = 1;
@@ -21,11 +23,7 @@ const MIN_LOW_NOTE_INTERVAL_S = 45;
 const MIN_HIGH_NOTE_INTERVAL_S = 75;
 const INTERVAL_MULTIPLIER_S = 5;
 const VOLUME_ADJUSTMENT = -15;
-
-const tonicPitchClasses = Note.names().slice(
-  0,
-  NUM_POTENTIAL_TONIC_PITCH_CLASSES
-);
+const TONIC_PITCH_CLASSES = ['C', 'C#', 'D', 'D#'];
 
 const startInterval = (notes, minIntervalInSeconds, instrument) => {
   const playNotes = () => {
@@ -69,16 +67,11 @@ const activate = async ({ destination, sampleLibrary }) => {
     });
     bowls.chain(delay, volume);
 
-    const tonicPitchClass = getRandomElement(tonicPitchClasses);
+    const tonicPitchClass = getRandomElement(TONIC_PITCH_CLASSES);
 
-    const lowPitchClasses = [
-      tonicPitchClass,
-      Distance.transpose(tonicPitchClass, 'P5'),
-    ];
+    const lowPitchClasses = [tonicPitchClass, transpose(tonicPitchClass, P5)];
     const highPitchClasses = lowPitchClasses.concat(
-      ['M2', 'P4'].map(interval =>
-        Distance.transpose(tonicPitchClass, interval)
-      )
+      [M2, P4].map(interval => transpose(tonicPitchClass, interval))
     );
     const lowNotes = pitchClassesOverOctaves(lowPitchClasses, LOWER_OCTAVES);
     const highNotes = pitchClassesOverOctaves(highPitchClasses, HIGHER_OCTAVES);

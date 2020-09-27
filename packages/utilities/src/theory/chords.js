@@ -1,10 +1,7 @@
 import chord from './chord';
 import { m3, M3, P5, m7, M7, P8, M2 } from './intervals';
 
-const makeChord = (intervals, inversion = 0) => (
-  tonic,
-  inversion2 = inversion
-) => chord(tonic, intervals, inversion2);
+const makeChord = intervals => tonic => chord(tonic, intervals);
 
 const majorIntervals = [M3, P5];
 const minorIntervals = [m3, P5];

@@ -3,9 +3,6 @@ import toss from '../toss';
 
 const OCTAVES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 const PITCH_CLASSES = [
-  'A',
-  'A#',
-  'B',
   'C',
   'C#',
   'D',
@@ -15,6 +12,9 @@ const PITCH_CLASSES = [
   'F#',
   'G',
   'G#',
+  'A',
+  'A#',
+  'B',
 ];
 const NOTES = toss(PITCH_CLASSES, OCTAVES);
 const TOLERANT_NOTE_REGEX = /([abcdefg])([#b]*)(\d*)/i;
