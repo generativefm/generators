@@ -5,7 +5,7 @@ const getOctave = (note = '') => {
   if (!match) {
     return null;
   }
-  return match[2];
+  return Number.parseInt(match[2], 10);
 };
 
 export default getOctave;

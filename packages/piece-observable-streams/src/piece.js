@@ -1,11 +1,13 @@
 import * as Tone from 'tone';
-import { Scale, Note, Chord } from 'tonal';
+import { Scale, Chord } from 'tonal';
 import { of, from, Observable } from 'rxjs';
 import { repeat, mergeMap } from 'rxjs/operators';
 import {
   createPrerenderedSampler,
   wrapActivate,
   toss,
+  getPitchClass,
+  getOctave,
 } from '@generative-music/utilities';
 import { sampleNames } from '../observable-streams.gfm.manifest.json';
 import octaved from './operators/octaved';
@@ -89,8 +91,8 @@ const renderedPianoNotes = Array.from(
       .concat(
         NOTES.map(note =>
           [1, -1, -2].map(octChange => {
-            const pc = Note.pc(note);
-            const oct = Note.oct(note) + octChange;
+            const pc = getPitchClass(note);
+            const oct = getOctave(note) + octChange;
             return `${pc}${oct}`;
           })
         ).flat()
@@ -202,7 +204,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     const noteSubscription = notes$.subscribe(note => {
       if (
         Math.random() < 0.1 &&
-        Note.oct(note) > 3 &&
+        getOctave(note) > 3 &&
         Tone.now() - lastViolinTimeS > 20
       ) {
         lastViolinTimeS = Tone.now();
