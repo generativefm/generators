@@ -61,7 +61,7 @@ const activate = async ({ destination, sampleLibrary }) => {
 
     return () => {
       sineSynth.dispose();
-      instrument.releaseAll();
+      instrument.releaseAll(0);
     };
   };
 

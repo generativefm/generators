@@ -6,7 +6,7 @@ import {
 } from '@generative-music/utilities';
 import { sampleNames } from '../buttafingers.gfm.manifest.json';
 
-const NOTES = ['C4', 'E4', 'F4', 'G4', 'B5', 'A5'];
+const NOTES = ['C4', 'E4', 'F4', 'G4'];
 const PITCH_CHANGES = [-36, -24];
 
 const activate = async ({ destination, sampleLibrary, onProgress }) => {
@@ -96,26 +96,30 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
 
     claveVol.connect(delay);
 
-    const startDelays = wines.map(() => Math.random() * 60);
-    const minStartDelay = Math.min(...startDelays);
+    const firstIndex = Math.floor(Math.random() * wines.length);
+
     wines.forEach((wine, i) => {
       const gain = new Tone.Gain().connect(filter);
       const lfo = new Tone.LFO({
         frequency: Math.random() / 100,
-        phase: startDelays[i] === minStartDelay ? 270 : Math.random() * 360,
+        phase: firstIndex === i ? 270 : Math.random() * 360,
       });
       lfo.connect(gain.gain).start();
       wine.connect(gain);
       disposableNodes.push(gain, lfo);
       const playNote = () => {
-        wine.triggerAttack(NOTES[i], '+1');
+        wine.triggerAttack(NOTES[Math.floor(i / 2)], '+1');
         Tone.Transport.scheduleOnce(() => {
           playNote();
         }, '+60');
       };
-      Tone.Transport.scheduleOnce(() => {
+      if (i === firstIndex) {
         playNote();
-      }, `+${startDelays[i] - minStartDelay}`);
+      } else {
+        Tone.Transport.scheduleOnce(() => {
+          playNote();
+        }, `+${Math.random() * 60}`);
+      }
     });
 
     Tone.Transport.scheduleOnce(() => {
@@ -126,7 +130,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
 
     return () => {
       wines.forEach(sampler => {
-        sampler.releaseAll();
+        sampler.releaseAll(0);
       });
       disposableNodes.forEach(disposeNode);
       delay.dispose();

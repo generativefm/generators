@@ -80,7 +80,7 @@ const activate = async ({ destination, sampleLibrary }) => {
     startInterval(highNotes, MIN_HIGH_NOTE_INTERVAL_S, bowls);
 
     return () => {
-      bowls.releaseAll();
+      bowls.releaseAll(0);
       delay.dispose();
     };
   };

@@ -219,7 +219,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
         node.dispose();
       });
       [violin, corAnglais, piano].forEach(sampler => {
-        sampler.releaseAll();
+        sampler.releaseAll(0);
       });
       noteSubscription.unsubscribe();
     };

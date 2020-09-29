@@ -139,7 +139,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     playPhrase(piano);
 
     return () => {
-      piano.releaseAll();
+      piano.releaseAll(0);
       [
         delay,
         chorusLfo,

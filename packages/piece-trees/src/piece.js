@@ -120,7 +120,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     playProgression(piano, notes);
 
     return () => {
-      piano.releaseAll();
+      piano.releaseAll(0);
     };
   };
 

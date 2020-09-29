@@ -96,7 +96,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
       fluteGainLfo.stop();
       fluteGainLfo.dispose();
       delay.dispose();
-      flute.releaseAll();
+      flute.releaseAll(0);
       activeSources.forEach(source => {
         source.stop();
       });

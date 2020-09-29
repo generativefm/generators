@@ -99,8 +99,8 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     });
 
     return () => {
-      reversePiano.releaseAll();
-      violins.releaseAll();
+      reversePiano.releaseAll(0);
+      violins.releaseAll(0);
       [delay1, delay2].forEach(node => node.dispose());
     };
   };

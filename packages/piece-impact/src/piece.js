@@ -129,7 +129,7 @@ const activate = async ({ destination, sampleLibrary }) => {
     nextNote();
     return () =>
       [regularInstrument, reverseInstrument].forEach(instrument =>
-        instrument.releaseAll()
+        instrument.releaseAll(0)
       );
   };
 

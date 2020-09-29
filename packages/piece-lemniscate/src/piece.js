@@ -89,7 +89,7 @@ const activate = async ({ destination, sampleLibrary }) => {
         lfoMeter,
       ].forEach(node => node.dispose());
       [firstInstrument, secondInstrument].forEach(sampler =>
-        sampler.releaseAll()
+        sampler.releaseAll(0)
       );
     };
   };

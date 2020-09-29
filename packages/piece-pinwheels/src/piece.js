@@ -117,7 +117,7 @@ const activate = async ({ destination, sampleLibrary }) => {
   const schedule = () => {
     startPinwheelChain(piano);
     return () => {
-      piano.releaseAll();
+      piano.releaseAll(0);
     };
   };
   const deactivate = () => {

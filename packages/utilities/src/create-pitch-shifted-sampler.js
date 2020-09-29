@@ -39,7 +39,6 @@ const createPitchShiftedSampler = async ({
     bufferSource.set({
       playbackRate,
       onended: () => {
-        console.log('ending');
         const index = activeSources.indexOf(bufferSource);
         if (index >= 0) {
           activeSources.splice(index, 1);
@@ -55,17 +54,18 @@ const createPitchShiftedSampler = async ({
     output.connect(node);
   };
 
-  const dispose = () => {
-    isDisposed = true;
-    activeSources.forEach(node => node.dispose());
-    buffers.dispose();
-    output.dispose();
+  const releaseAll = time => {
+    activeSources.forEach(activeSource => {
+      activeSource.set({ fadeOut: 0 });
+      activeSource.stop(time);
+    });
   };
 
-  const releaseAll = () => {
-    activeSources.forEach(node => {
-      node.dispose();
-    });
+  const dispose = () => {
+    isDisposed = true;
+    releaseAll();
+    buffers.dispose();
+    output.dispose();
   };
 
   return {

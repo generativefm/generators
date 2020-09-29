@@ -97,7 +97,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
 
     return () => {
       [piano, violins, cello].forEach(sampler => {
-        sampler.releaseAll();
+        sampler.releaseAll(0);
       });
       delay.dispose();
     };

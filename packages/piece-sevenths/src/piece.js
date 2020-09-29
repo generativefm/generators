@@ -68,7 +68,7 @@ const activate = async ({ destination, sampleLibrary }) => {
   const schedule = () => {
     scheduleChord();
     return () => {
-      piano.releaseAll();
+      piano.releaseAll(0);
     };
   };
   const deactivate = () => {

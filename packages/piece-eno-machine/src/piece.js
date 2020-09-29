@@ -30,7 +30,7 @@ const activate = async ({ destination, sampleLibrary }) => {
     });
 
     return () => {
-      piano.releaseAll();
+      piano.releaseAll(0);
     };
   };
 

@@ -72,7 +72,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     play();
 
     return () => {
-      piano.releaseAll();
+      piano.releaseAll(0);
       delay.dispose();
     };
   };

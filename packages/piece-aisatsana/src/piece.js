@@ -67,7 +67,7 @@ const activate = async ({ destination, sampleLibrary }) => {
       phraseLength * EIGHTH_NOTE_INTERVAL_S
     );
     return () => {
-      piano.releaseAll();
+      piano.releaseAll(0);
     };
   };
 

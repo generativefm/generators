@@ -190,7 +190,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
 
     return () => {
       instruments.forEach(instrument => {
-        instrument.releaseAll();
+        instrument.releaseAll(0);
       });
       delay.dispose();
     };
