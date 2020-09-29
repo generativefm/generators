@@ -28,7 +28,6 @@ const makeChordInterval = instrument => (
       let beat = 1;
       while (
         playedNotes < numNotesToPlay ||
-        //eslint-disable-next-line no-unmodified-loop-condition
         (shouldPlayImmediately && !hasPlayed)
       ) {
         const chanceToPlay =

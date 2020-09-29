@@ -1,6 +1,7 @@
 {
   "rules": {
     "no-magic-numbers": 0,
-    "new-cap": 0
+    "new-cap": 0,
+    "no-unmodified-loop-condition": 0
   }
 }

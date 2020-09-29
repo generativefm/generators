@@ -3,6 +3,7 @@ import {
   wrapActivate,
   minor7th,
   createPitchShiftedSampler,
+  toss,
 } from '@generative-music/utilities';
 import { sampleNames } from '../enough.gfm.manifest.json';
 
@@ -17,15 +18,27 @@ const activate = async ({ destination, sampleLibrary }) => {
     curve: 'linear',
   });
   const masterVol = new Tone.Volume(-10).connect(destination);
-  const delayVolume = new Tone.Volume(-28);
+  const delayVolume = new Tone.Volume(-28).connect(masterVol);
   const compressor = new Tone.Compressor().connect(masterVol);
 
-  const playChord = () => {
-    minor7th('A#3')
-      .concat(minor7th('A#4'))
-      .filter(() => Math.random() < 0.5)
-      .slice(0, 4)
-      .forEach(note => corAnglais.triggerAttack(note, `+${Math.random() * 2}`));
+  const notes = toss(['A#'], [3, 4])
+    .map(minor7th)
+    .flat();
+
+  const playChord = (first = false) => {
+    let chord = notes.filter(() => Math.random() < 0.5).slice(0, 4);
+    while (first && chord.length === 0) {
+      chord = notes.filter(() => Math.random() < 0.5).slice(0, 4);
+    }
+    const immediateNoteIndex = first
+      ? Math.floor(Math.random() * chord.length)
+      : -1;
+    chord.forEach((note, i) =>
+      corAnglais.triggerAttack(
+        note,
+        `+${immediateNoteIndex === i ? 0 : Math.random() * 2}`
+      )
+    );
     Tone.Transport.scheduleOnce(() => {
       playChord();
     }, `+${Math.random() * 5 + 12}`);
@@ -36,10 +49,10 @@ const activate = async ({ destination, sampleLibrary }) => {
       feedback: 0.5,
       delayTime: 10,
       maxDelay: 10,
-    }).chain(delayVolume, masterVol);
+    }).connect(delayVolume);
     corAnglais.connect(compressor);
     compressor.connect(delay);
-    playChord();
+    playChord(true);
 
     return () => {
       corAnglais.releaseAll(0);
