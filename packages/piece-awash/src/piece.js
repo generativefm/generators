@@ -1,26 +1,49 @@
-import Tone from 'tone';
-import { getBuffers, getSampler } from '@generative-music/utilities';
+import * as Tone from 'tone';
+import {
+  wrapActivate,
+  createPrerenderedSampler,
+  createPrerenderedBuffers,
+} from '@generative-music/utilities';
+import { sampleNames } from '../awash.gfm.manifest.json';
 
 const NOTES = ['C3', 'D#3', 'G3', 'A#3', 'C4', 'D#4', 'G4', 'A#4'];
 
-const makePiece = ({ audioContext, destination, samples }) => {
-  if (Tone.context !== audioContext) {
-    Tone.setContext(audioContext);
-  }
+const activate = async ({ destination, sampleLibrary, onProgress }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
+  const oceanDrumSamples =
+    samples['awash::vcsl-ocean-drum'] || samples['vcsl-ocean-drum'];
 
-  const oceanDrumSamples = samples['vcsl-ocean-drum'];
-  const reverb = new Tone.Reverb(7).set({ wet: 1 }).connect(destination);
+  const guitar = await createPrerenderedSampler({
+    samples,
+    sampleLibrary,
+    notes: NOTES,
+    sourceInstrumentName: 'dry-guitar-vib',
+    renderedInstrumentName: 'awash::dry-guitar-vib',
+    getDestination: () => new Tone.Reverb(7).toDestination(),
+    additionalRenderLength: 2,
+    onProgress: val => onProgress(val / 2),
+  });
 
-  return Promise.all([
-    getSampler(samples['dry-guitar-vib']),
-    getBuffers(oceanDrumSamples),
-    reverb.generate(),
-  ]).then(([guitar, oceanDrum]) => {
-    guitar.set({ curve: 'linear', attack: 10, release: 15 });
+  const oceanDrum = await createPrerenderedBuffers({
+    samples,
+    sampleLibrary,
+    sourceInstrumentName: 'vcsl-ocean-drum',
+    renderedInstrumentName: 'awash::vcsl-ocean-drum',
+    getDestination: () => new Tone.Reverb(7).toDestination(),
+    additionalRenderLength: 1,
+    onProgress: val => onProgress(val / 2 + 0.5),
+  });
+
+  guitar.set({ curve: 'linear', attack: 10, release: 15 });
+
+  const filter = new Tone.Filter(5000, 'notch', -12);
+  guitar.connect(filter);
+
+  const schedule = () => {
     const delay1 = new Tone.FeedbackDelay({
       feedback: 0.7,
       delayTime: Math.random() * 0.2 + 0.8,
-    }).connect(reverb);
+    }).connect(destination);
     const delay2 = new Tone.FeedbackDelay({
       feedback: 0.5,
       delayTime: 0.25,
@@ -28,33 +51,14 @@ const makePiece = ({ audioContext, destination, samples }) => {
     const autoFilter = new Tone.AutoFilter(Math.random() / 10, 200, 5)
       .start()
       .connect(delay2);
-    const filter = new Tone.Filter(5000, 'notch', -12).connect(autoFilter);
-    guitar.connect(filter);
 
-    const disposableNodes = [
-      guitar,
-      oceanDrum,
-      reverb,
-      delay1,
-      delay2,
-      autoFilter,
-      filter,
-    ];
+    filter.connect(autoFilter);
 
-    NOTES.forEach(note => {
-      const play = () => {
-        guitar.triggerAttack(note, '+1');
-        Tone.Transport.scheduleOnce(() => {
-          play();
-        }, `+${Math.random() * 25 + 25}`);
-      };
-      Tone.Transport.scheduleOnce(() => {
-        play();
-      }, `+${Math.random() * 25 + 10}`);
-    });
+    const activeSources = [];
 
     const firstOceanDelays = oceanDrumSamples.map(() => Math.random() * 30);
     const minOceanDelay = Math.min(...firstOceanDelays);
+
     oceanDrumSamples.forEach((_, i) => {
       const buffer = oceanDrum.get(i);
       const play = () => {
@@ -66,15 +70,14 @@ const makePiece = ({ audioContext, destination, samples }) => {
             curve: 'linear',
             playbackRate: 0.5,
             onended: () => {
-              const index = disposableNodes.indexOf(source);
+              const index = activeSources.indexOf(source);
               if (index >= 0) {
-                source.dispose();
-                disposableNodes.splice(index, 1);
+                activeSources.splice(index, 1);
               }
             },
           })
-          .connect(reverb);
-        disposableNodes.push(source);
+          .connect(destination);
+        activeSources.push(source);
         source.start('+1');
         Tone.Transport.scheduleOnce(() => {
           play();
@@ -85,11 +88,38 @@ const makePiece = ({ audioContext, destination, samples }) => {
       }, `+${firstOceanDelays[i] - minOceanDelay}`);
     });
 
+    const firstIndex = Math.floor(Math.random() * NOTES.length);
+
+    NOTES.forEach((note, i) => {
+      const play = () => {
+        guitar.triggerAttack(note, '+1');
+        Tone.Transport.scheduleOnce(() => {
+          play();
+        }, `+${Math.random() * 25 + 25}`);
+      };
+      if (i === firstIndex) {
+        play();
+      } else {
+        Tone.Transport.scheduleOnce(() => {
+          play();
+        }, `+${Math.random() * 50}`);
+      }
+    });
+
     return () => {
-      disposableNodes.forEach(node => node.dispose());
-      disposableNodes.splice(0, disposableNodes.length);
+      guitar.releaseAll(0);
+      activeSources.forEach(source => {
+        source.dispose();
+      });
+      [delay1, delay2, autoFilter].forEach(node => node.dispose());
     };
-  });
+  };
+
+  const deactivate = () => {
+    [filter, guitar, oceanDrum].forEach(node => node.dispose());
+  };
+
+  return [deactivate, schedule];
 };
 
-export default makePiece;
+export default wrapActivate(activate);
