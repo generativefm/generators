@@ -189,7 +189,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
       drumGain.gain.cancelScheduledValues(Tone.now());
       drumGain.gain.setValueAtTime(0, Tone.now());
       activeSources.forEach(source => {
-        source.stop();
+        source.stop(0);
       });
       [delay, drumsAutoFilter, didgeridooAutoFilter].forEach(node => {
         node.dispose();
