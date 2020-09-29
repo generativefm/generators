@@ -7,6 +7,7 @@ const createPitchShiftedSampler = async ({
   pitchShift = 0,
   attack,
   release,
+  curve,
   volume = 0,
 } = {}) => {
   let isDisposed = false;
@@ -38,6 +39,7 @@ const createPitchShiftedSampler = async ({
     activeSources.push(bufferSource);
     bufferSource.set({
       playbackRate,
+      curve,
       onended: () => {
         const index = activeSources.indexOf(bufferSource);
         if (index >= 0) {

@@ -10,9 +10,11 @@ const renderNote = async ({
   getDestination,
   additionalRenderLength,
   bufferSourceOptions = {},
+  pitchShift = 0,
 }) => {
   const { playbackRate, sampledNote } = sampleNote({
     note,
+    pitchShift,
     sampledNotes: Object.keys(samplesByNote),
   });
   const noteBuffer = await createBuffer(samplesByNote[sampledNote]);
@@ -38,6 +40,7 @@ const createPrerenderedSampler = async ({
   additionalRenderLength = 0,
   onProgress = noop,
   bufferSourceOptions = {},
+  pitchShift = 0,
 } = {}) => {
   if (samples[renderedInstrumentName]) {
     return createSampler(samples[renderedInstrumentName]);
@@ -52,6 +55,7 @@ const createPrerenderedSampler = async ({
         getDestination,
         additionalRenderLength,
         bufferSourceOptions,
+        pitchShift,
       });
       renderedBuffersByNote[note] = buffer;
       onProgress((i + 1) / notes.length);
