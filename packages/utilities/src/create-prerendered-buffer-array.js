@@ -7,8 +7,8 @@ const createPrerenderedBufferArray = async ({
   sourceInstrumentName,
   renderedInstrumentName,
   sampleLibrary,
-  additionalRenderLength,
   getDestination,
+  additionalRenderLength = 0,
   onProgress = noop,
   bufferSourceOptions = {},
 } = {}) => {
