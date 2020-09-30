@@ -1,15 +1,15 @@
-import Tone from 'tone';
-import { Note, Distance } from 'tonal';
-import { getBuffers } from '@generative-music/utilities';
+import * as Tone from 'tone';
+import {
+  toss,
+  sampleNote,
+  wrapActivate,
+  createPrerenderedBuffers,
+  getRandomElement,
+} from '@generative-music/utilities';
+import { sampleNames } from '../expand-collapse.gfm.manifest.json';
 
-const toss = (pcs = [], octaves = []) =>
-  octaves.reduce(
-    (notes, octave) => notes.concat(pcs.map(pc => `${pc}${octave}`)),
-    []
-  );
-
-const getReversedBuffers = (buffers, samplesByNote) =>
-  new Tone.Buffers(
+const createReversedBuffers = (buffers, samplesByNote) =>
+  new Tone.ToneAudioBuffers(
     Reflect.ownKeys(samplesByNote).reduce((reverseBuffers, note) => {
       reverseBuffers[note] = buffers.get(note).slice(0);
       reverseBuffers[note].reverse = true;
@@ -17,104 +17,107 @@ const getReversedBuffers = (buffers, samplesByNote) =>
     }, {})
   );
 
-const findClosest = (note, samplesByNote) => {
-  const noteMidi = Note.midi(note);
-  const maxInterval = 96;
-  let interval = 0;
-  while (interval <= maxInterval) {
-    const higherNote = Note.fromMidi(noteMidi + interval);
-    if (samplesByNote[higherNote]) {
-      return higherNote;
-    }
-    const lowerNote = Note.fromMidi(noteMidi - interval);
-    if (samplesByNote[lowerNote]) {
-      return lowerNote;
-    }
-    interval += 1;
-  }
-  return note;
-};
-
 const PITCH_CLASSES = ['C', 'E', 'G'];
 const OCTAVES = [3, 4, 5, 6];
 const NOTES = toss(PITCH_CLASSES, OCTAVES);
 
-const makePiece = ({ audioContext, destination, samples }) => {
-  if (Tone.context !== audioContext) {
-    Tone.setContext(audioContext);
-  }
-  const pianoSamples = samples['vsco2-piano-mf'];
-  return Promise.all([
-    getBuffers(pianoSamples),
-    new Tone.Reverb({ decay: 4, wet: 0.5 }).generate(),
-  ]).then(([pianoBuffers, reverb]) => {
+const activate = async ({ destination, sampleLibrary, onProgress }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
+  const pianoSamples =
+    samples['expand-collapse::vsco2-piano-mf'] || samples['vsco2-piano-mf'];
+
+  const pianoBuffers = await createPrerenderedBuffers({
+    samples,
+    sampleLibrary,
+    onProgress,
+    sourceInstrumentName: 'vsco2-piano-mf',
+    renderedInstrumentName: 'expand-collapse::vsco2-piano-mf',
+    getDestination: () =>
+      new Tone.Reverb({ decay: 4, wet: 0.5 }).toDestination().generate(),
+  });
+
+  const reversedBuffers = createReversedBuffers(pianoBuffers, pianoSamples);
+  const activeSources = [];
+
+  const handleBufferSourceEnded = bufferSource => {
+    const i = activeSources.indexOf(bufferSource);
+    if (i >= 0) {
+      activeSources.splice(i, 1);
+    }
+  };
+
+  const sampledNotes = Object.keys(pianoSamples);
+
+  const play = (dest, first = false) => {
+    const roll = Math.random();
+    const time = 5 + roll * 15;
+    const p = 0.4 + roll * 0.5;
+    let notes = NOTES.filter(() => Math.random() < p);
+    while (first && notes.length === 0) {
+      notes = NOTES.filter(() => Math.random() < p);
+    }
+    const firstNote = first && getRandomElement(notes);
+    notes.forEach(note => {
+      const { sampledNote, playbackRate } = sampleNote({
+        note,
+        sampledNotes,
+      });
+      const buffer = pianoBuffers.get(sampledNote);
+      const source = new Tone.ToneBufferSource(buffer)
+        .set({ playbackRate, onended: () => handleBufferSourceEnded(source) })
+        .connect(dest);
+      const startTime = firstNote === note ? 1 : Math.random() * time;
+      const reverseBuffer = reversedBuffers.get(sampledNote);
+      const reverseSource = new Tone.BufferSource(reverseBuffer)
+        .set({
+          playbackRate,
+          onended: () => handleBufferSourceEnded(reverseSource),
+        })
+        .connect(dest);
+      activeSources.push(source, reverseSource);
+      source.start(`+${startTime}`, 0, time * 2 - startTime);
+
+      if (reverseBuffer.duration / playbackRate > time) {
+        reverseSource.start(
+          `+${time + Math.random() / 10}`,
+          reverseBuffer.duration - time * playbackRate
+        );
+      } else {
+        reverseSource.start(
+          `+${time * 2 -
+            reverseBuffer.duration / playbackRate +
+            Math.random() / 10}`
+        );
+      }
+    });
+
+    Tone.Transport.scheduleOnce(() => {
+      play(dest);
+    }, `+${time * 2 + Math.random() + 1}`);
+  };
+
+  const schedule = () => {
     const feedbackDelay = new Tone.FeedbackDelay({
       delayTime: 1,
       feedback: 0.3,
       wet: 0.1,
     }).connect(destination);
-    reverb.connect(feedbackDelay);
-    const reversedBuffers = getReversedBuffers(pianoBuffers, pianoSamples);
-    const bufferSources = [];
-
-    const bufferSourceOnEnded = bufferSource => {
-      const i = bufferSources.indexOf(bufferSource);
-      if (i >= 0) {
-        bufferSource.dispose();
-        bufferSources.splice(i, 1);
-      }
-    };
-
-    const play = () => {
-      const roll = Math.random();
-      const time = 5 + roll * 15;
-      const p = 0.4 + roll * 0.5;
-      NOTES.filter(() => Math.random() < p).forEach(note => {
-        const closestSample = findClosest(note, pianoSamples);
-        const difference = Distance.semitones(note, closestSample);
-        const playbackRate = Tone.intervalToFrequencyRatio(difference);
-        const buffer = pianoBuffers.get(closestSample);
-        const source = new Tone.BufferSource(buffer)
-          .set({ playbackRate, onended: () => bufferSourceOnEnded(source) })
-          .connect(reverb);
-        const startTime = Math.random() * time;
-        source.start(`+${startTime}`, 0, time * 2 - startTime);
-        const reverseBuffer = reversedBuffers.get(closestSample);
-        const reverseSource = new Tone.BufferSource(reverseBuffer)
-          .set({
-            playbackRate,
-            onended: () => bufferSourceOnEnded(reverseSource),
-          })
-          .connect(reverb);
-        if (reverseBuffer.duration / playbackRate > time) {
-          reverseSource.start(
-            `+${time + Math.random() / 10}`,
-            reverseBuffer.duration - time * playbackRate
-          );
-        } else {
-          reverseSource.start(
-            `+${time * 2 -
-              reverseBuffer.duration / playbackRate +
-              Math.random() / 10}`
-          );
-        }
-        bufferSources.push(source, reverseSource);
-      });
-
-      Tone.Transport.scheduleOnce(() => {
-        play();
-      }, `+${time * 2 + Math.random() + 1}`);
-    };
-
-    play();
+    play(feedbackDelay, true);
 
     return () => {
-      [pianoBuffers, reverb, feedbackDelay, ...bufferSources].forEach(node => {
-        node.dispose();
+      activeSources.forEach(source => {
+        source.stop(0);
       });
-      bufferSources.splice(0, bufferSources.length);
+      feedbackDelay.dispose();
     };
-  });
+  };
+
+  const deactivate = () => {
+    pianoBuffers.dispose();
+    reversedBuffers.dispose();
+  };
+
+  return [deactivate, schedule];
 };
 
-export default makePiece;
+export default wrapActivate(activate);
