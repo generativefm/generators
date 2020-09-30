@@ -1,108 +1,89 @@
-import Tone from 'tone';
-import { Note, Distance } from 'tonal';
-import { getBuffers } from '@generative-music/utilities';
+import * as Tone from 'tone';
+import {
+  createPrerenderedSampler,
+  wrapActivate,
+  getPitchClass,
+  getOctave,
+} from '@generative-music/utilities';
+import { sampleNames } from '../moment.gfm.manifest.json';
 
 const NOTES = ['C2', 'E2', 'G2', 'C3', 'E3', 'G3', 'C4', 'E4', 'G4'];
 
-const findClosest = (samplesByNote, note) => {
-  const noteMidi = Note.midi(note);
-  const maxInterval = 96;
-  let interval = 0;
-  while (interval <= maxInterval) {
-    const higherNote = Note.fromMidi(noteMidi + interval);
-    if (samplesByNote[higherNote]) {
-      return higherNote;
-    }
-    const lowerNote = Note.fromMidi(noteMidi - interval);
-    if (samplesByNote[lowerNote]) {
-      return lowerNote;
-    }
-    interval += 1;
-  }
-  return note;
-};
-
-const makePiece = ({ audioContext, destination, samples }) => {
-  if (Tone.context !== audioContext) {
-    Tone.setContext(audioContext);
-  }
+const activate = async ({ destination, sampleLibrary, onProgress }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const masterVol = new Tone.Volume(-5).connect(destination);
-  const guitarSamples = samples['acoustic-guitar'];
-  const hum1Samples = samples['alex-hum-1'];
-  const hum2Samples = samples['alex-hum-2'];
 
-  const activeSources = [];
-
-  const makePlayNote = (
-    buffers,
-    samplesByNote,
-    bufferDestination,
-    opts = {}
-  ) => note => {
-    const closestSampledNote = findClosest(samplesByNote, note);
-    const difference = Distance.semitones(closestSampledNote, note);
-    const buffer = buffers.get(closestSampledNote);
-    const pitchShiftSemitones = Math.random() < 1 ? 0 : 12;
-    const playbackRate = Tone.intervalToFrequencyRatio(
-      difference - pitchShiftSemitones
-    );
-    const source = new Tone.BufferSource(buffer)
-      .set(
-        Object.assign({}, opts, {
-          playbackRate,
-          onended: () => {
-            const i = activeSources.indexOf(source);
-            if (i >= 0) {
-              activeSources.splice(i, 1);
-            }
-          },
-        })
-      )
-      .connect(bufferDestination);
-    source.start(`+1`, 0, buffer.duration / playbackRate - (opts.fadeOut || 0));
+  const basePrerenderOpts = {
+    samples,
+    sampleLibrary,
+    notes: NOTES,
+    getDestination: () =>
+      new Tone.Reverb(10)
+        .set({ wet: 0.5 })
+        .toDestination()
+        .generate(),
   };
 
-  return Promise.all([
-    getBuffers(guitarSamples),
-    getBuffers(hum1Samples),
-    getBuffers(hum2Samples),
-    new Tone.Reverb(10).generate(),
-  ]).then(([guitarBuffers, hum1Buffers, hum2Buffers, reverb]) => {
-    const compressor = new Tone.Compressor().connect(reverb);
-    const humVolume = new Tone.Volume(-10).connect(compressor);
-    const playGuitar = makePlayNote(guitarBuffers, guitarSamples, compressor);
-    const playHum1 = makePlayNote(hum1Buffers, hum1Samples, humVolume, {
-      fadeIn: 3,
-      fadeOut: 3,
+  const guitar = await createPrerenderedSampler(
+    Object.assign({}, basePrerenderOpts, {
+      sourceInstrumentName: 'acoustic-guitar',
+      renderedInstrumentName: 'moment::acoustic-guitar',
+      onProgress: val => onProgress(val * 0.33),
+    })
+  );
+
+  guitar.connect(masterVol);
+
+  const hum1 = await createPrerenderedSampler(
+    Object.assign({}, basePrerenderOpts, {
+      sourceInstrumentName: 'alex-hum-1',
+      renderedInstrumentName: 'moment::alex-hum-1',
+      onProgress: val => onProgress(val * 0.33 + 0.33),
+    })
+  );
+
+  const hum2 = await createPrerenderedSampler(
+    Object.assign({}, basePrerenderOpts, {
+      sourceInstrumentName: 'alex-hum-1',
+      renderedInstrumentName: 'moment::alex-hum-2',
+      onProgress: val => onProgress(val * 0.33 + 0.66),
+    })
+  );
+
+  const compressor = new Tone.Compressor().connect(masterVol);
+  const humVolume = new Tone.Volume(-15).connect(compressor);
+
+  [hum1, hum2].forEach(humSampler => {
+    humSampler.set({
+      attack: 3,
+      release: 3,
       curve: 'linear',
     });
-    const playHum2 = makePlayNote(hum2Buffers, hum2Samples, humVolume, {
-      fadeIn: 3,
-      fadeOut: 3,
-      curve: 'linear',
-    });
-    const lastHumTime = new Map();
-    const playHums = note => {
-      const now = Tone.now();
-      if (!lastHumTime.has(note) || now - lastHumTime.get(note) > 30) {
-        [playHum1, playHum2].forEach(playHum => playHum(note));
-        lastHumTime.set(note, now);
-      }
-    };
+    humSampler.connect(humVolume);
+  });
 
-    reverb.connect(masterVol);
-    reverb.set({ wet: 0.5 });
+  const lastHumTime = new Map();
+  const playHums = note => {
+    const now = Tone.now();
+    if (!lastHumTime.has(note) || now - lastHumTime.get(note) > 30) {
+      [hum1, hum2].forEach(humSampler =>
+        humSampler.triggerAttackRelease(note, Math.random() + 4)
+      );
+      lastHumTime.set(note, now);
+    }
+  };
 
+  const schedule = () => {
     const firstDelays = NOTES.map(
-      note => Math.random() * 20 * (Note.pc(note) === 'E' ? 3 : 1)
+      note => Math.random() * 20 * (getPitchClass(note) === 'E' ? 3 : 1)
     );
     const minFirstDelay = Math.min(...firstDelays);
 
     NOTES.forEach((note, i) => {
-      const pc = Note.pc(note);
+      const pc = getPitchClass(note);
       const play = (time = (Math.random() * 20 + 5) * (pc === 'E' ? 3 : 1)) => {
         Tone.Transport.scheduleOnce(() => {
-          const octave = Note.oct(note);
+          const octave = getOctave(note);
           if (
             (octave === 3 || (octave === 2 && pc === 'G')) &&
             Math.random() < 0.1
@@ -111,7 +92,7 @@ const makePiece = ({ audioContext, destination, samples }) => {
           } else if (Math.random() < 0.1) {
             playHums('E3');
           }
-          playGuitar(note);
+          guitar.triggerAttack(note);
           play();
         }, `+${time}`);
       };
@@ -119,18 +100,19 @@ const makePiece = ({ audioContext, destination, samples }) => {
     });
 
     return () => {
-      [
-        guitarBuffers,
-        hum1Buffers,
-        hum2Buffers,
-        reverb,
-        compressor,
-        humVolume,
-        masterVol,
-        ...activeSources,
-      ].forEach(node => node.dispose());
+      [guitar, hum1, hum2].forEach(sampler => {
+        sampler.releaseAll(0);
+      });
     };
-  });
+  };
+
+  const deactivate = () => {
+    [guitar, hum1, hum2, compressor, humVolume, masterVol].forEach(node =>
+      node.dispose()
+    );
+  };
+
+  return [deactivate, schedule];
 };
 
-export default makePiece;
+export default wrapActivate(activate);
