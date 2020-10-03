@@ -1,30 +1,19 @@
-import Tone from 'tone';
-import { Note, Distance, Chord } from 'tonal';
-import shuffle from 'shuffle-array';
-import { getBuffers } from '@generative-music/utilities';
-
-const findClosest = (samplesByNote, note) => {
-  const noteMidi = Note.midi(note);
-  const maxInterval = 96;
-  let interval = 0;
-  while (interval <= maxInterval) {
-    const higherNote = Note.fromMidi(noteMidi + interval);
-    if (samplesByNote[higherNote]) {
-      return higherNote;
-    }
-    const lowerNote = Note.fromMidi(noteMidi - interval);
-    if (samplesByNote[lowerNote]) {
-      return lowerNote;
-    }
-    interval += 1;
-  }
-  return note;
-};
+import * as Tone from 'tone';
+import {
+  createPrerenderedSampler,
+  wrapActivate,
+  shuffleArray,
+  getPitchClass,
+  getOctave,
+  minor7th,
+  toss,
+} from '@generative-music/utilities';
+import { sampleNames } from '../substrate.gfm.manifest.json';
 
 const OCTAVES = [3, 4];
 const getNotes = tonic =>
   OCTAVES.reduce(
-    (notes, octave) => notes.concat(Chord.notes(`${tonic}${octave}`, 'm7')),
+    (notes, octave) => notes.concat(minor7th(`${tonic}${octave}`)),
     []
   );
 
@@ -47,103 +36,111 @@ function* makeNoteGenerator(notes) {
   }
 }
 
-const PITCH_CLASSES = Note.names();
+const PITCH_CLASSES = [
+  'C',
+  'C#',
+  'D',
+  'D#',
+  'E',
+  'F',
+  'F#',
+  'G',
+  'G#',
+  'A',
+  'A#',
+  'B',
+];
 
-const makePiece = ({ audioContext, destination, samples }) => {
-  if (Tone.context !== audioContext) {
-    Tone.setContext(audioContext);
-  }
+const activate = async ({ destination, sampleLibrary, onProgress }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const masterVol = new Tone.Volume(5).connect(destination);
-  const marimbaSamplesByNote = samples['vsco2-marimba'];
-  const pianoSamplesByNote = samples['vsco2-piano-mf'];
-  return Promise.all([
-    getBuffers(marimbaSamplesByNote),
-    getBuffers(pianoSamplesByNote),
-    new Tone.Reverb(20).set({ wet: 0.5 }).generate(),
-  ]).then(([primaryBuffers, secondaryBuffers, reverb]) => {
-    reverb.connect(masterVol);
+  const getReverb = () =>
+    new Tone.Reverb(20)
+      .set({ wet: 0.5 })
+      .toDestination()
+      .generate();
+
+  const renderedMarimbaNotes = toss(PITCH_CLASSES, OCTAVES.concat([5]))
+    .slice(0, -2)
+    .filter((_, i) => i % 3 === 0);
+  const marimba = await createPrerenderedSampler({
+    samples,
+    sampleLibrary,
+    notes: renderedMarimbaNotes,
+    sourceInstrumentName: 'vsco2-marimba',
+    renderedInstrumentName: 'substrate::vsco2-marimba',
+    getDestination: getReverb,
+    onProgress: val => onProgress(val * 0.5),
+    pitchShift: -24,
+  });
+  const piano = await createPrerenderedSampler({
+    samples,
+    sampleLibrary,
+    notes: renderedMarimbaNotes.map(
+      note => `${getPitchClass(note)}${getOctave(note) + 1}`
+    ),
+    sourceInstrumentName: 'vsco2-piano-mf',
+    renderedInstrumentName: 'substrate::vsco2-piano-mf',
+    getDestination: getReverb,
+    onProgress: val => onProgress(val * 0.5 + 0.5),
+    pitchShift: -12,
+  });
+  marimba
+    .set({
+      attack: 0.3,
+      curve: 'linear',
+    })
+    .connect(masterVol);
+  piano
+    .set({
+      attack: 0.25,
+      curve: 'linear',
+    })
+    .connect(masterVol);
+
+  const playAndScheduleNext = (noteGenerator, notes) => {
+    const next = noteGenerator.next();
+    if (!next.done) {
+      marimba.triggerAttack(next.value, '+1');
+      const pc = getPitchClass(next.value);
+      const oct = getOctave(next.value);
+      if (Math.random() < 0.5) {
+        const delay = Math.random() < 0.5 ? 1 : Math.random() * 2 + 1;
+        piano.triggerAttack(`${pc}${oct + 1}`, `+${delay}`);
+      }
+
+      Tone.Transport.scheduleOnce(() => {
+        playAndScheduleNext(noteGenerator, notes);
+      }, `+${3 + Math.random()}`);
+    } else {
+      Tone.Transport.scheduleOnce(() => {
+        const newNotes = swapTwo(notes);
+        const newNoteGenerator = makeNoteGenerator(newNotes);
+        playAndScheduleNext(newNoteGenerator, newNotes);
+      }, `+${Math.random() + 4}`);
+    }
+  };
+
+  const schedule = () => {
     const tonic =
       PITCH_CLASSES[Math.floor(Math.random() * PITCH_CLASSES.length)];
-    const notes = shuffle(getNotes(tonic), { copy: true });
+    const notes = shuffleArray(getNotes(tonic));
+    const noteGenerator = makeNoteGenerator(notes);
 
-    const activeSources = [];
+    playAndScheduleNext(noteGenerator, notes);
 
-    const makePlayNote = (
-      buffers,
-      samplesByNote,
-      instrumentDestination,
-      semitoneChange,
-      fadeIn
-    ) => (note, time = 0) => {
-      const closestSampledNote = findClosest(samplesByNote, note);
-      const difference = Distance.semitones(closestSampledNote, note);
-      const buffer = buffers.get(closestSampledNote);
-      const playbackRate = Tone.intervalToFrequencyRatio(
-        difference + semitoneChange
-      );
-      const source = new Tone.BufferSource(buffer)
-        .set({
-          playbackRate,
-          fadeIn,
-          curve: 'linear',
-          onended: () => {
-            const i = activeSources.indexOf(source);
-            if (i >= 0) {
-              activeSources.splice(i, 1);
-            }
-          },
-        })
-        .connect(instrumentDestination);
-      activeSources.push(source);
-      source.start(`+${time + 1}`);
-    };
-
-    const playNote = makePlayNote(
-      primaryBuffers,
-      marimbaSamplesByNote,
-      reverb,
-      -24,
-      0.3
-    );
-    const playSecondaryNote = makePlayNote(
-      secondaryBuffers,
-      pianoSamplesByNote,
-      reverb,
-      -12,
-      0.25
-    );
-    let noteGenerator = makeNoteGenerator(notes);
-    const playAndScheduleNext = () => {
-      const next = noteGenerator.next();
-      if (!next.done) {
-        playNote(next.value);
-        const pc = Note.pc(next.value);
-        const oct = Note.oct(next.value);
-        if (Math.random() < 0.5) {
-          const delay = Math.random() < 0.5 ? 0 : Math.random() * 2;
-          playSecondaryNote(`${pc}${oct + 1}`, delay);
-        }
-
-        Tone.Transport.scheduleOnce(() => {
-          playAndScheduleNext();
-        }, `+${3 + Math.random()}`);
-      } else {
-        noteGenerator = makeNoteGenerator(swapTwo(notes));
-        Tone.Transport.scheduleOnce(() => {
-          playAndScheduleNext();
-        }, `+${Math.random() + 4}`);
-      }
-    };
-    playAndScheduleNext();
     return () => {
-      [primaryBuffers, secondaryBuffers, reverb, ...activeSources].forEach(
-        node => {
-          node.dispose();
-        }
-      );
-      activeSources.splice(0, activeSources.length);
+      marimba.releaseAll(0);
+      piano.releaseAll(0);
     };
-  });
+  };
+
+  const deactivate = () => {
+    marimba.dispose();
+    piano.dispose();
+  };
+
+  return [deactivate, schedule];
 };
 
-export default makePiece;
+export default wrapActivate(activate);

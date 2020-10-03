@@ -20,17 +20,15 @@
   },
   "homepage": "https://github.com/generative-music/pieces-alex-bainter#readme",
   "peerDependencies": {
-    "tone": "^13.4.9"
+    "tone": "^14.7.58"
   },
   "publishConfig": {
     "access": "public"
   },
   "devDependencies": {
-    "tone": "^13.4.9"
+    "tone": "^14.7.58"
   },
   "dependencies": {
-    "@generative-music/utilities": "^3.3.0",
-    "shuffle-array": "^1.0.1",
-    "tonal": "^2.2.2"
+    "@generative-music/utilities": "^3.3.0"
   }
 }

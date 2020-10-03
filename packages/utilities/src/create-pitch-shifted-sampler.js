@@ -5,9 +5,9 @@ import createBuffers from './create-buffers';
 const createPitchShiftedSampler = async ({
   samplesByNote,
   pitchShift = 0,
-  attack,
-  release,
-  curve,
+  attack = 0,
+  release = 0,
+  curve = 'linear',
   volume = 0,
 } = {}) => {
   let isDisposed = false;
