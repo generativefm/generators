@@ -1,26 +1,45 @@
-import { Scale, Note } from 'tonal';
+import {
+  P1,
+  M2,
+  M3,
+  P4,
+  P5,
+  M6,
+  M7,
+  transpose,
+  getRandomElement,
+} from '@generative-music/utilities';
 
-const majorScales = Note.names().map(tonic =>
-  Scale.notes(tonic, 'major')
-    .map(note => Note.simplify(note))
-    .map(note => (note.includes('b') ? Note.enharmonic(note) : note))
-);
+const majorScale = tonic => [P1, M2, M3, P4, P5, M6, M7].map(transpose(tonic));
+const majorScaleSets = [
+  'C',
+  'C#',
+  'D',
+  'D#',
+  'E',
+  'F',
+  'F#',
+  'G',
+  'G#',
+  'A',
+  'A#',
+  'B',
+]
+  .map(majorScale)
+  .map(arr => new Set(arr));
 
 const majorScalesWithNotes = notes =>
-  majorScales.filter(scaleNotes =>
-    notes.every(note => scaleNotes.includes(note))
+  majorScaleSets.filter(scaleNoteSet =>
+    notes.every(note => scaleNoteSet.has(note))
   );
 
 const getSimilarPitchClasses = (includingPitchClasses = []) => {
   const compatibleMajorScales = majorScalesWithNotes(includingPitchClasses);
-  const randomCompatibleScale =
-    compatibleMajorScales[
-      Math.floor(Math.random() * compatibleMajorScales.length)
-    ];
+  const randomCompatibleScale = getRandomElement(compatibleMajorScales);
   return Array.from(
     new Set([
       ...includingPitchClasses,
-      ...randomCompatibleScale.filter(() => Math.random() < 0.5),
+      ...Array.from(randomCompatibleScale).filter(() => Math.random() < 0.5),
     ])
   );
 };

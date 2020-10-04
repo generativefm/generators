@@ -1,170 +1,210 @@
-import Tone from 'tone';
-import { Distance, Note } from 'tonal';
-import { getBuffers, getSampler } from '@generative-music/utilities';
-import findClosestSample from './find-closest-sample';
-import uniquePitchClasses from './unique-pitch-classes';
-import pickRandom from './pick-random';
+import * as Tone from 'tone';
+import {
+  createPrerenderedSampler,
+  wrapActivate,
+  toss,
+  getRandomElement,
+  getPitchClass,
+} from '@generative-music/utilities';
 import getSimilarNotes from './get-similar-notes';
+import { sampleNames } from '../pulse-code-modulation.gfm.manifest.json';
 
 const DRONE_OCTAVES = [4, 5];
 const PIANO_OCTAVES = [4, 5, 6];
 const GUITAR_OCTAVES = [2, 3];
+const PITCH_CLASSES = [
+  'C',
+  'C#',
+  'D',
+  'D#',
+  'E',
+  'F',
+  'F#',
+  'G',
+  'G#',
+  'A',
+  'A#',
+  'B',
+];
+const DRONE_NOTES = toss(PITCH_CLASSES, DRONE_OCTAVES);
 
-const makePiece = ({ audioContext, destination, samples }) => {
-  if (Tone.context !== audioContext) {
-    Tone.setContext(audioContext);
-  }
-  const droneSamples = samples['vsco2-violins-susvib'];
-
-  return Promise.all([
-    getBuffers(droneSamples),
-    getSampler(samples['vsco2-piano-mf']),
-    getSampler(samples['acoustic-guitar'], {
-      attack: 3,
-      curve: 'linear',
-    }),
+const activate = async ({ destination, sampleLibrary, onProgress }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
+  const getReverb = () =>
     new Tone.Reverb(15)
       .set({ wet: 0.9 })
-      .connect(destination)
-      .generate(),
-  ]).then(([droneBuffers, pianoSampler, guitarSampler, reverb]) => {
-    const filter = new Tone.Filter(Math.random() * 300 + 300).connect(reverb);
-    pianoSampler.connect(reverb);
-    guitarSampler.connect(reverb);
-    const activeSources = [];
-    const makeDrone = note => {
-      const closestSampledNote = findClosestSample(droneSamples, note);
-      const difference = Distance.semitones(closestSampledNote, note);
-      const playbackRate = Tone.intervalToFrequencyRatio(difference - 24);
-      const buffer = droneBuffers.get(closestSampledNote);
-      const volume = new Tone.Volume(-100);
-      const play = () => {
-        const source = new Tone.BufferSource(buffer)
-          .set({
-            playbackRate,
-            fadeIn: 2,
-            fadeOut: 2,
-            curve: 'linear',
-            onended: () => {
-              const i = activeSources.indexOf(source);
-              if (i >= 0) {
-                activeSources.splice(i, 1);
-              }
-            },
-          })
-          .connect(volume);
-        activeSources.push(source);
-        source.start('+1');
-        Tone.Transport.scheduleOnce(() => {
-          play();
-        }, `+${buffer.duration / playbackRate - 4 - Math.random()}`);
-      };
-      play();
-      return volume;
-    };
+      .toDestination()
+      .generate();
 
-    const dronesByNote = uniquePitchClasses
-      .reduce(
-        (notes, pc) => notes.concat(DRONE_OCTAVES.map(oct => `${pc}${oct}`)),
-        []
-      )
-      .reduce((dronesHash, note) => {
-        dronesHash[note] = makeDrone(note).connect(filter);
-        return dronesHash;
-      }, {});
+  const renderedNotes = DRONE_NOTES.filter((_, i) => i % 3 === 0);
+  const droneSamplers = await Promise.all(
+    DRONE_NOTES.map(() =>
+      createPrerenderedSampler({
+        samples,
+        sampleLibrary,
+        notes: renderedNotes,
+        sourceInstrumentName: 'vsco2-violins-susvib',
+        renderedInstrumentName: 'pulse-code-modulation::vsco2-violins-susvib',
+        getDestination: getReverb,
+        onProgress: val => onProgress(val * 0.33),
+        pitchShift: -24,
+      })
+    )
+  );
+  const guitarSampler = await createPrerenderedSampler({
+    samples,
+    sampleLibrary,
+    notes: toss(PITCH_CLASSES.filter((_, i) => i % 3 === 0), GUITAR_OCTAVES),
+    sourceInstrumentName: 'acoustic-guitar',
+    renderedInstrumentName: 'pulse-code-modulation::acoustic-guitar',
+    getDestination: getReverb,
+    onProgress: val => onProgress(val * 0.33 + 0.33),
+  });
+  guitarSampler.set({ attack: 3, curve: 'linear' });
+  const pianoSampler = await createPrerenderedSampler({
+    samples,
+    sampleLibrary,
+    notes: toss(PITCH_CLASSES.filter((_, i) => i % 3 === 0), PIANO_OCTAVES),
+    sourceInstrumentName: 'vsco2-piano-mf',
+    renderedInstrumentName: 'pulse-code-modulation::vsco2-piano-mf',
+    getDestination: getReverb,
+    onProgress: val => onProgress(val * 0.33 + 0.66),
+  });
 
-    const playChord = (notes = getSimilarNotes([], DRONE_OCTAVES)) => {
-      const time = Math.random() * 30 + 30;
-      notes.forEach(note => {
-        dronesByNote[note].volume.linearRampToValueAtTime(0, `+${time / 2}`);
+  const filter = new Tone.Filter(Math.random() * 300 + 300).connect(
+    destination
+  );
+  pianoSampler.connect(destination);
+  guitarSampler.connect(destination);
+
+  const droneGainsByNote = droneSamplers.reduce((dronesHash, sampler, i) => {
+    const note = DRONE_NOTES[i];
+    const gain = new Tone.Gain(0).connect(filter);
+    sampler.connect(gain);
+    dronesHash[note] = gain;
+    return dronesHash;
+  }, {});
+
+  const playChord = (notes = getSimilarNotes([], DRONE_OCTAVES)) => {
+    const time = Math.random() * 30 + 30;
+    notes.forEach(note => {
+      const { gain } = droneGainsByNote[note];
+      gain.cancelScheduledValues(Tone.now());
+      gain.setValueAtTime(gain.value, Tone.now());
+      gain.linearRampToValueAtTime(1, `+${time / 2}`);
+    });
+    const nextNotes = getSimilarNotes(
+      notes.filter(() => Math.random() < 0.5),
+      DRONE_OCTAVES
+    );
+    const notesToMute = notes.filter(note => !nextNotes.includes(note));
+    Tone.Transport.scheduleOnce(() => {
+      notesToMute.forEach(note => {
+        const { gain } = droneGainsByNote[note];
+        gain.cancelScheduledValues(Tone.now());
+        gain.setValueAtTime(gain.value, Tone.now());
+        gain.linearRampToValueAtTime(0, `+${time / 2}`);
       });
-      const nextNotes = getSimilarNotes(
-        notes.filter(() => Math.random() < 0.5),
-        DRONE_OCTAVES
-      );
-      const notesToMute = notes.filter(note => !nextNotes.includes(note));
-      Tone.Transport.scheduleOnce(() => {
-        notesToMute.forEach(note => {
-          dronesByNote[note].volume.linearRampToValueAtTime(
-            -100,
-            `+${time / 2}`
+      if (Math.random() < 0.75) {
+        let primarySampler;
+        let primaryOctaves;
+        let secondarySampler;
+        let secondaryOctaves;
+        if (Math.random() < 0.5) {
+          primarySampler = pianoSampler;
+          primaryOctaves = PIANO_OCTAVES;
+          secondarySampler = guitarSampler;
+          secondaryOctaves = GUITAR_OCTAVES;
+        } else {
+          primarySampler = guitarSampler;
+          primaryOctaves = GUITAR_OCTAVES;
+          secondarySampler = pianoSampler;
+          secondaryOctaves = PIANO_OCTAVES;
+        }
+        const firstPc = getPitchClass(getRandomElement(notes));
+        const noteTime = 1 + Math.random();
+        primarySampler.triggerAttack(
+          `${firstPc}${getRandomElement(primaryOctaves)}`,
+          `+${noteTime}`
+        );
+        if (Math.random() < 0.5) {
+          secondarySampler.triggerAttack(
+            `${firstPc}${getRandomElement(secondaryOctaves)}`,
+            `+${noteTime * 3}`
           );
-        });
-        if (Math.random() < 0.75) {
-          let primarySampler;
-          let primaryOctaves;
-          let secondarySampler;
-          let secondaryOctaves;
-          if (Math.random() < 0.5) {
-            primarySampler = pianoSampler;
-            primaryOctaves = PIANO_OCTAVES;
-            secondarySampler = guitarSampler;
-            secondaryOctaves = GUITAR_OCTAVES;
-          } else {
-            primarySampler = guitarSampler;
-            primaryOctaves = GUITAR_OCTAVES;
-            secondarySampler = pianoSampler;
-            secondaryOctaves = PIANO_OCTAVES;
-          }
-          const firstPc = Note.pc(pickRandom(notes));
-          const noteTime = 1 + Math.random();
+        }
+        if (Math.random() < 0.5) {
+          const otherNoteTime = 3 + Math.random() * 2;
+          const secondPc = getPitchClass(
+            getRandomElement(
+              notes.filter(note => getPitchClass(note) !== firstPc)
+            )
+          );
           primarySampler.triggerAttack(
-            `${firstPc}${pickRandom(primaryOctaves)}`,
-            `+${noteTime}`
+            `${secondPc}${getRandomElement(primaryOctaves)}`,
+            `+${otherNoteTime}`
           );
+
           if (Math.random() < 0.5) {
             secondarySampler.triggerAttack(
-              `${firstPc}${pickRandom(secondaryOctaves)}`,
-              `+${noteTime * 3}`
+              `${secondPc}${getRandomElement(secondaryOctaves)}`,
+              `+${otherNoteTime * 3}`
             );
-          }
-          if (Math.random() < 0.5) {
-            const otherNoteTime = 3 + Math.random() * 2;
-            const secondPc = Note.pc(
-              pickRandom(notes.filter(note => Note.pc(note) !== firstPc))
-            );
-            primarySampler.triggerAttack(
-              `${secondPc}${pickRandom(primaryOctaves)}`,
-              `+${otherNoteTime}`
-            );
-
-            if (Math.random() < 0.5) {
-              secondarySampler.triggerAttack(
-                `${secondPc}${pickRandom(secondaryOctaves)}`,
-                `+${otherNoteTime * 3}`
-              );
-            }
           }
         }
-        Tone.Transport.scheduleOnce(() => {
-          playChord(nextNotes);
-        }, `+${time / 4}`);
-      }, `+${time / 2}`);
-    };
-
-    const changeFilterFrequency = () => {
-      const time = Math.random() * 30 + 30;
-      const frequency = Math.random() * 300 + 300;
-      filter.frequency.linearRampToValueAtTime(frequency, `+${time}`);
+      }
       Tone.Transport.scheduleOnce(() => {
-        changeFilterFrequency();
-      }, `+${time}`);
-    };
+        playChord(nextNotes);
+      }, `+${time / 4}`);
+    }, `+${time / 2}`);
+  };
+
+  const changeFilterFrequency = () => {
+    const time = Math.random() * 30 + 30;
+    const frequency = Math.random() * 300 + 300;
+    filter.frequency.cancelScheduledValues(Tone.now());
+    filter.frequency.setValueAtTime(filter.frequency.value, Tone.now());
+    filter.frequency.linearRampToValueAtTime(frequency, `+${time}`);
+    Tone.Transport.scheduleOnce(() => {
+      changeFilterFrequency();
+    }, `+${time}`);
+  };
+
+  const schedule = () => {
+    droneSamplers.forEach((sampler, i) => {
+      const note = DRONE_NOTES[i];
+      const play = () => {
+        sampler.triggerAttack(note, '+1');
+        Tone.Transport.scheduleOnce(() => {
+          play();
+        }, `+${30 - Math.random() * 5}`);
+      };
+      play();
+    });
 
     playChord();
     changeFilterFrequency();
 
-    return () =>
-      [
-        droneBuffers,
-        pianoSampler,
-        guitarSampler,
-        reverb,
-        filter,
-        ...activeSources,
-        ...Object.values(dronesByNote),
-      ].forEach(node => node.dispose());
-  });
+    return () => {
+      droneSamplers.concat([guitarSampler, pianoSampler]).forEach(sampler => {
+        sampler.releaseAll(0);
+      });
+      Object.values(droneGainsByNote).forEach(({ gain }) => {
+        gain.cancelScheduledValues(Tone.now());
+        gain.setValueAtTime(0, Tone.now());
+      });
+    };
+  };
+  const deactivate = () => {
+    droneSamplers
+      .concat(Object.values(droneGainsByNote))
+      .concat([guitarSampler, pianoSampler, filter])
+      .forEach(node => {
+        node.dispose();
+      });
+  };
+
+  return [deactivate, schedule];
 };
 
-export default makePiece;
+export default wrapActivate(activate);

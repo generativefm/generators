@@ -1,68 +1,14 @@
 import createSampler from './create-sampler';
-import createBuffer from './create-buffer';
-import sampleNote from './sample-note';
-import renderBuffer from './render-buffer';
-import noop from './noop';
+import createPrerenderedSampledBuffers from './create-prerendered-sampled-buffers';
 
-const renderNote = async ({
-  note,
-  samplesByNote,
-  getDestination,
-  additionalRenderLength,
-  bufferSourceOptions = {},
-  pitchShift = 0,
-}) => {
-  const { playbackRate, sampledNote } = sampleNote({
-    note,
-    pitchShift,
-    sampledNotes: Object.keys(samplesByNote),
-  });
-  const noteBuffer = await createBuffer(samplesByNote[sampledNote]);
-  const renderedBuffer = await renderBuffer({
-    getDestination,
-    buffer: noteBuffer,
-    duration: noteBuffer.duration / playbackRate + additionalRenderLength,
-    bufferSourceOptions: Object.assign({}, bufferSourceOptions, {
-      playbackRate,
-    }),
-  });
-  noteBuffer.dispose();
-  return renderedBuffer;
-};
-
-const createPrerenderedSampler = async ({
-  notes,
-  samples,
-  sourceInstrumentName,
-  renderedInstrumentName,
-  sampleLibrary,
-  getDestination,
-  additionalRenderLength = 0,
-  onProgress = noop,
-  bufferSourceOptions = {},
-  pitchShift = 0,
-} = {}) => {
-  if (samples[renderedInstrumentName]) {
-    return createSampler(samples[renderedInstrumentName]);
-  }
-  const samplesByNote = samples[sourceInstrumentName];
-  const renderedBuffersByNote = {};
-  await Promise.all(
-    notes.map(async (note, i) => {
-      const buffer = await renderNote({
-        note,
-        samplesByNote,
-        getDestination,
-        additionalRenderLength,
-        bufferSourceOptions,
-        pitchShift,
-      });
-      renderedBuffersByNote[note] = buffer;
-      onProgress((i + 1) / notes.length);
-    })
-  );
-  sampleLibrary.save([[renderedInstrumentName, renderedBuffersByNote]]);
-  return createSampler(renderedBuffersByNote);
+const createPrerenderedSampler = async options => {
+  const { notes } = options;
+  const prerenderedBuffers = await createPrerenderedSampledBuffers(options);
+  const prerenderedNoteMap = notes.reduce((o, note) => {
+    o[note] = prerenderedBuffers.get(note);
+    return o;
+  }, {});
+  return createSampler(prerenderedNoteMap);
 };
 
 export default createPrerenderedSampler;

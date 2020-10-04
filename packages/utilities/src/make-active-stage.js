@@ -1,5 +1,5 @@
-import undefinedValue from './undefined';
-import noop from './noop';
+import undefinedValue from './utilities/undefined';
+import noop from './utilities/noop';
 
 const makeActiveStage = (deactivate, schedule) => {
   let isDeactivated = false;

@@ -5,6 +5,7 @@ export { default as invert } from './invert';
 export { default as getOctave } from './get-octave';
 export { default as getPitchClass } from './get-pitch-class';
 export { default as simplifyNote } from './simplify-note';
+export { default as getDistance } from './get-distance';
 
 export * from './intervals';
 export * from './chords';

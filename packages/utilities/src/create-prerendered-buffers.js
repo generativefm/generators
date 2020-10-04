@@ -1,7 +1,7 @@
 import createPrerenderedBufferArray from './create-prerendered-buffer-array';
 import createBuffers from './create-buffers';
 import renderBuffer from './render-buffer';
-import noop from './noop';
+import noop from './utilities/noop';
 
 const createPrerenderedBuffers = async options => {
   const {

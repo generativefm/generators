@@ -13,6 +13,7 @@ import sampleNote from './sample-note';
 import createPrerenderedBuffers from './create-prerendered-buffers';
 import createPitchShiftedSampler from './create-pitch-shifted-sampler';
 import shuffleArray from './shuffle-array';
+import createPrerenderedSampledBuffers from './create-prerendered-sampled-buffers';
 
 export * from './theory';
 export {
@@ -31,4 +32,5 @@ export {
   createPrerenderedBuffers,
   createPitchShiftedSampler,
   shuffleArray,
+  createPrerenderedSampledBuffers,
 };
