@@ -6,13 +6,10 @@
   "id": "bhairav",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": [
-    "piano",
-    "acoustic"
-  ],
+  "tags": ["piano", "acoustic"],
   "releaseDate": "2019-07-28T00:00:00.000Z",
   "sampleNames": [
-    "vsco2-piano-mf",
-    "vsco2-cellos-susvib-mp"
+    ["bhairav:vsco2-piano-mf", "vsco2-piano-mf"],
+    ["bhairav::vsco2-cellos-susvib-mp", "vsco2-cellos-susvib-mp"]
   ]
 }
