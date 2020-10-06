@@ -5,12 +5,11 @@
   "id": "animalia-chordata",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": [
-    "noise"
-  ],
+  "tags": ["noise"],
   "releaseDate": "2019-09-15T00:00:00.000Z",
   "visualizationType": "partialLattice",
   "sampleNames": [
-    "whales"
+    ["animalia-chordata::whales-dryer", "whales"],
+    ["animalia-chordata::whales-wetter", "whales"]
   ]
 }
