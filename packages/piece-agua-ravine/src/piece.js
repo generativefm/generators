@@ -1,5 +1,10 @@
-import Tone from 'tone';
-import { getSampler } from '@generative-music/utilities';
+import * as Tone from 'tone';
+import {
+  createPrerenderedSampler,
+  getRandomElement,
+  wrapActivate,
+} from '@generative-music/utilities';
+import { sampleNames } from '../agua-ravine.gfm.manifest.json';
 
 const phrase1 = [
   ['G4', 'B4', 'E5'],
@@ -22,69 +27,86 @@ const phrases = [phrase1, phrase2, phrase3, phrase4, phrase5, phrase6, phrase7];
 
 const vibeNotes = ['C3', 'C4', 'C5', 'G3', 'G4', 'G5'];
 
-const makePiece = ({ audioContext, destination, samples }) => {
-  if (Tone.context !== audioContext) {
-    Tone.setContext(audioContext);
-  }
-  return Promise.all([
-    getSampler(samples['vsco2-piano-mf']),
-    getSampler(samples['vcsl-vibraphone-soft-mallets-mp']),
-    new Tone.Reverb(15)
-      .set({ wet: 0.5 })
-      .connect(destination)
-      .generate(),
-    new Tone.Reverb(30)
-      .set({ wet: 0.8 })
-      .connect(destination)
-      .generate(),
-  ]).then(([piano, vibes, pianoReverb, vibesReverb]) => {
-    vibes.connect(vibesReverb);
-    piano.connect(pianoReverb);
-    const playPhrase = (
-      phrase = phrases[Math.floor(Math.random() * phrases.length)]
-    ) => {
-      const noteTime = (Math.random() * 2 + 3) / phrase.length;
-      (Math.random() < 0.25 ? phrase.slice(0).reverse() : phrase)
-        .slice(0, Math.ceil(Math.random() * phrase.length - 1))
-        .forEach((notes, i) => {
-          notes.forEach(note => {
-            piano.triggerAttack(
-              note,
-              `+${(1 + i + Math.random() / 20 - 0.025) * noteTime +
-                Math.random() / 10 -
-                0.05}`
-            );
-          });
-        });
-
-      Tone.Transport.scheduleOnce(() => {
-        playPhrase();
-      }, `+${Math.random() * 5 + 3}`);
-    };
-    playPhrase();
-
-    const playVibes = () => {
-      Tone.Transport.scheduleOnce(() => {
-        //eslint-disable-next-line prefer-const
-        let [vibeNote1, vibeNote2] = Array.from({ length: 2 }).map(
-          () => vibeNotes[Math.floor(Math.random() * vibeNotes.length)]
-        );
-        do {
-          vibeNote2 = vibeNotes[Math.floor(Math.random() * vibeNotes.length)];
-        } while (vibeNote1 === vibeNote2);
-
-        [vibeNote1, vibeNote2].forEach(note => {
-          vibes.triggerAttack(note, `+${1 + Math.random() / 10 - 0.05}`);
-        });
-        playVibes();
-      }, `+${Math.random() * 40 + 20}`);
-    };
-    playVibes();
-
-    return () => {
-      [piano, vibes, pianoReverb, vibesReverb].forEach(node => node.dispose());
-    };
+const activate = async ({ destination, sampleLibrary, onProgress }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
+  const piano = await createPrerenderedSampler({
+    samples,
+    sampleLibrary,
+    notes: Array.from(new Set(phrases.flat(2))).filter(
+      ([pc]) => pc === 'C' || pc === 'E' || pc === 'G' || pc === 'A'
+    ),
+    sourceInstrumentName: 'vsco2-piano-mf',
+    renderedInstrumentName: 'agua-ravine::vsco2-piano-mf',
+    onProgress: val => onProgress(val * 0.5),
+    getDestination: () =>
+      new Tone.Reverb(15)
+        .set({ wet: 0.5 })
+        .toDestination()
+        .generate(),
   });
+  const vibes = await createPrerenderedSampler({
+    samples,
+    sampleLibrary,
+    notes: vibeNotes,
+    sourceInstrumentName: 'vcsl-vibraphone-soft-mallets-mp',
+    renderedInstrumentName: 'agua-ravine::vcsl-vibraphone-soft-mallets-mp',
+    onProgress: val => onProgress(val * 0.5 + 0.5),
+    getDestination: () =>
+      new Tone.Reverb(30)
+        .set({ wet: 0.8 })
+        .toDestination()
+        .generate(),
+  });
+
+  vibes.connect(destination);
+  piano.connect(destination);
+  const playPhrase = (phrase = getRandomElement(phrases)) => {
+    const noteTime = (Math.random() * 2 + 3) / phrase.length;
+    (Math.random() < 0.25 ? phrase.slice(0).reverse() : phrase)
+      .slice(0, Math.ceil(Math.random() * phrase.length - 1))
+      .forEach((notes, i) => {
+        notes.forEach(note => {
+          piano.triggerAttack(
+            note,
+            `+${(1 + i + Math.random() / 20 - 0.025) * noteTime +
+              Math.random() / 10 -
+              0.05}`
+          );
+        });
+      });
+
+    Tone.Transport.scheduleOnce(() => {
+      playPhrase();
+    }, `+${Math.random() * 5 + 3}`);
+  };
+
+  const playVibes = () => {
+    Tone.Transport.scheduleOnce(() => {
+      const vibeNote1 = getRandomElement(vibeNotes);
+      const vibeNote2 = getRandomElement(
+        vibeNotes.filter(note => note !== vibeNote1)
+      );
+      [vibeNote1, vibeNote2].forEach(note => {
+        vibes.triggerAttack(note, `+${1 + Math.random() / 10 - 0.05}`);
+      });
+      playVibes();
+    }, `+${Math.random() * 40 + 20}`);
+  };
+
+  const schedule = () => {
+    playPhrase();
+    playVibes();
+    return () => {
+      piano.releaseAll(0);
+      vibes.releaseAll(0);
+    };
+  };
+
+  const deactivate = () => {
+    [piano, vibes].forEach(node => node.dispose());
+  };
+
+  return [deactivate, schedule];
 };
 
-export default makePiece;
+export default wrapActivate(activate);
