@@ -5,17 +5,11 @@
   "id": "soundtrack",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": [
-    "electronic",
-    "drone",
-    "dark",
-    "bells",
-    "strings"
-  ],
+  "tags": ["electronic", "drone", "dark", "bells", "strings"],
   "releaseDate": "2019-10-06T00:00:00.000Z",
   "visualizationType": "squareCut",
   "sampleNames": [
-    "vsco2-cellos-susvib-mp",
-    "vsco2-glock"
+    ["soundtrack::vsco2-cellos-susvib-mp", "vsco2-cellos-susvib-mp"],
+    ["soundtrack::vsco2-glock", "vsco2-glock"]
   ]
 }
