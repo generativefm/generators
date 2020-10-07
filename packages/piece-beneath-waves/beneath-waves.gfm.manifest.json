@@ -5,15 +5,11 @@
   "id": "beneath-waves",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": [
-    "dark",
-    "drone",
-    "electronic"
-  ],
+  "tags": ["dark", "drone", "electronic"],
   "releaseDate": "2019-12-01T00:00:00.000Z",
   "visualizationType": "squareCut",
   "sampleNames": [
-    "sso-chorus-female",
-    "sso-cor-anglais"
+    ["beneath-waves::sso-chorus-female", "sso-chorus-female"],
+    ["beneath-waves::sso-cor-anglais", "sso-cor-anglais"]
   ]
 }

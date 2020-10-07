@@ -13,6 +13,7 @@ const createPrerenderedBuffers = async options => {
     additionalRenderLength = 0,
     onProgress = noop,
     bufferSourceOptions = {},
+    keyFilter = () => true,
   } = options;
   if (samples[renderedInstrumentName]) {
     return createBuffers(samples[renderedInstrumentName]);
@@ -21,8 +22,8 @@ const createPrerenderedBuffers = async options => {
     const bufferArray = await createPrerenderedBufferArray(options);
     return createBuffers(bufferArray);
   }
-  const keys = Object.keys(samples[sourceInstrumentName]);
-  const values = Object.values(samples[sourceInstrumentName]);
+  const keys = Object.keys(samples[sourceInstrumentName]).filter(keyFilter);
+  const values = keys.map(key => samples[sourceInstrumentName][key]);
   const renderedBuffers = await Promise.all(
     values.map(async (buffer, i) => {
       const renderedBuffer = await renderBuffer({
