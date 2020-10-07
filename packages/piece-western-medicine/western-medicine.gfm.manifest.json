@@ -9,9 +9,9 @@
   "releaseDate": "2019-09-30T00:00:00.000Z",
   "visualizationType": "squareCut",
   "sampleNames": [
-    "guitar-harmonics",
-    "vsco2-marimba",
-    "vsco2-harp",
-    "vsco2-piano-mf"
+    ["western-medicine::guitar-harmonics", "guitar-harmonics"],
+    ["western-medicine::vsco2-marimba", "vsco2-marimba"],
+    ["western-medicine::vsco2-harp", "vsco2-harp"],
+    ["western-medicine::vsco2-piano-mf", "vsco2-piano-mf"]
   ]
 }
