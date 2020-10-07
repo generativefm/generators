@@ -10,10 +10,10 @@ const sortNotes = (notes = []) =>
     .sort((a, b) => {
       const [pcA, octA] = a;
       const [pcB, octB] = b;
-      if (octA !== octB) {
-        return octA - octB;
+      if (octA === octB || octA === null) {
+        return pitchClassIndiciesByValue[pcA] - pitchClassIndiciesByValue[pcB];
       }
-      return pitchClassIndiciesByValue[pcA] - pitchClassIndiciesByValue[pcB];
+      return octA - octB;
     })
     .map(parts => parts.join(''));
 

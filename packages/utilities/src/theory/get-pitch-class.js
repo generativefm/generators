@@ -1,7 +1,5 @@
-import FULL_NOTE_REGEX from './full-note-regex';
-
 const getPitchClass = (note = '') => {
-  const match = note.match(FULL_NOTE_REGEX);
+  const match = note.match(/([abcdefg][#b]?)\d*/i);
   if (!match) {
     return null;
   }

@@ -1,5 +1,11 @@
-import Tone from 'tone';
-import { getSampler } from '@generative-music/utilities';
+import * as Tone from 'tone';
+import {
+  createPrerenderedSampler,
+  wrapActivate,
+  toss,
+  sortNotes,
+} from '@generative-music/utilities';
+import { sampleNames } from '../documentary-films.gfm.manifest.json';
 
 const phrases = [
   ['A#', 'F', 'G#', 'C#'],
@@ -9,19 +15,83 @@ const phrases = [
   ['A#', 'F', 'G', 'D'],
 ];
 
-const makePiece = ({ audioContext, destination, samples }) => {
-  if (Tone.context !== audioContext) {
-    Tone.setContext(audioContext);
-  }
-  // create piece
-  return Promise.all([
-    getSampler(samples['vsco2-trumpet-sus-mf']),
-    getSampler(samples['vsco2-trombone-sus-mf']),
-    getSampler(samples['vsco2-tuba-sus-mf']),
-    new Tone.Reverb(45).generate(),
-  ]).then(([trumpet, trombone, tuba, reverb]) => {
-    reverb.connect(destination);
-    const delay = new Tone.FeedbackDelay(0.2, 0.6).connect(reverb);
+const activate = async ({ destination, sampleLibrary, onProgress }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
+
+  const renderedPitchClasses = sortNotes(
+    Array.from(new Set(phrases.flat()))
+  ).filter((_, i) => i % 2 === 0);
+
+  const getReverb = () => new Tone.Reverb(45).toDestination().generate();
+
+  const trumpet = await createPrerenderedSampler({
+    samples,
+    sampleLibrary,
+    sourceInstrumentName: 'vsco2-trumpet-sus-mf',
+    renderedInstrumentName: 'documentary-films::vsco2-trumpet-sus-mf',
+    notes: toss(renderedPitchClasses, [2, 3]),
+    onProgress: val => onProgress(val * 0.7),
+    getDestination: getReverb,
+  });
+
+  const trombone = await createPrerenderedSampler({
+    samples,
+    sampleLibrary,
+    sourceInstrumentName: 'vsco2-trombone-sus-mf',
+    renderedInstrumentName: 'documentary-films::vsco2-trombone-sus-mf',
+    notes: toss(renderedPitchClasses, [1]),
+    onProgress: val => onProgress(val * 0.25 + 0.7),
+    getDestination: getReverb,
+  });
+
+  const tuba = await createPrerenderedSampler({
+    samples,
+    sampleLibrary,
+    sourceInstrumentName: 'vsco2-tuba-sus-mf',
+    renderedInstrumentName: 'documentary-films::vsco2-tuba-sus-mf',
+    notes: ['A#0'],
+    onProgress: val => onProgress(val * 0.05 + 0.95),
+    getDestination: getReverb,
+  });
+
+  tuba.set({ attack: 0.5, curve: 'linear' });
+
+  const droneTuba = note => {
+    tuba.triggerAttack(note, '+1');
+
+    Tone.Transport.scheduleOnce(() => {
+      droneTuba(note);
+    }, `+${Math.random() * 3 + 2}`);
+  };
+
+  const trumpetPhrase = () => {
+    const trumpetOct = Math.floor(Math.random() * 2) + 2;
+    const tromboneOct = 1;
+    const trumpetMultiplier = Math.random() * 10 + 5;
+    const tromboneMultiplier = Math.random() * 10 + 5;
+    const tromboneDelay = Math.random() * 15 + 15;
+    const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+    const sliceLength = Math.floor(
+      Math.pow(Math.random(), 0.1) * phrase.length
+    );
+    phrase.slice(0, sliceLength).forEach((pc, i) => {
+      trumpet.triggerAttack(
+        `${pc}${trumpetOct}`,
+        `+${1 + i * trumpetMultiplier}`
+      );
+      trombone.triggerAttack(
+        `${pc}${tromboneOct}`,
+        `${1 + i * tromboneMultiplier + tromboneDelay}`
+      );
+    });
+
+    Tone.Transport.scheduleOnce(() => {
+      trumpetPhrase();
+    }, `+${sliceLength * trumpetMultiplier + 1 + Math.random() * 20}`);
+  };
+
+  const schedule = () => {
+    const delay = new Tone.FeedbackDelay(0.2, 0.6).connect(destination);
     const trumpetFilter = new Tone.AutoFilter(
       Math.random() / 100 + 0.01
     ).connect(delay);
@@ -33,63 +103,30 @@ const makePiece = ({ audioContext, destination, samples }) => {
     tromboneFilter.start();
     trombone.connect(tromboneFilter);
     const tubaFilter = new Tone.AutoFilter(Math.random() / 100 + 0.01).connect(
-      reverb
+      destination
     );
     tubaFilter.start();
     tuba.connect(tubaFilter);
-    tuba.set({ attack: 0.5, curve: 'linear' });
-
-    const droneTuba = note => {
-      tuba.triggerAttack(note, '+1');
-
-      Tone.Transport.scheduleOnce(() => {
-        droneTuba(note);
-      }, `+${Math.random() * 3 + 2}`);
-    };
 
     droneTuba('A#0');
-
-    const trumpetPhrase = () => {
-      const trumpetOct = Math.floor(Math.random() * 2) + 2;
-      const tromboneOct = Math.floor(Math.random()) + 1;
-      const trumpetMultiplier = Math.random() * 10 + 5;
-      const tromboneMultiplier = Math.random() * 10 + 5;
-      const tromboneDelay = Math.random() * 15 + 15;
-      const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-      const sliceLength = Math.floor(
-        Math.pow(Math.random(), 0.1) * phrase.length
-      );
-      phrase.slice(0, sliceLength).forEach((pc, i) => {
-        trumpet.triggerAttack(
-          `${pc}${trumpetOct}`,
-          `+${1 + i * trumpetMultiplier}`
-        );
-        trombone.triggerAttack(
-          `${pc}${tromboneOct}`,
-          `${1 + i * tromboneMultiplier + tromboneDelay}`
-        );
-      });
-
-      Tone.Transport.scheduleOnce(() => {
-        trumpetPhrase();
-      }, `+${sliceLength * trumpetMultiplier + 1 + Math.random() * 20}`);
-    };
-
     trumpetPhrase();
 
     return () => {
-      [
-        trumpet,
-        trombone,
-        tuba,
-        reverb,
-        delay,
-        trumpetFilter,
-        tromboneFilter,
-        tubaFilter,
-      ].forEach(node => node.dispose());
+      trumpet.releaseAll(0);
+      trombone.releaseAll(0);
+      tuba.releaseAll(0);
+
+      delay.dispose();
+      trumpetFilter.dispose();
+      tromboneFilter.dispose();
+      tubaFilter.dispose();
     };
-  });
+  };
+
+  const deactivate = () => {
+    [trumpet, trombone, tuba].forEach(node => node.dispose());
+  };
+  return [deactivate, schedule];
 };
 
-export default makePiece;
+export default wrapActivate(activate);

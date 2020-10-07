@@ -1,11 +1,9 @@
-import FULL_NOTE_REGEX from './full-note-regex';
-
 const getOctave = (note = '') => {
-  const match = note.match(FULL_NOTE_REGEX);
+  const match = note.match(/[abcdefg][#b]?(\d+)/i);
   if (!match) {
     return null;
   }
-  return Number.parseInt(match[2], 10);
+  return Number.parseInt(match[1], 10);
 };
 
 export default getOctave;
