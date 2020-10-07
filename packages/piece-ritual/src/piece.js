@@ -92,6 +92,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     sampleLibrary,
     sourceInstrumentName: 'vcsl-bassdrum-hit-ff',
     renderedInstrumentName: 'ritual::vcsl-bassdrum-hit-ff',
+    additionalRenderLength: 1,
     getDestination: () =>
       new Tone.Reverb(15)
         .set({ wet: 0.5 })
@@ -108,6 +109,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
       sampleLibrary,
       sourceInstrumentName: `vcsl-darbuka-${id}-f`,
       renderedInstrumentName: `ritual::vcsl-darbuka-${id}-f`,
+      additionalRenderLength: 1,
       getDestination: () =>
         new Tone.Reverb(15)
           .set({ wet: 0.5 })
