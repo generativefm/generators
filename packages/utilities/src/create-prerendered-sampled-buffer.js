@@ -9,6 +9,7 @@ const createPrerenderedSampledBuffer = async ({
   additionalRenderLength,
   bufferSourceOptions = {},
   pitchShift = 0,
+  reverse = false,
 }) => {
   const { playbackRate, sampledNote } = sampleNote({
     note,
@@ -16,6 +17,7 @@ const createPrerenderedSampledBuffer = async ({
     sampledNotes: Object.keys(samplesByNote),
   });
   const noteBuffer = await createBuffer(samplesByNote[sampledNote]);
+  noteBuffer.reverse = reverse;
   const renderedBuffer = await renderBuffer({
     getDestination,
     buffer: noteBuffer,

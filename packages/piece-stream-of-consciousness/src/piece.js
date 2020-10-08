@@ -1,127 +1,17 @@
-import Tone from 'tone';
-import { getBuffers } from '@generative-music/utilities';
-
-const pitchShiftSampler = (samplesByNote, destination, semitoneChange = 0) => {
-  const midiNoteMap = new Map(
-    Reflect.ownKeys(samplesByNote).map(note => [
-      new Tone.Midi(note).toMidi(),
-      note,
-    ])
-  );
-  const activeSources = [];
-  return getBuffers(samplesByNote).then(buffers => ({
-    play(note, time) {
-      const midi = new Tone.Midi(note);
-      let buffer;
-      let interval;
-      for (let i = 0; !buffer && i < 24; i += 1) {
-        //eslint-disable-next-line no-loop-func
-        [i, -i].some(transposition => {
-          const transposedMidi = midi.transpose(transposition);
-          if (midiNoteMap.has(transposedMidi.toMidi())) {
-            buffer = buffers.get(transposedMidi.toNote());
-            interval = -transposition;
-            return true;
-          }
-          return false;
-        });
-      }
-      if (buffer) {
-        const playbackRate = Tone.intervalToFrequencyRatio(
-          interval + semitoneChange
-        );
-        const source = new Tone.BufferSource(buffer).set({
-          playbackRate,
-          onended: () => {
-            const i = activeSources.indexOf(buffer);
-            if (i >= 0) {
-              activeSources.splice(i, 1);
-            }
-          },
-        });
-        source.connect(destination);
-        source.start(time);
-      }
-    },
-    dispose: () => {
-      [buffers, ...activeSources].forEach(node => node.dispose());
-      activeSources.splice(0, activeSources.length);
-    },
-  }));
-};
-
-const reverseSampler = (samplesByNote, destination) => {
-  const midiNoteMap = new Map(
-    Reflect.ownKeys(samplesByNote).map(note => [
-      new Tone.Midi(note).toMidi(),
-      note,
-    ])
-  );
-  const activeSources = [];
-  return getBuffers(samplesByNote).then(buffers => {
-    const reversedBuffersByNote = Object.keys(samplesByNote).reduce(
-      (byNote, note) => {
-        const reversed = new Tone.Buffer().fromArray(
-          buffers.get(note).toArray()
-        );
-        reversed.reverse = true;
-        byNote[note] = reversed;
-        return byNote;
-      },
-      {}
-    );
-    const reversedBuffers = new Tone.Buffers(reversedBuffersByNote);
-    return {
-      play(note, time, duration) {
-        const midi = new Tone.Midi(note);
-        let buffer;
-        let interval;
-        for (let i = 0; !buffer && i < 24; i += 1) {
-          //eslint-disable-next-line no-loop-func
-          [i, -i].some(transposition => {
-            const transposedMidi = midi.transpose(transposition);
-            if (midiNoteMap.has(transposedMidi.toMidi())) {
-              buffer = reversedBuffers.get(transposedMidi.toNote());
-              interval = -transposition;
-              return true;
-            }
-            return false;
-          });
-        }
-        if (buffer) {
-          const playbackRate = Tone.intervalToFrequencyRatio(interval);
-          const source = new Tone.BufferSource(buffer).set({
-            playbackRate,
-            onended: () => {
-              const i = activeSources.indexOf(buffer);
-              if (i >= 0) {
-                activeSources.splice(i, 1);
-              }
-            },
-          });
-          source.connect(destination);
-          const adjustedDuration = duration * playbackRate;
-          const bufferDuration = buffer.duration;
-          if (bufferDuration > adjustedDuration) {
-            const offset = bufferDuration - adjustedDuration;
-            source.start(time, offset);
-          } else {
-            const waitTime = duration - bufferDuration / playbackRate;
-            Tone.Transport.scheduleOnce(() => {
-              source.start(time);
-            }, `+${waitTime}`);
-          }
-        }
-      },
-      dispose: () => {
-        [buffers, reversedBuffers, ...activeSources].forEach(node =>
-          node.dispose()
-        );
-        activeSources.splice(0, activeSources.length);
-      },
-    };
-  });
-};
+import * as Tone from 'tone';
+import {
+  createBuffers,
+  createPrerenderedSampler,
+  createPrerenderedBuffers,
+  createPrerenderedSampledBuffers,
+  wrapActivate,
+  toss,
+  getPitchClass,
+  getOctave,
+  getRandomElement,
+  sampleNote,
+} from '@generative-music/utilities';
+import { sampleNames } from '../stream-of-consciousness.gfm.manifest.json';
 
 const chords = [
   ['C3', 'E3', 'G3', 'B3'],
@@ -137,238 +27,313 @@ const nextChordMap = new Map([
   [3, [0, 2]],
 ]);
 
-const makePiece = ({ audioContext, destination, samples }) => {
-  if (Tone.context !== audioContext) {
-    Tone.setContext(audioContext);
-  }
-  const percussionAutoFilter = new Tone.AutoFilter(
-    Math.random() / 500 + 0.005,
-    150,
-    6
-  ).connect(destination);
-  percussionAutoFilter.start();
+const activate = async ({ destination, sampleLibrary, onProgress }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
 
-  const pianoAutoFilter = new Tone.AutoFilter(
-    Math.random() / 500 + 0.005,
-    150,
-    6
-  ).connect(destination);
-  pianoAutoFilter.start();
+  const stirBuffers = await createPrerenderedBuffers({
+    samples,
+    sampleLibrary,
+    sourceInstrumentName: 'snare-brush-stir',
+    renderedInstrumentName: 'stream-of-consciousness::snare-brush-stir',
+    getDestination: () =>
+      new Tone.Reverb(15)
+        .set({ wet: 0.6 })
+        .toDestination()
+        .generate(),
+    onProgress: val => onProgress(val / 3),
+  });
 
-  const stirAutoFilter = new Tone.AutoFilter(
-    Math.random() / 500 + 0.005,
-    150,
-    6
-  );
-  stirAutoFilter.start();
+  const hitBuffers = await createBuffers(samples['snare-brush-hit-p']);
+  const rideBuffers = await createBuffers(samples['ride-brush-p']);
+  const renderedPitchClasses = ['C', 'E', 'G'];
+  const renderedReversePianoNotes = toss(renderedPitchClasses, [3, 4]);
 
-  const pianoVerb = new Tone.Reverb(30).connect(pianoAutoFilter);
-  const pianoVerbWetLfo = new Tone.LFO(Math.random() / 500 + 0.005, 0.5, 1).set(
-    {
-      phase: Math.random() * 360,
+  const reversePianoBuffers = await createPrerenderedSampledBuffers({
+    samples,
+    sampleLibrary,
+    sourceInstrumentName: 'vsco2-piano-mf',
+    renderedInstrumentName: 'stream-of-consciousness::vsco2-piano-mf-reverse',
+    notes: renderedReversePianoNotes,
+    reverse: true,
+    getDestination: () =>
+      new Tone.Reverb(30)
+        .set({ wet: 0.75 })
+        .toDestination()
+        .generate(),
+    onProgress: val => onProgress((val + 1) / 3),
+  });
+
+  const lowPiano = await createPrerenderedSampler({
+    samples,
+    sampleLibrary,
+    sourceInstrumentName: 'vsco2-piano-mf',
+    renderedInstrumentName: 'stream-of-consciousness::vsco2-piano-mf-low',
+    notes: toss(renderedPitchClasses, [5, 6, 7]),
+    getDestination: () =>
+      new Tone.Reverb(30)
+        .set({ wet: 0.75 })
+        .toDestination()
+        .generate(),
+    pitchShift: -24,
+    onProgress: val => onProgress((val + 2) / 3),
+  });
+
+  const activeSources = [];
+  const stirVol = new Tone.Volume(-5);
+  const stirBuffer = stirBuffers.get(0);
+  const stir = () => {
+    const source = new Tone.ToneBufferSource(stirBuffer)
+      .set({
+        curve: 'linear',
+        fadeIn: 5,
+        fadeOut: 5,
+        onended: () => {
+          const i = activeSources.indexOf(source);
+          if (i >= 0) {
+            activeSources.splice(i, 1);
+          }
+        },
+      })
+      .connect(stirVol);
+    activeSources.push(source);
+    source.start('+1', 0, stirBuffer.duration - 5);
+    Tone.Transport.scheduleOnce(() => {
+      stir();
+    }, `+${stirBuffer.duration - 10 - Math.random() * 5}`);
+  };
+
+  const hitVol = new Tone.Volume(-4);
+
+  const randomHit = (time = '+1') => {
+    const randomBuffer = hitBuffers.get(
+      Math.floor(Math.random() * samples['snare-brush-hit-p'].length)
+    );
+    const hitSource = new Tone.ToneBufferSource(randomBuffer)
+      .set({
+        playbackRate: Math.random() * 0.1 + 0.95,
+        onended: () => {
+          const i = activeSources.indexOf(hitSource);
+          if (i >= 0) {
+            activeSources.splice(i, 1);
+          }
+        },
+      })
+      .connect(hitVol);
+    activeSources.push(hitSource);
+    hitSource.start(time);
+  };
+
+  const randomRide = (time = '+1') => {
+    const randomBuffer = rideBuffers.get(
+      Math.floor(Math.random() * samples['ride-brush-p'].length)
+    );
+    const source = new Tone.ToneBufferSource(randomBuffer)
+      .set({
+        playbackRate: Math.random() * 0.1 + 0.95,
+        onended: () => {
+          const i = activeSources.indexOf(source);
+          if (i >= 0) {
+            activeSources.splice(i, 1);
+          }
+        },
+      })
+      .connect(hitVol);
+    activeSources.push(source);
+    source.start(time);
+  };
+
+  const synth = new Tone.Synth({ oscillator: { type: 'sine' } }).set({
+    volume: -7,
+  });
+
+  const playReversePiano = (note, time, duration, dest) => {
+    const { sampledNote, playbackRate } = sampleNote({
+      sampledNotes: renderedReversePianoNotes,
+      note,
+    });
+
+    const buffer = reversePianoBuffers.get(sampledNote);
+    const source = new Tone.ToneBufferSource(buffer).set({
+      playbackRate,
+      onended: () => {
+        const i = activeSources.indexOf(source);
+        if (i >= 0) {
+          activeSources.splice(i, 1);
+        }
+      },
+    });
+    activeSources.push(source);
+    source.connect(dest);
+    const bufferDuration = buffer.duration;
+    const adjustedDuration = duration * playbackRate;
+    if (bufferDuration > adjustedDuration) {
+      const offset = bufferDuration - adjustedDuration;
+      source.start(time, offset);
+    } else {
+      const waitTime = duration - bufferDuration / playbackRate;
+      Tone.Transport.scheduleOnce(() => {
+        source.start(time);
+      }, `+${waitTime}`);
     }
-  );
-  pianoVerbWetLfo.connect(pianoVerb.wet);
-  pianoVerbWetLfo.start();
+  };
 
-  // create piece
-  return Promise.all([
-    getBuffers(samples['snare-brush-stir']),
-    getBuffers(samples['snare-brush-hit-p']),
-    getBuffers(samples['ride-brush-p']),
-    reverseSampler(samples['vsco2-piano-mf'], pianoVerb),
-    pitchShiftSampler(samples['vsco2-piano-mf'], pianoVerb, -24),
-    new Tone.Reverb(15)
-      .set({ wet: 0.6 })
-      .connect(destination)
-      .generate(),
-    pianoVerb.generate(),
-  ]).then(
-    ([
+  let chordI = 0;
+  let measure = 0;
+  const playMeasure = (
+    reversePianoDestination,
+    bpm = Math.random() * 40 + 60,
+    up = Math.random() < 0.5
+  ) => {
+    const beats = 8;
+    const spb = (1 / bpm) * 60;
+    const chord = chords[chordI];
+    const chordCopy = chord.slice(0);
+    const arpeggio = [];
+    while (chordCopy.length) {
+      const i = Math.floor(Math.random() * chordCopy.length);
+      const note = chordCopy[i];
+      chordCopy.splice(i, 1);
+      arpeggio.push(note);
+    }
+    for (let i = 0; i < beats; i += 1) {
+      const time = 1 + i * spb + (Math.random() * 0.005 - 0.0025);
+      if (i === 0) {
+        synth.triggerAttackRelease('C2', 0.05, `+${time}`);
+        chord
+          .filter(() => Math.random() < 0.9)
+          .forEach(note => {
+            playReversePiano(
+              note,
+              `+${time}`,
+              spb * 2 + Math.random() * 0.5,
+              reversePianoDestination
+            );
+          });
+        if (Math.random() < 0.25) {
+          chord
+            .filter(() => Math.random() < 0.9)
+            .forEach(note => {
+              const pc = getPitchClass(note);
+              const oct = getOctave(note);
+              playReversePiano(
+                `${pc}${oct + 1}`,
+                `+${time}`,
+                spb * 2 + Math.random() * 0.5,
+                reversePianoDestination
+              );
+            });
+        }
+        const nextChordIndicies = nextChordMap.get(chordI);
+        chordI = getRandomElement(nextChordIndicies);
+      } else if (i === 2 || i === 6) {
+        randomHit(`+${time}`);
+      } else if ((i === 3 || i === 7) && Math.random() < 0.3) {
+        randomHit(`+${time + spb / 2}`);
+      }
+      if (i === 7 && Math.random() < 0.1) {
+        synth.triggerAttackRelease('C2', 0.05, `+${time + spb / 2}`);
+      }
+      randomRide(`+${time}`);
+      const note = arpeggio[i % arpeggio.length];
+      const pc = getPitchClass(note);
+      const oct = getOctave(note);
+      const pianoDelay = Math.random() * 0.1 - 0.05;
+      lowPiano.triggerAttack(`${pc}${oct + 3}`, `+${time + pianoDelay}`);
+      lowPiano.triggerAttack(`${pc}${oct + 4}`, `+${time + pianoDelay}`);
+    }
+
+    if (measure === 2) {
+      measure = 0;
+    } else {
+      measure += 1;
+    }
+
+    Tone.Transport.scheduleOnce(() => {
+      if (bpm >= 100) {
+        playMeasure(
+          reversePianoDestination,
+          bpm * (1 - Math.random() * 0.001),
+          false
+        );
+      } else if (bpm <= 60) {
+        playMeasure(
+          reversePianoDestination,
+          bpm * (1 + Math.random() * 0.001),
+          true
+        );
+      } else if (up) {
+        playMeasure(
+          reversePianoDestination,
+          bpm * (1 + Math.random() * 0.001),
+          true
+        );
+      } else {
+        playMeasure(
+          reversePianoDestination,
+          bpm * (1 - Math.random() * 0.001),
+          false
+        );
+      }
+    }, `+${spb * beats}`);
+  };
+
+  const schedule = () => {
+    const percussionAutoFilter = new Tone.AutoFilter(
+      Math.random() / 500 + 0.005,
+      150,
+      6
+    ).connect(destination);
+    percussionAutoFilter.start();
+
+    hitVol.connect(percussionAutoFilter);
+    synth.connect(percussionAutoFilter);
+
+    const pianoAutoFilter = new Tone.AutoFilter(
+      Math.random() / 500 + 0.005,
+      150,
+      6
+    ).connect(destination);
+    pianoAutoFilter.start();
+
+    lowPiano.connect(pianoAutoFilter);
+
+    const stirAutoFilter = new Tone.AutoFilter(
+      Math.random() / 500 + 0.005,
+      150,
+      6
+    );
+    stirAutoFilter.start();
+    stirAutoFilter.connect(destination);
+    stirVol.connect(stirAutoFilter);
+
+    stir();
+    playMeasure(pianoAutoFilter);
+
+    return () => {
+      activeSources.forEach(source => {
+        source.stop(0);
+      });
+      lowPiano.releaseAll(0);
+      [percussionAutoFilter, pianoAutoFilter, stirAutoFilter].forEach(node =>
+        node.dispose()
+      );
+    };
+  };
+
+  const deactivate = () => {
+    [
       stirBuffers,
       hitBuffers,
       rideBuffers,
-      reversePiano,
+      reversePianoBuffers,
       lowPiano,
-      reverb,
-    ]) => {
-      const activeSources = [];
-      stirAutoFilter.connect(reverb);
-      const stirVol = new Tone.Volume(-5).connect(stirAutoFilter);
-      const stirBuffer = stirBuffers.get(0);
-      const stir = () => {
-        const source = new Tone.BufferSource(stirBuffer)
-          .set({
-            curve: 'linear',
-            fadeIn: 5,
-            fadeOut: 5,
-            onended: () => {
-              const i = activeSources.indexOf(source);
-              if (i >= 0) {
-                activeSources.splice(i, 1);
-              }
-            },
-          })
-          .connect(stirVol);
-        activeSources.push(source);
-        source.start('+1', 0, stirBuffer.duration - 5);
-        Tone.Transport.scheduleOnce(() => {
-          stir();
-        }, `+${stirBuffer.duration - 10 - Math.random() * 5}`);
-      };
+      synth,
+      stirVol,
+      hitVol,
+    ].forEach(node => node.dispose());
+  };
 
-      stir();
-
-      const hitVol = new Tone.Volume(-4).connect(percussionAutoFilter);
-
-      const randomHit = (time = '+1') => {
-        const randomBuffer = hitBuffers.get(
-          Math.floor(Math.random() * samples['snare-brush-hit-p'].length)
-        );
-        const hitSource = new Tone.BufferSource(randomBuffer)
-          .set({
-            playbackRate: Math.random() * 0.1 + 0.95,
-            onended: () => {
-              const i = activeSources.indexOf(hitSource);
-              if (i >= 0) {
-                activeSources.splice(i, 1);
-              }
-            },
-          })
-          .connect(hitVol);
-        activeSources.push(hitSource);
-        hitSource.start(time);
-      };
-
-      const randomRide = (time = '+1') => {
-        const randomBuffer = rideBuffers.get(
-          Math.floor(Math.random() * samples['ride-brush-p'].length)
-        );
-        const source = new Tone.BufferSource(randomBuffer)
-          .set({
-            playbackRate: Math.random() * 0.1 + 0.95,
-            onended: () => {
-              const i = activeSources.indexOf(source);
-              if (i >= 0) {
-                activeSources.splice(i, 1);
-              }
-            },
-          })
-          .connect(hitVol);
-        activeSources.push(source);
-        source.start(time);
-      };
-
-      const synth = new Tone.Synth({ oscillator: { type: 'sine' } })
-        .set({ volume: -7 })
-        .connect(percussionAutoFilter);
-
-      let chordI = 0;
-      let measure = 0;
-      const playMeasure = (
-        bpm = Math.random() * 40 + 60,
-        up = Math.random() < 0.5
-      ) => {
-        const beats = 8;
-        const spb = (1 / bpm) * 60;
-        const chord = chords[chordI];
-        const chordCopy = chord.slice(0);
-        const arpeggio = [];
-        while (chordCopy.length) {
-          const i = Math.floor(Math.random() * chordCopy.length);
-          const note = chordCopy[i];
-          chordCopy.splice(i, 1);
-          arpeggio.push(note);
-        }
-        for (let i = 0; i < beats; i += 1) {
-          const time = 1 + i * spb + (Math.random() * 0.005 - 0.0025);
-          if (i === 0) {
-            synth.triggerAttackRelease('C2', 0.05, `+${time}`);
-            chord
-              .filter(() => Math.random() < 0.9)
-              .forEach(note => {
-                reversePiano.play(
-                  note,
-                  `+${time}`,
-                  spb * 2 + Math.random() * 0.5
-                );
-              });
-            if (Math.random() < 0.25) {
-              chord
-                .filter(() => Math.random() < 0.9)
-                .forEach(note => {
-                  const pc = note.slice(0, -1);
-                  const oct = Number.parseInt(note.slice(-1), 10);
-                  reversePiano.play(
-                    `${pc}${oct + 1}`,
-                    `+${time}`,
-                    spb * 2 + Math.random() * 0.5
-                  );
-                });
-            }
-            const nextChordIndicies = nextChordMap.get(chordI);
-            chordI =
-              nextChordIndicies[
-                Math.floor(Math.random() * nextChordIndicies.length)
-              ];
-          } else if (i === 2 || i === 6) {
-            randomHit(`+${time}`);
-          } else if ((i === 3 || i === 7) && Math.random() < 0.3) {
-            randomHit(`+${time + spb / 2}`);
-          }
-          if (i === 7 && Math.random() < 0.1) {
-            synth.triggerAttackRelease('C2', 0.05, `+${time + spb / 2}`);
-          }
-          randomRide(`+${time}`);
-          const note = arpeggio[i % arpeggio.length];
-          const pc = note.slice(0, -1);
-          const oct = Number.parseInt(note[note.length - 1], 10);
-          const pianoDelay = Math.random() * 0.1 - 0.05;
-          lowPiano.play(`${pc}${oct + 3}`, `+${time + pianoDelay}`);
-          lowPiano.play(`${pc}${oct + 4}`, `+${time + pianoDelay}`);
-        }
-
-        if (measure === 2) {
-          measure = 0;
-        } else {
-          measure += 1;
-        }
-
-        Tone.Transport.scheduleOnce(() => {
-          if (bpm >= 100) {
-            playMeasure(bpm * (1 - Math.random() * 0.001), false);
-          } else if (bpm <= 60) {
-            playMeasure(bpm * (1 + Math.random() * 0.001), true);
-          } else if (up) {
-            playMeasure(bpm * (1 + Math.random() * 0.001), true);
-          } else {
-            playMeasure(bpm * (1 - Math.random() * 0.001), false);
-          }
-        }, `+${spb * beats}`);
-      };
-
-      playMeasure();
-      return () => {
-        [
-          percussionAutoFilter,
-          pianoAutoFilter,
-          stirAutoFilter,
-          pianoVerb,
-          pianoVerbWetLfo,
-          stirBuffers,
-          hitBuffers,
-          rideBuffers,
-          reversePiano,
-          lowPiano,
-          reverb,
-          synth,
-          stirVol,
-          hitVol,
-          ...activeSources,
-        ].forEach(node => node.dispose());
-      };
-    }
-  );
+  return [deactivate, schedule];
 };
 
-export default makePiece;
+export default wrapActivate(activate);

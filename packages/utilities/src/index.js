@@ -14,6 +14,7 @@ import createPrerenderedBuffers from './create-prerendered-buffers';
 import createPitchShiftedSampler from './create-pitch-shifted-sampler';
 import shuffleArray from './shuffle-array';
 import createPrerenderedSampledBuffers from './create-prerendered-sampled-buffers';
+import createReverseSampler from './create-reverse-sampler';
 
 export * from './theory';
 export {
@@ -33,4 +34,5 @@ export {
   createPitchShiftedSampler,
   shuffleArray,
   createPrerenderedSampledBuffers,
+  createReverseSampler,
 };

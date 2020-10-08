@@ -1,6 +1,5 @@
 import * as Tone from 'tone';
 import {
-  createBuffers,
   createPrerenderedSampler,
   wrapActivate,
   toss,
@@ -12,17 +11,6 @@ const violinNotes = toss(['C', 'E', 'G', 'B'], [2, 3, 4]);
 
 const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
-
-  if (samples['vsco2-piano-mf']) {
-    const buffers = await createBuffers(samples['vsco2-piano-mf']);
-    samples['vsco2-piano-mf-reverse'] = Object.keys(
-      samples['vsco2-piano-mf']
-    ).reduce((obj, note) => {
-      obj[note] = buffers.get(note);
-      obj[note].reverse = true;
-      return obj;
-    }, {});
-  }
 
   const getPianoDestination = () =>
     Promise.resolve(
@@ -36,12 +24,13 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const reversePiano = await createPrerenderedSampler({
     notes: pianoNotes,
     samples,
-    sourceInstrumentName: 'vsco2-piano-mf-reverse',
-    renderedInstrumentName: 'apoapsis::vsco2-piano-mf-reverse',
+    sourceInstrumentName: 'vsco2-piano-mf',
+    renderedInstrumentName: 'apoapsis::vsco2-piano-mf',
     sampleLibrary,
     additionalRenderLength: 1,
     getDestination: getPianoDestination,
     onProgress: val => onProgress(val * 0.5),
+    reverse: true,
   });
 
   const violins = await createPrerenderedSampler({

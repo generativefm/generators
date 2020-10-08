@@ -15,6 +15,7 @@ const createPrerenderedSampledBuffers = async ({
   onProgress = noop,
   bufferSourceOptions = {},
   pitchShift = 0,
+  reverse = false,
 } = {}) => {
   if (samples[renderedInstrumentName]) {
     return createBuffers(samples[renderedInstrumentName]);
@@ -33,6 +34,7 @@ const createPrerenderedSampledBuffers = async ({
         additionalRenderLength,
         bufferSourceOptions,
         pitchShift,
+        reverse,
       });
       onProgress((i + 1) / notes.length);
       return buffer;

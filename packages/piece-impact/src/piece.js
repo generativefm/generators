@@ -1,16 +1,14 @@
 import * as Tone from 'tone';
 import {
-  createBuffer,
   createSampler,
   minor7th,
   wrapActivate,
   getRandomNumberBetween,
   getRandomElement,
+  createReverseSampler,
 } from '@generative-music/utilities';
 import arpeggiateOnce from './arpeggiate-once';
 import { sampleNames } from '../impact.gfm.manifest.json';
-
-const INSTRUMENT = `vsco2-piano-mf`;
 
 const TONIC = 'A#';
 const CHORD = minor7th(TONIC);
@@ -21,13 +19,6 @@ const REGULAR_ARPEGGIATE_MAX_TIME = 2;
 const EXTRA_NOTE_CHANCE_P = 0.3;
 const EXTRA_NOTE_VELOCITY = 0.3;
 const EXTRA_CHORD_CHANCE_P = 0.2;
-
-const buffersToObj = (buffers, notes) =>
-  buffers.reduce((o, buffer, i) => {
-    const note = notes[i];
-    o[note] = buffer;
-    return o;
-  }, {});
 
 const makeNextNote = (
   reverseInstrument,
@@ -98,21 +89,10 @@ const makeNextNote = (
 
 const activate = async ({ destination, sampleLibrary }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
-  const pianoSamples = samples[INSTRUMENT];
-  const notes = Object.keys(pianoSamples);
-  const buffers = await Promise.all(
-    notes.map(note => createBuffer(pianoSamples[note]))
-  );
-
-  const reverseBuffers = buffers.map(buffer => {
-    const reverseBuffer = Tone.ToneAudioBuffer.fromArray(buffer.toArray());
-    reverseBuffer.reverse = true;
-    return reverseBuffer;
-  });
 
   const [regularInstrument, reverseInstrument] = await Promise.all([
-    createSampler(buffersToObj(buffers, notes)),
-    createSampler(buffersToObj(reverseBuffers, notes)),
+    createSampler(samples['vsco2-piano-mf']),
+    createReverseSampler(samples['vsco2-piano-mf']),
   ]);
 
   [reverseInstrument, regularInstrument].forEach(instrument =>
