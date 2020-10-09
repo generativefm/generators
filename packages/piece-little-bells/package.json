@@ -7,7 +7,7 @@
     "@generative-music/utilities": "^4.0.0"
   },
   "peerDependencies": {
-    "tone": "^13.4.9"
+    "tone": "^14.7.39"
   },
   "files": [
     "dist",

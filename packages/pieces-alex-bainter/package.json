@@ -24,7 +24,7 @@
     "access": "public"
   },
   "peerDependencies": {
-    "tone": "^13.8.25"
+    "tone": "^14.7.58"
   },
   "dependencies": {
     "@generative-music/piece-420hz-gamma-waves-for-big-brain": "^4.0.0",
@@ -64,7 +64,6 @@
     "@generative-music/piece-peace": "^4.0.0",
     "@generative-music/piece-pinwheels": "^4.0.0",
     "@generative-music/piece-pulse-code-modulation": "^4.0.0",
-    "@generative-music/piece-quarter-eyes": "^3.4.0",
     "@generative-music/piece-remembering": "^4.0.0",
     "@generative-music/piece-return-to-form": "^4.0.0",
     "@generative-music/piece-ritual": "^4.0.0",
@@ -83,6 +82,6 @@
     "@generative-music/piece-yesterday": "^4.0.0"
   },
   "devDependencies": {
-    "tone": "^13.8.25"
+    "tone": "^14.7.58"
   }
 }
