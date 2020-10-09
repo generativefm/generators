@@ -4,10 +4,10 @@
   "devDependencies": {
     "@babel/core": "^7.3.4",
     "@babel/preset-env": "^7.3.4",
-    "eslint": "^5.15.1",
+    "eslint": "^7.10.0",
     "eslint-config-metalex9": "^0.3.0",
     "glob": "^7.1.3",
-    "lerna": "^3.15.0",
+    "lerna": "^3.22.1",
     "prettier": "^1.16.4",
     "rollup": "^2.0.2",
     "rollup-plugin-babel": "^4.3.2",
@@ -15,8 +15,9 @@
   },
   "scripts": {
     "lint": "eslint \".\"",
+    "lint:packages": "eslint \"packages\"",
     "build": "rollup -c && node scripts/update-collection.js",
-    "preversion": "npm run lint && npm run build",
+    "preversion": "npm run lint:packages && npm run build",
     "postversion": "git push && git push --tags",
     "test-player": "npm start --prefix ./test-player"
   },
