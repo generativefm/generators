@@ -5,14 +5,8 @@
   "id": "no-refrain",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": [
-    "piano",
-    "acoustic",
-    "melancholy"
-  ],
+  "tags": ["piano", "acoustic", "melancholy"],
   "releaseDate": "2019-09-01T00:00:00.000Z",
   "visualizationType": "squareCut",
-  "sampleNames": [
-    "vsco2-piano-mf"
-  ]
+  "sampleNames": [["no-refrain::vsco2-piano-mf", "vsco2-piano-mf"]]
 }

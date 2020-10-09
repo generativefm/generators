@@ -1,39 +1,44 @@
-import { Chord, Array } from 'tonal';
-import randomNumber from 'random-number';
-import Tone from 'tone';
-import { getSampler } from '@generative-music/utilities';
+import * as Tone from 'tone';
+import {
+  createSampler,
+  wrapActivate,
+  getRandomNumberBetween,
+  toss,
+  invert,
+  major9th,
+} from '@generative-music/utilities';
+import { sampleNames } from '../eno-machine.gfm.manifest.json';
 
 const OCTAVES = [3, 4, 5];
 const MIN_REPEAT_S = 20;
 const MAX_REPEAT_S = 60;
+const NOTES = toss(invert(major9th('Db'), 1), OCTAVES);
 
-const NOTES = Array.rotate(1, Chord.notes('DbM9')).reduce(
-  (withOctaves, note) =>
-    withOctaves.concat(OCTAVES.map(octave => `${note}${octave}`)),
-  []
-);
+const getPiano = samples => createSampler(samples['vsco2-piano-mf']);
 
-const getPiano = samples => getSampler(samples['vsco2-piano-mf']);
+const activate = async ({ destination, sampleLibrary }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
+  const piano = await getPiano(samples);
+  piano.connect(destination);
 
-const makePiece = ({ audioContext, destination, samples }) => {
-  if (Tone.context !== audioContext) {
-    Tone.setContext(audioContext);
-  }
-  return getPiano(samples).then(piano => {
-    piano.connect(destination);
+  const schedule = () => {
     NOTES.forEach(note => {
-      const interval = randomNumber({ min: MIN_REPEAT_S, max: MAX_REPEAT_S });
-      const delay = randomNumber({
-        min: 0,
-        max: MAX_REPEAT_S - MIN_REPEAT_S,
-      });
+      const interval = getRandomNumberBetween(MIN_REPEAT_S, MAX_REPEAT_S);
+      const delay = getRandomNumberBetween(0, MAX_REPEAT_S - MIN_REPEAT_S);
       const playNote = () => piano.triggerAttack(note, '+1');
       Tone.Transport.scheduleRepeat(playNote, interval, `+${delay}`);
     });
+
     return () => {
-      piano.dispose();
+      piano.releaseAll(0);
     };
-  });
+  };
+
+  const deactivate = () => {
+    piano.dispose();
+  };
+
+  return [deactivate, schedule];
 };
 
-export default makePiece;
+export default wrapActivate(activate, ['vsco2-piano-mf']);

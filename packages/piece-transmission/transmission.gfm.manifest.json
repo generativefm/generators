@@ -5,13 +5,8 @@
   "id": "transmission",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": [
-    "electronic",
-    "piano"
-  ],
+  "tags": ["electronic", "piano"],
   "releaseDate": "2019-11-17T00:00:00.000Z",
   "visualizationType": "squareCut",
-  "sampleNames": [
-    "vsco2-piano-mf"
-  ]
+  "sampleNames": [["transmission::vsco2-piano-mf", "vsco2-piano-mf"]]
 }

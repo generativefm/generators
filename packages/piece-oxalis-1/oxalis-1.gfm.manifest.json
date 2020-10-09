@@ -8,5 +8,8 @@
   "tags": ["piano", "acoustic", "calm"],
   "releaseDate": "2020-03-31T00:00:00.000Z",
   "visualizationType": "squareCut",
-  "sampleNames": ["vsco2-piano-mf", "vsco2-glock"]
+  "sampleNames": [
+    ["oxalis-1::vsco2-piano-mf", "vsco2-piano-mf"],
+    ["oxalis-1::vsco2-glock", "vsco2-glock"]
+  ]
 }

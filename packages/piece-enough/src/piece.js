@@ -1,81 +1,70 @@
-import Tone from 'tone';
-import { Chord, Note, Distance } from 'tonal';
-import { getBuffers } from '@generative-music/utilities';
+import * as Tone from 'tone';
+import {
+  wrapActivate,
+  minor7th,
+  createPitchShiftedSampler,
+  toss,
+} from '@generative-music/utilities';
+import { sampleNames } from '../enough.gfm.manifest.json';
 
-const findClosest = (note, samplesByNote) => {
-  const noteMidi = Note.midi(note);
-  const maxInterval = 96;
-  let interval = 0;
-  while (interval <= maxInterval) {
-    const higherNote = Note.fromMidi(noteMidi + interval);
-    if (samplesByNote[higherNote]) {
-      return higherNote;
-    }
-    const lowerNote = Note.fromMidi(noteMidi - interval);
-    if (samplesByNote[lowerNote]) {
-      return lowerNote;
-    }
-    interval += 1;
-  }
-  return note;
-};
-
-const makePiece = ({ audioContext, destination, samples }) => {
-  if (Tone.context !== audioContext) {
-    Tone.setContext(audioContext);
-  }
+const activate = async ({ destination, sampleLibrary }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const corAnglaisSamplesByNote = samples['sso-cor-anglais'];
-  return getBuffers(corAnglaisSamplesByNote).then(corAnglais => {
-    const masterVol = new Tone.Volume(-10).connect(destination);
-    const delayVolume = new Tone.Volume(-28);
+  const corAnglais = await createPitchShiftedSampler({
+    samplesByNote: corAnglaisSamplesByNote,
+    pitchShift: -24,
+    attack: 5,
+    release: 5,
+    curve: 'linear',
+  });
+  const masterVol = new Tone.Volume(-10).connect(destination);
+  const delayVolume = new Tone.Volume(-28).connect(masterVol);
+  const compressor = new Tone.Compressor().connect(masterVol);
+
+  const notes = toss(['A#'], [3, 4])
+    .map(minor7th)
+    .flat();
+
+  const playChord = (first = false) => {
+    let chord = notes.filter(() => Math.random() < 0.5).slice(0, 4);
+    while (first && chord.length === 0) {
+      chord = notes.filter(() => Math.random() < 0.5).slice(0, 4);
+    }
+    const immediateNoteIndex = first
+      ? Math.floor(Math.random() * chord.length)
+      : -1;
+    chord.forEach((note, i) =>
+      corAnglais.triggerAttack(
+        note,
+        `+${immediateNoteIndex === i ? 0 : Math.random() * 2}`
+      )
+    );
+    Tone.Transport.scheduleOnce(() => {
+      playChord();
+    }, `+${Math.random() * 5 + 12}`);
+  };
+
+  const schedule = () => {
     const delay = new Tone.FeedbackDelay({
       feedback: 0.5,
       delayTime: 10,
-      wet: 1,
-    }).chain(delayVolume, masterVol);
-    const compressor = new Tone.Compressor().fan(masterVol, delay);
-    const bufferSources = [];
-    const playNote = (note, time) => {
-      const closestSample = findClosest(note, corAnglaisSamplesByNote);
-      const difference = Distance.semitones(note, closestSample);
-      const buffer = corAnglais.get(closestSample);
-      const bufferSource = new Tone.BufferSource(buffer).connect(compressor);
-      bufferSources.push(bufferSource);
-      const playbackRate = Tone.intervalToFrequencyRatio(difference - 24);
-      bufferSource.set({
-        playbackRate,
-        fadeIn: 5,
-        fadeOut: 5,
-        curve: 'linear',
-        onended: () => {
-          const index = bufferSources.indexOf(bufferSource);
-          if (index >= 0) {
-            bufferSource.dispose();
-            bufferSources.splice(index, 1);
-          }
-        },
-      });
-      bufferSource.start(time);
-    };
-    const tonic = 'A#3';
-    const playChord = () => {
-      Chord.notes(tonic, 'm7')
-        .concat(Chord.notes(Distance.transpose(tonic, '8P'), 'm7'))
-        .filter(() => Math.random() < 0.5)
-        .slice(0, 4)
-        .forEach(note => playNote(note, `+${Math.random() * 2}`));
-      Tone.Transport.scheduleOnce(() => {
-        playChord();
-      }, `+${Math.random() * 5 + 12}`);
-    };
-    playChord();
+      maxDelay: 10,
+    }).connect(delayVolume);
+    corAnglais.connect(compressor);
+    compressor.connect(delay);
+    playChord(true);
+
     return () => {
-      [corAnglais, delayVolume, delay, compressor, ...bufferSources].forEach(
-        node => node.dispose()
-      );
-      bufferSources.splice(bufferSources.length);
+      corAnglais.releaseAll(0);
+      delay.dispose();
     };
-  });
+  };
+
+  const deactivate = () => {
+    [corAnglais, delayVolume, compressor].forEach(node => node.dispose());
+  };
+
+  return [deactivate, schedule];
 };
 
-export default makePiece;
+export default wrapActivate(activate);

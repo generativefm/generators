@@ -1,8 +1,8 @@
-import getRandomBetween from './get-random-between';
+import { getRandomNumberBetween } from '@generative-music/utilities';
 
 const arpeggiateOnce = ({ instrument, notes, withinTime, velocity = 1 }) => {
   notes.forEach(note => {
-    const time = getRandomBetween(0, withinTime);
+    const time = getRandomNumberBetween(0, withinTime);
     instrument.triggerAttack(note, `+${time}`, velocity);
   });
 };

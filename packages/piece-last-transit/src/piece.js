@@ -1,44 +1,67 @@
-import Tone from 'tone';
-import { getBuffer } from '@generative-music/utilities';
+import * as Tone from 'tone';
+import {
+  createBuffer,
+  renderBuffer,
+  wrapActivate,
+} from '@generative-music/utilities';
+import { sampleNames } from '../last-transit.gfm.manifest.json';
 
-const makePiece = ({ audioContext, destination, samples }) => {
-  if (Tone.context !== audioContext) {
-    Tone.setContext(audioContext);
-  }
-  return Promise.all([
-    getBuffer(samples['idling-truck'][0]),
-    new Tone.Reverb(5).set({ wet: 0.5 }).generate(),
-  ]).then(([buffer, reverb]) => {
-    const activeSources = [];
-    const vol = new Tone.Volume(10).connect(destination);
-    reverb.connect(vol);
-    const filter = new Tone.AutoFilter(Math.random() / 30).connect(reverb);
+const activate = async ({ destination, sampleLibrary }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
+  const buffer = await createBuffer(samples['idling-truck'][0]);
+  const bufferWithReverb = await renderBuffer({
+    buffer,
+    getDestination: () =>
+      new Tone.Reverb(5)
+        .set({ wet: 0.5 })
+        .toDestination()
+        .generate(),
+    duration: buffer.duration,
+  });
+
+  const activeSources = [];
+  const vol = new Tone.Volume(10).connect(destination);
+
+  const play = ({ sourceDestination, playbackRateLfo }) => {
+    const source = new Tone.BufferSource(bufferWithReverb)
+      .set({
+        onended: () => {
+          const i = activeSources.indexOf(source);
+          if (i >= 0) {
+            activeSources.splice(i, 1);
+          }
+        },
+      })
+      .connect(sourceDestination);
+    activeSources.push(source);
+    playbackRateLfo.connect(source.playbackRate);
+    source.start();
+    Tone.Transport.scheduleOnce(() => {
+      play({ sourceDestination, playbackRateLfo });
+    }, `+${buffer.duration / 0.25 - Math.random()}`);
+  };
+
+  const schedule = () => {
+    const filter = new Tone.AutoFilter(Math.random() / 30).connect(vol);
     filter.start();
     const lfo = new Tone.LFO(Math.random() / 100, 0.05, 0.25);
     lfo.start();
-    const play = () => {
-      const source = new Tone.BufferSource(buffer)
-        .set({
-          onended: () => {
-            const i = activeSources.indexOf(source);
-            if (i >= 0) {
-              activeSources.splice(i, 1);
-            }
-          },
-        })
-        .connect(filter);
-      lfo.connect(source.playbackRate);
-      source.start();
-      Tone.Transport.scheduleOnce(() => {
-        play();
-      }, `+${buffer.duration / 0.25 - Math.random()}`);
+    play({ sourceDestination: filter, playbackRateLfo: lfo });
+
+    return () => {
+      activeSources.forEach(source => {
+        source.stop(0);
+      });
+      filter.dispose();
+      lfo.dispose();
     };
-    play();
-    return () =>
-      [buffer, vol, reverb, filter, lfo, ...activeSources].forEach(node =>
-        node.dispose()
-      );
-  });
+  };
+
+  const deactivate = () => {
+    [buffer, vol, ...activeSources].forEach(node => node.dispose());
+  };
+
+  return [deactivate, schedule];
 };
 
-export default makePiece;
+export default wrapActivate(activate);

@@ -1,6 +1,11 @@
-import Tone from 'tone';
-import { Distance, Interval } from 'tonal';
-import { getSampler } from '@generative-music/utilities';
+import * as Tone from 'tone';
+import {
+  createPrerenderableSampler,
+  wrapActivate,
+  transpose,
+  toss,
+} from '@generative-music/utilities';
+import { sampleNames } from '../bhairav.gfm.manifest.json';
 
 const ragaBhairav = [
   [0, 2],
@@ -68,43 +73,79 @@ function* makeRagaGenerator(raga) {
   }
 }
 
-const makePiece = ({ audioContext, destination, samples }) => {
-  if (Tone.context !== audioContext) {
-    Tone.setContext(audioContext);
-  }
-  return Promise.all([
-    getSampler(samples['vsco2-piano-mf']),
-    getSampler(samples['vsco2-cellos-susvib-mp'], {
-      attack: 2,
-      curve: 'linear',
-      release: 2,
-    }),
-    new Tone.Reverb(15).set({ wet: 0.6 }).generate(),
-  ]).then(([pianoSampler, cellos, reverb]) => {
-    reverb.connect(destination);
-    pianoSampler.connect(reverb);
+const activate = async ({ destination, sampleLibrary, onProgress }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
+  const getReverb = () =>
+    new Tone.Reverb(15)
+      .toDestination()
+      .set({ wet: 0.6 })
+      .generate();
 
-    let tonic = Math.random() < 0.5 ? 'C#4' : 'C#5';
+  const piano = await createPrerenderableSampler({
+    samples,
+    sampleLibrary,
+    sourceInstrumentName: 'vsco2-piano-mf',
+    renderedInstrumentName: 'bhairav::vsco2-piano-mf',
+    getDestination: getReverb,
+    notes: toss([0, 4, 7].map(transpose('C#')), [4, 5]),
+    onProgress: val => onProgress(val * 0.5),
+  });
+  piano.connect(destination);
 
-    const playNote = (note, time = 0, velocity = 1) =>
-      pianoSampler.triggerAttack(note, `+${1 + time}`, velocity);
+  const cellos = await createPrerenderableSampler({
+    samples,
+    sampleLibrary,
+    sourceInstrumentName: 'vsco2-cellos-susvib-mp',
+    renderedInstrumentName: 'bhairav::vsco2-cellos-susvib-mp',
+    getDestination: getReverb,
+    notes: toss(['C#', 'G#'], [1, 2]),
+    onProgress: val => onProgress(val * 0.5 + 0.5),
+  });
+  cellos.set({ attack: 2, curve: 'linear' });
 
+  let tonic = Math.random() < 0.5 ? 'C#4' : 'C#5';
+
+  const playNote = (note, time = 0, velocity = 1) =>
+    piano.triggerAttack(note, `+${1 + time}`, velocity);
+
+  const celloDrone = note => {
+    cellos.triggerAttack(note, '+1');
+    Tone.Transport.scheduleOnce(() => {
+      celloDrone(note);
+    }, `+${Math.random() * 10 + 5}`);
+  };
+
+  const playRaga = ragaGenerator => {
+    const { value } = ragaGenerator.next();
+    const [interval, time] = value;
+    const note = transpose(tonic, interval);
+    playNote(note);
+    if (Math.random() < (interval === 0 || interval === 12 ? 0.5 : 0.1)) {
+      const lowNote = Math.random() < 0.5 ? 'C#3' : transpose(note, -12);
+      playNote(lowNote);
+    }
+    Tone.Transport.scheduleOnce(() => {
+      if (time > 8 && Math.random() < 0.4) {
+        tonic = tonic === 'C#4' ? 'C#5' : 'C#4';
+      }
+      playRaga(ragaGenerator);
+    }, `+${time + Math.random() - 0.5}`);
+  };
+
+  const schedule = () => {
     const ragaGenerator = makeRagaGenerator(ragaBhairav);
+
+    Tone.Transport.scheduleOnce(() => {
+      playRaga(ragaGenerator);
+    }, `+${Math.random() * 2 + 2}`);
 
     const celloFilter = new Tone.AutoFilter(
       Math.random() / 100 + 0.01,
       50,
       3
-    ).connect(reverb);
+    ).connect(destination);
     celloFilter.start();
     cellos.connect(celloFilter);
-
-    const celloDrone = note => {
-      cellos.triggerAttack(note, '+1');
-      Tone.Transport.scheduleOnce(() => {
-        celloDrone(note);
-      }, `+${Math.random() * 10 + 5}`);
-    };
 
     ['C#2', 'C#1', 'G#1', 'G#2'].forEach(note => {
       Tone.Transport.scheduleOnce(() => {
@@ -112,36 +153,19 @@ const makePiece = ({ audioContext, destination, samples }) => {
       }, `+${Math.random() * 5}`);
     });
 
-    const playNextNote = () => {
-      const { value } = ragaGenerator.next();
-      const [interval, time] = value;
-      const note = Distance.transpose(tonic, Interval.fromSemitones(interval));
-      playNote(note);
-      if (Math.random() < (interval === 0 || interval === 12 ? 0.5 : 0.1)) {
-        const lowNote =
-          Math.random() < 0.5
-            ? 'C#3'
-            : Distance.transpose(note, Interval.fromSemitones(-12));
-        playNote(lowNote);
-      }
-      Tone.Transport.scheduleOnce(() => {
-        if (time > 8 && Math.random() < 0.4) {
-          tonic = tonic === 'C#4' ? 'C#5' : 'C#4';
-        }
-        playNextNote();
-      }, `+${time + Math.random() - 0.5}`);
-    };
-
-    Tone.Transport.scheduleOnce(() => {
-      playNextNote();
-    }, `+${Math.random() * 2 + 2}`);
-
     return () => {
-      [reverb, pianoSampler, cellos, celloFilter].forEach(node =>
-        node.dispose()
-      );
+      piano.releaseAll();
+      cellos.releaseAll();
+      celloFilter.dispose();
     };
-  });
+  };
+
+  const deactivate = () => {
+    piano.dispose();
+    cellos.dispose();
+  };
+
+  return [deactivate, schedule];
 };
 
-export default makePiece;
+export default wrapActivate(activate);

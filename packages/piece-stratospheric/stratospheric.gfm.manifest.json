@@ -6,12 +6,10 @@
   "id": "stratospheric",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": [
-    "guitar"
-  ],
+  "tags": ["guitar"],
   "releaseDate": "2019-08-04T00:00:00.000Z",
   "sampleNames": [
-    "guitar-coil-spank",
-    "guitar-dusty"
+    ["stratospheric::guitar-coil-spank", "guitar-coil-spank"],
+    ["stratospheric::guitar-dusty", "guitar-dusty"]
   ]
 }

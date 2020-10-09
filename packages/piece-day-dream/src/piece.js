@@ -1,83 +1,68 @@
-import Tone from 'tone';
-import { Chord, Note, Distance } from 'tonal';
-import { getBuffers } from '@generative-music/utilities';
+import * as Tone from 'tone';
+import {
+  createBuffers,
+  sampleNote,
+  wrapActivate,
+  toss,
+  minor7th,
+} from '@generative-music/utilities';
+import { sampleNames } from '../day-dream.gfm.manifest.json';
 
 const NOON_SEMITONE_CHANGE = 15;
 const MIDNIGHT_SEMITONE_CHANGE = 30;
 
-const findClosest = (note, samplesByNote) => {
-  const noteMidi = Note.midi(note);
-  const maxInterval = 96;
-  let interval = 0;
-  while (interval <= maxInterval) {
-    const higherNote = Note.fromMidi(noteMidi + interval);
-    if (samplesByNote[higherNote]) {
-      return higherNote;
-    }
-    const lowerNote = Note.fromMidi(noteMidi - interval);
-    if (samplesByNote[lowerNote]) {
-      return lowerNote;
-    }
-    interval += 1;
-  }
-  return note;
-};
+const NOTES = toss(['C'], [4, 5, 6])
+  .map(minor7th)
+  .flat();
 
-const NOTES = [4, 5, 6].reduce(
-  (allNotes, octave) => allNotes.concat(Chord.notes(`C${octave}`, 'm7')),
-  []
-);
-
-const makePiece = ({ audioContext, destination, samples }) => {
-  if (Tone.context !== audioContext) {
-    Tone.setContext(audioContext);
-  }
+const activate = async ({ destination, sampleLibrary }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const samplesByNote = samples['vsco2-piano-mf'];
-  return getBuffers(samplesByNote).then(buffers => {
-    const bufferSources = [];
-    const playNote = note => {
-      const date = new Date();
-      const hour = date.getHours();
-      const minute = date.getMinutes();
-      const second = date.getSeconds();
-      let semitoneChange;
-      if (hour >= 12) {
-        const hoursPastNoon = hour - 12;
-        const secondsPastNoon = hoursPastNoon * 60 * 60 + minute * 60 + second;
-        const pctToMidnight = secondsPastNoon / (12 * 60 * 60 - 1);
-        semitoneChange =
-          pctToMidnight * (MIDNIGHT_SEMITONE_CHANGE - NOON_SEMITONE_CHANGE) +
-          NOON_SEMITONE_CHANGE;
-      } else {
-        const secondsPastMidnight = hour * 60 * 60 + minute * 60 + second;
-        const pctToNoon = secondsPastMidnight / (12 * 60 * 60 - 1);
-        semitoneChange =
-          pctToNoon * (NOON_SEMITONE_CHANGE - MIDNIGHT_SEMITONE_CHANGE) +
-          MIDNIGHT_SEMITONE_CHANGE;
-      }
-      const closestSample = findClosest(note, samplesByNote);
-      const difference = Distance.semitones(closestSample, note);
-      const buffer = buffers.get(closestSample);
-      const bufferSource = new Tone.BufferSource(buffer).connect(destination);
-      const playbackRate = Tone.intervalToFrequencyRatio(
-        difference - semitoneChange
-      );
-      bufferSource.set({
-        playbackRate,
-        onended: () => {
-          const index = bufferSources.indexOf(bufferSource);
-          if (index >= 0) {
-            bufferSource.dispose();
-            bufferSources.splice(index, 1);
-          }
-        },
-      });
+  const sampledNotes = Object.keys(samplesByNote);
+  const buffers = await createBuffers(samplesByNote);
+  const activeSources = [];
+  const playNote = note => {
+    const date = new Date();
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+    const second = date.getSeconds();
+    let semitoneChange;
+    if (hour >= 12) {
+      const hoursPastNoon = hour - 12;
+      const secondsPastNoon = hoursPastNoon * 60 * 60 + minute * 60 + second;
+      const pctToMidnight = secondsPastNoon / (12 * 60 * 60 - 1);
+      semitoneChange =
+        pctToMidnight * (MIDNIGHT_SEMITONE_CHANGE - NOON_SEMITONE_CHANGE) +
+        NOON_SEMITONE_CHANGE;
+    } else {
+      const secondsPastMidnight = hour * 60 * 60 + minute * 60 + second;
+      const pctToNoon = secondsPastMidnight / (12 * 60 * 60 - 1);
+      semitoneChange =
+        pctToNoon * (NOON_SEMITONE_CHANGE - MIDNIGHT_SEMITONE_CHANGE) +
+        MIDNIGHT_SEMITONE_CHANGE;
+    }
+    const { sampledNote, playbackRate } = sampleNote({
+      note,
+      sampledNotes,
+      pitchShift: -semitoneChange,
+    });
+    const buffer = buffers.get(sampledNote);
+    const bufferSource = new Tone.BufferSource(buffer).connect(destination);
+    bufferSource.set({
+      playbackRate,
+      onended: () => {
+        const index = activeSources.indexOf(bufferSource);
+        if (index >= 0) {
+          activeSources.splice(index, 1);
+        }
+      },
+    });
+    activeSources.push(bufferSource);
+    bufferSource.start('+1');
+    return semitoneChange;
+  };
 
-      bufferSource.start('+1');
-
-      return semitoneChange;
-    };
-
+  const schedule = () => {
     const firstDelays = NOTES.map(
       () =>
         Math.random() *
@@ -98,10 +83,15 @@ const makePiece = ({ audioContext, destination, samples }) => {
     });
 
     return () => {
-      [buffers, ...bufferSources].forEach(node => node.dispose());
-      bufferSources.splice(0, bufferSources.length);
+      activeSources.forEach(node => node.stop());
     };
-  });
+  };
+
+  const deactivate = () => {
+    buffers.dispose();
+  };
+
+  return [deactivate, schedule];
 };
 
-export default makePiece;
+export default wrapActivate(activate);

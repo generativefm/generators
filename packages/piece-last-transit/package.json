@@ -26,7 +26,7 @@
     "access": "public"
   },
   "devDependencies": {
-    "tone": "^13.4.9"
+    "tone": "^14.7.58"
   },
   "dependencies": {
     "@generative-music/utilities": "^3.3.0"

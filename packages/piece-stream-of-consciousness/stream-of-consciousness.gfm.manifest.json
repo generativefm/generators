@@ -5,17 +5,14 @@
   "id": "stream-of-consciousness",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": [
-    "electronic",
-    "beats",
-    "percussion"
-  ],
+  "tags": ["electronic", "beats", "percussion"],
   "releaseDate": "2020-02-27T00:00:00.000Z",
   "visualizationType": "squareCut",
   "sampleNames": [
-    "snare-brush-stir",
+    ["stream-of-consciousness::snare-brush-stir", "snare-brush-stir"],
     "snare-brush-hit-p",
     "ride-brush-p",
-    "vsco2-piano-mf"
+    ["stream-of-consciousness::vsco2-piano-mf-reverse", "vsco2-piano-mf"],
+    ["stream-of-consciousness::vsco2-piano-mf-low", "vsco2-piano-mf"]
   ]
 }

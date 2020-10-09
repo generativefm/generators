@@ -19,15 +19,14 @@
   },
   "homepage": "https://github.com/generative-music/piece-trees#readme",
   "dependencies": {
-    "@generative-music/utilities": "^3.3.0",
-    "tonal": "^2.2.1"
+    "@generative-music/utilities": "^3.3.0"
   },
   "peerDependencies": {
-    "tone": "^13.4.9"
+    "tone": "^14.7.39"
   },
   "version": "3.3.0",
   "gitHead": "8ed39368a8376ff9ea366fe8e1ab01820553a037",
   "devDependencies": {
-    "tone": "^13.4.9"
+    "tone": "^14.7.39"
   }
 }

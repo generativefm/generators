@@ -6,13 +6,7 @@
   "id": "return-to-form",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": [
-    "happy",
-    "piano",
-    "electronic"
-  ],
+  "tags": ["happy", "piano", "electronic"],
   "releaseDate": "2019-04-06T00:00:00.000Z",
-  "sampleNames": [
-    "vsco2-piano-mf"
-  ]
+  "sampleNames": [["return-to-form::vsco2-piano-mf", "vsco2-piano-mf"]]
 }

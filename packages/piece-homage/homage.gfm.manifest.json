@@ -6,14 +6,10 @@
   "id": "homage",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": [
-    "electronic",
-    "drone",
-    "calm"
-  ],
+  "tags": ["electronic", "drone", "calm"],
   "releaseDate": "2019-06-30T00:00:00.000Z",
   "sampleNames": [
     "vsco2-piano-mf",
-    "vsco2-violins-susvib"
+    ["homage::vsco2-violins-susvib", "vsco2-violins-susvib"]
   ]
 }

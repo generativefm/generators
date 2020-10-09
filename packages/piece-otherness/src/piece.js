@@ -1,31 +1,51 @@
-import Tone from 'tone';
-import { Note } from 'tonal';
-import { getSampler } from '@generative-music/utilities';
+import * as Tone from 'tone';
+import { createSampler, wrapActivate } from '@generative-music/utilities';
+import { sampleNames } from '../otherness.gfm.manifest.json';
 
+const PITCH_CLASSES = [
+  'C',
+  'C#',
+  'Db',
+  'D',
+  'D#',
+  'Eb',
+  'E',
+  'F',
+  'F#',
+  'Gb',
+  'G',
+  'G#',
+  'Ab',
+  'A',
+  'A#',
+  'Bb',
+  'B',
+];
 const OCTAVES = [2, 3, 4];
 const notes = OCTAVES.reduce(
   (allNotes, octave) =>
-    allNotes.concat(Note.names().map(pitchClass => `${pitchClass}${octave}`)),
+    allNotes.concat(PITCH_CLASSES.map(pitchClass => `${pitchClass}${octave}`)),
   []
 );
 
 const playNote = (instrument, sineSynth, lastNoteMidi) => {
-  const newNotes = notes.filter(n => Note.midi(n) !== lastNoteMidi);
+  const newNotes = notes.filter(n => Tone.Midi(n).toMidi() !== lastNoteMidi);
   const note = newNotes[Math.floor(Math.random() * newNotes.length)];
   instrument.triggerAttack(note, '+1.5');
-  const pitchClass = Note.pc(note);
+  const pitchClass = note.slice(0, -1);
   sineSynth.triggerAttackRelease(`${pitchClass}1`, 5, '+1.5');
   Tone.Transport.scheduleOnce(() => {
-    playNote(instrument, sineSynth, Note.midi(note));
+    playNote(instrument, sineSynth, Tone.Midi(note).toMidi());
   }, `+${Math.random() * 10 + 10}`);
 };
 
-const makePiece = ({ audioContext, destination, samples }) => {
-  if (Tone.context !== audioContext) {
-    Tone.setContext(audioContext);
-  }
-  return getSampler(samples.otherness).then(instrument => {
-    const volume = new Tone.Volume(-5).connect(destination);
+const activate = async ({ destination, sampleLibrary }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
+  const instrument = await createSampler(samples.otherness);
+  const volume = new Tone.Volume(-5).connect(destination);
+  instrument.connect(volume);
+
+  const schedule = () => {
     const sineSynth = new Tone.MonoSynth({
       oscillator: { type: 'sine' },
       envelope: {
@@ -34,17 +54,23 @@ const makePiece = ({ audioContext, destination, samples }) => {
       },
     }).connect(volume);
 
-    instrument.connect(volume);
-
     sineSynth.volume.value = -25;
     instrument.volume.value = -5;
 
     playNote(instrument, sineSynth);
 
     return () => {
-      [sineSynth, instrument, volume].forEach(node => node.dispose());
+      sineSynth.dispose();
+      instrument.releaseAll(0);
     };
-  });
+  };
+
+  const deactivate = () => {
+    instrument.dispose();
+    volume.dispose();
+  };
+
+  return [deactivate, schedule];
 };
 
-export default makePiece;
+export default wrapActivate(activate);

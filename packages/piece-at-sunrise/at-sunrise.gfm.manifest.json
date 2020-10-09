@@ -5,14 +5,13 @@
   "id": "at-sunrise",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": [
-    "calm",
-    "dream",
-    "electronic"
-  ],
+  "tags": ["calm", "dream", "electronic"],
   "releaseDate": "2019-08-25T00:00:00.000Z",
   "visualizationType": "squareCut",
   "sampleNames": [
-    "vcsl-vibraphone-soft-mallets-mp"
+    [
+      "at-sunrise::vcsl-vibraphone-soft-mallets-mp",
+      "vcsl-vibraphone-soft-mallets-mp"
+    ]
   ]
 }

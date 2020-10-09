@@ -1,80 +1,84 @@
-import Tone from 'tone';
-import { Chord, Note } from 'tonal';
-import { getBuffers, getSampler } from '@generative-music/utilities';
+import * as Tone from 'tone';
+import {
+  createPrerenderableSampler,
+  wrapActivate,
+  toss,
+} from '@generative-music/utilities';
+import { sampleNames } from '../apoapsis.gfm.manifest.json';
 
-const makePiece = ({ audioContext, destination, samples }) => {
-  if (Tone.context !== audioContext) {
-    Tone.setContext(audioContext);
-  }
-  const noise = new Tone.Noise('brown');
-  const eq = new Tone.EQ3(-15, -Infinity, -Infinity).connect(destination);
-  eq.lowFrequency.value = Note.freq('C1');
-  const lfo = new Tone.LFO({
-    min: -50,
-    max: -15,
-    frequency: Math.random() / 100,
-    phase: 45,
-  });
-  lfo.connect(eq.low);
-  noise.connect(eq);
-  lfo.start();
+const pianoNotes = toss(['C', 'E', 'G', 'B'], [3, 4, 5]);
+const violinNotes = toss(['C', 'E', 'G', 'B'], [2, 3, 4]);
 
-  const delay1 = new Tone.FeedbackDelay({
-    feedback: 0.7,
-    delayTime: 0.2,
-    wet: 0.5,
-  });
-  const delay2 = new Tone.FeedbackDelay({
-    feedback: 0.6,
-    delayTime: Math.random() * 10 + 20,
-    wet: 0.5,
-  });
-  const reverb = new Tone.Freeverb({ roomSize: 0.9, wet: 0.5 });
-  reverb.chain(delay1, delay2, destination);
+const activate = async ({ destination, sampleLibrary, onProgress }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
 
-  const violinReverb = new Tone.Freeverb({ roomSize: 0.8, wet: 0.5 });
-
-  const pianoSamples = samples['vsco2-piano-mf'];
-  return Promise.all([
-    getBuffers(pianoSamples),
-    getSampler(samples['vsco2-violins-susvib'], {
-      release: 8,
-      curve: 'linear',
-      volume: -35,
-    }),
-  ]).then(([buffers, violins]) => {
-    const reversePiano = new Tone.Sampler(
-      Reflect.ownKeys(pianoSamples).reduce((reverseConfig, note) => {
-        reverseConfig[note] = buffers.get(note);
-        reverseConfig[note].reverse = true;
-        return reverseConfig;
-      }, {})
-    ).chain(reverb);
-
-    violins.chain(violinReverb, reverb);
-
-    Chord.notes('C', 'maj7')
-      .reduce(
-        (allNotes, pc) =>
-          allNotes.concat([2, 3, 4].map(octave => `${pc}${octave}`)),
-        []
-      )
-      .forEach(note => {
-        Tone.Transport.scheduleRepeat(
-          () => violins.triggerAttack(note, '+1'),
-          Math.random() * 120 + 60,
-          30
-        );
-      });
-
-    const notes = Chord.notes('C', 'maj7').reduce(
-      (allNotes, pc) =>
-        allNotes.concat([3, 4, 5].map(octave => `${pc}${octave}`)),
-      []
+  const getPianoDestination = () =>
+    Promise.resolve(
+      new Tone.Freeverb({ roomSize: 0.9, wet: 0.5 }).toDestination()
     );
-    const intervals = notes.map(() => Math.random() * 30 + 30);
+  const getViolinDestination = () =>
+    Promise.resolve(
+      new Tone.Freeverb({ roomSize: 0.8, wet: 0.5 }).toDestination()
+    );
+
+  const reversePiano = await createPrerenderableSampler({
+    notes: pianoNotes,
+    samples,
+    sourceInstrumentName: 'vsco2-piano-mf',
+    renderedInstrumentName: 'apoapsis::vsco2-piano-mf',
+    sampleLibrary,
+    additionalRenderLength: 1,
+    getDestination: getPianoDestination,
+    onProgress: val => onProgress(val * 0.5),
+    reverse: true,
+  });
+
+  const violins = await createPrerenderableSampler({
+    notes: violinNotes,
+    samples,
+    sourceInstrumentName: 'vsco2-violins-susvib',
+    renderedInstrumentName: 'apoapsis::vsco2-violins-susvib',
+    sampleLibrary,
+    additionalRenderLength: 1,
+    getDestination: getViolinDestination,
+    onProgress: val => onProgress(val * 0.5 + 0.5),
+    bufferSourceOptions: {
+      fadeOut: 8,
+      curve: 'linear',
+    },
+  });
+
+  const violinVol = new Tone.Volume(-25);
+
+  violins.chain(violinVol, destination);
+
+  const schedule = () => {
+    const delay1 = new Tone.FeedbackDelay({
+      feedback: 0.7,
+      delayTime: 0.2,
+      wet: 0.5,
+    });
+    const delay2Time = Math.random() * 10 + 20;
+    const delay2 = new Tone.FeedbackDelay({
+      feedback: 0.6,
+      delayTime: delay2Time,
+      maxDelay: delay2Time,
+      wet: 0.5,
+    });
+
+    reversePiano.chain(delay1, delay2, destination);
+
+    violinNotes.forEach(note => {
+      Tone.Transport.scheduleRepeat(
+        () => violins.triggerAttack(note, '+1'),
+        Math.random() * 120 + 60,
+        `+${Math.random() * 15 + 15}`
+      );
+    });
+
+    const intervals = pianoNotes.map(() => Math.random() * 30 + 30);
     const minInterval = Math.min(...intervals);
-    notes.forEach((note, i) => {
+    pianoNotes.forEach((note, i) => {
       const intervalTime = intervals[i];
       Tone.Transport.scheduleRepeat(
         () => reversePiano.triggerAttack(note, '+1'),
@@ -82,21 +86,19 @@ const makePiece = ({ audioContext, destination, samples }) => {
         intervalTime - minInterval
       );
     });
+
     return () => {
-      [
-        noise,
-        eq,
-        lfo,
-        delay1,
-        delay2,
-        reverb,
-        violinReverb,
-        violins,
-        buffers,
-        reversePiano,
-      ].forEach(node => node.dispose());
+      reversePiano.releaseAll(0);
+      violins.releaseAll(0);
+      [delay1, delay2].forEach(node => node.dispose());
     };
-  });
+  };
+
+  const deactivate = () => {
+    [violins, reversePiano].forEach(node => node.dispose());
+  };
+
+  return [deactivate, schedule];
 };
 
-export default makePiece;
+export default wrapActivate(activate);

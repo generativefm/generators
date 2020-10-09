@@ -1,11 +1,12 @@
-import Tone from 'tone';
-import { getBuffers } from '@generative-music/utilities';
+import * as Tone from 'tone';
+import {
+  createPrerenderableBuffers,
+  wrapActivate,
+} from '@generative-music/utilities';
+import { sampleNames } from '../stratospheric.gfm.manifest.json';
 
-const makePiece = ({ audioContext, destination, samples }) => {
-  if (Tone.context !== audioContext) {
-    Tone.setContext(audioContext);
-  }
-
+const activate = async ({ destination, sampleLibrary, onProgress }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const activeSources = [];
 
   const getBufferPlayer = (bufferUrls, buffers, bufferDestination, getP) => {
@@ -41,31 +42,62 @@ const makePiece = ({ audioContext, destination, samples }) => {
       });
   };
 
-  const coilSpankUrls = samples['guitar-coil-spank'];
-  const dustyUrls = samples['guitar-dusty'];
+  const coilSpankUrls =
+    samples['stratospheric::guitar-coil-spank'] || samples['guitar-coil-spank'];
+  const dustyUrls =
+    samples['stratospheric::guitar-dusty'] || samples['guitar-dusty'];
 
-  return Promise.all([
-    getBuffers(coilSpankUrls),
-    getBuffers(dustyUrls),
+  const getReverb = () =>
     new Tone.Reverb(30)
       .set({ wet: 0.6 })
-      .connect(destination)
-      .generate(),
-  ]).then(([coilSpankBuffers, dustyBuffers, reverb]) => {
-    const dustyVol = new Tone.Volume(-7).connect(reverb);
-    const getCoilSpankP = () => 1 - ((Tone.now() / 60) % 60) / 60;
-    const getDustyP = () => 1 - getCoilSpankP();
-    getBufferPlayer(coilSpankUrls, coilSpankBuffers, reverb, getCoilSpankP);
-    getBufferPlayer(dustyUrls, dustyBuffers, dustyVol, getDustyP);
-    return () =>
-      [
-        coilSpankBuffers,
-        dustyBuffers,
-        reverb,
-        dustyVol,
-        ...activeSources,
-      ].forEach(node => node.dispose());
+      .toDestination()
+      .generate();
+
+  const coilSpankBuffers = await createPrerenderableBuffers({
+    samples,
+    sampleLibrary,
+    sourceInstrumentName: 'guitar-coil-spank',
+    renderedInstrumentName: 'stratospheric::guitar-coil-spank',
+    getDestination: getReverb,
+    onProgress: val => onProgress(val * 0.5),
   });
+
+  const dustyBuffers = await createPrerenderableBuffers({
+    samples,
+    sampleLibrary,
+    sourceInstrumentName: 'guitar-dusty',
+    renderedInstrumentName: 'stratospheric::guitar-dusty',
+    getDestination: getReverb,
+    onProgress: val => onProgress(val * 0.5 + 0.5),
+  });
+
+  const dustyVol = new Tone.Volume(-15).connect(destination);
+  const getCoilSpankP = () => 1 - ((Tone.now() / 60) % 60) / 60;
+  const getDustyP = () => 1 - getCoilSpankP();
+
+  const schedule = () => {
+    getBufferPlayer(
+      coilSpankUrls,
+      coilSpankBuffers,
+      destination,
+      getCoilSpankP
+    );
+    getBufferPlayer(dustyUrls, dustyBuffers, dustyVol, getDustyP);
+
+    return () => {
+      activeSources.forEach(source => {
+        source.stop(0);
+      });
+    };
+  };
+
+  const deactivate = () => {
+    [coilSpankBuffers, dustyBuffers, dustyVol, ...activeSources].forEach(node =>
+      node.dispose()
+    );
+  };
+
+  return [deactivate, schedule];
 };
 
-export default makePiece;
+export default wrapActivate(activate);

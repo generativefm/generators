@@ -5,5 +5,19 @@
   },
   "parserOptions": {
     "sourceType": "module"
-  }
+  },
+  "overrides": [
+    {
+      "files": "./**/*.spec.js",
+      "env": {
+        "mocha": true
+      },
+      "globals": {
+        "expect": "readonly"
+      },
+      "rules": {
+        "no-unused-expressions": 0
+      }
+    }
+  ]
 }

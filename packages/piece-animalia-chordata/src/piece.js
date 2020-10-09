@@ -1,30 +1,71 @@
-import Tone from 'tone';
-import { getBuffer } from '@generative-music/utilities';
+import * as Tone from 'tone';
+import {
+  createBuffer,
+  createPrerenderableBufferArray,
+  wrapActivate,
+} from '@generative-music/utilities';
+import { sampleNames } from '../animalia-chordata.gfm.manifest.json';
 
-const makePiece = ({ audioContext, destination, samples }) => {
-  if (Tone.context !== audioContext) {
-    Tone.setContext(audioContext);
+const activate = async ({ destination, sampleLibrary, onProgress }) => {
+  const samples = await sampleLibrary.request(Tone.context, sampleNames);
+  const activeSources = [];
+  const masterVol = new Tone.Volume(-7).connect(destination);
+  const filter = new Tone.Filter(500);
+  const compressor = new Tone.Compressor().connect(filter);
+  const crossFade = new Tone.CrossFade().connect(compressor);
+
+  const temporaryBuffers = [];
+
+  if (
+    !samples['animalia-chordata::whales-dryer'] &&
+    !samples['animalia-chordata::whales-wetter']
+  ) {
+    const buffer = await createBuffer(samples.whales[0]);
+    const reverseBuffer = Tone.ToneAudioBuffer.fromArray(buffer.toArray());
+    reverseBuffer.reverse = true;
+    onProgress(0.02);
+    samples.whales.push(reverseBuffer);
+    temporaryBuffers.push(buffer, reverseBuffer);
   }
-  return getBuffer(samples.whales[0]).then(buffer => {
-    const activeSources = [];
-    const vol = new Tone.Volume(-7).connect(destination);
-    const compressor = new Tone.Compressor().connect(vol);
-    const reverb = new Tone.Reverb(30).set({ wet: 0.5 }).connect(compressor);
-    const pingPongDelay = new Tone.PingPongDelay(0.7, 0.8).connect(reverb);
-    const lfo = new Tone.LFO(Math.random() * 0.005 + 0.005, 0.5, 0.9).set({
-      phase: 90,
-    });
-    lfo.start();
-    lfo.connect(reverb.wet);
 
-    const filter = new Tone.Filter(500).connect(pingPongDelay);
+  const dryerBuffers = await createPrerenderableBufferArray({
+    samples,
+    sampleLibrary,
+    sourceInstrumentName: 'whales',
+    renderedInstrumentName: 'animalia-chordata::whales-dryer',
+    getDestination: () =>
+      new Tone.Reverb(30)
+        .set({ wet: 0.5 })
+        .toDestination()
+        .generate(),
+    onProgress: val => onProgress(val * 0.5),
+  });
 
-    reverb.generate();
+  const wetterBuffers = await createPrerenderableBufferArray({
+    samples,
+    sampleLibrary,
+    sourceInstrumentName: 'whales',
+    renderedInstrumentName: 'animalia-chordata::whales-wetter',
+    getDestination: () =>
+      new Tone.Reverb(30)
+        .set({ wet: 0.9 })
+        .toDestination()
+        .generate(),
+    onProgress: val => onProgress(val * 0.5 + 0.5),
+  });
 
-    const play = () => {
-      buffer.reverse = Math.random() < 0.5;
-      const playbackRate = Math.random() * 0.2 + 0.1;
-      const source = new Tone.BufferSource(buffer)
+  temporaryBuffers.forEach(buffer => {
+    buffer.dispose();
+  });
+
+  const play = () => {
+    const bufferIndex = Math.round(Math.random() * 0.5);
+    const buffers = [dryerBuffers, wetterBuffers].map(
+      bufferArray => bufferArray[bufferIndex]
+    );
+    const playbackRate = Math.random() * 0.2 + 0.1;
+    buffers.forEach(buf => {
+      const source = new Tone.BufferSource(buf)
         .set({
           playbackRate,
           fadeIn: 5,
@@ -37,20 +78,48 @@ const makePiece = ({ audioContext, destination, samples }) => {
             }
           },
         })
-        .connect(filter);
+        .connect(bufferIndex === 0 ? crossFade.a : crossFade.b);
       activeSources.push(source);
-      source.start('+1', 3, buffer.duration / playbackRate - 3);
-      Tone.Transport.scheduleOnce(() => {
-        play();
-      }, `+${buffer.duration / playbackRate - Math.random() * 15 - 15}`);
-    };
+      source.start('+1', 3, buf.duration / playbackRate - 3);
+    });
+
+    Tone.Transport.scheduleOnce(() => {
+      play();
+    }, `+${buffers[0].duration / playbackRate - Math.random() * 15 - 15}`);
+  };
+
+  const schedule = () => {
+    const feedbackDelay = new Tone.FeedbackDelay({
+      delayTime: 0.7,
+      feedback: 0.8,
+    });
+    filter.connect(feedbackDelay);
+    const lfo = new Tone.LFO(Math.random() * 0.005 + 0.005).set({
+      phase: 90,
+    });
+    lfo.connect(crossFade.fade);
+    lfo.start();
+
     play();
+
+    feedbackDelay.connect(masterVol);
+
     return () => {
-      [vol, compressor, reverb, pingPongDelay, lfo, filter, buffer].forEach(
-        node => node.dispose()
-      );
+      activeSources.forEach(source => {
+        source.stop(0);
+      });
+      feedbackDelay.dispose();
+      lfo.dispose();
     };
-  });
+  };
+
+  const deactivate = () => {
+    [compressor, filter, crossFade, ...dryerBuffers, ...wetterBuffers].forEach(
+      node => node.dispose()
+    );
+  };
+
+  return [deactivate, schedule];
 };
 
-export default makePiece;
+export default wrapActivate(activate);
