@@ -1,5 +1,5 @@
 import * as Tone from 'tone';
-import createBuffer from './get-buffer';
+import createBuffer from './create-buffer';
 
 describe('createBuffer', () => {
   it('should return a promise', () => {

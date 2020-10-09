@@ -1,7 +1,5 @@
 import makeActiveStage from './make-active-stage';
-
-//eslint-disable-next-line no-empty-function
-const noop = () => {};
+import noop from './utilities/noop';
 
 const makeCallAwareFn = () => {
   const callAwareFn = () => {
