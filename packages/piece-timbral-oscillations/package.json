@@ -19,12 +19,12 @@
   },
   "homepage": "https://github.com/generative-music/piece-timbral-oscillations#readme",
   "dependencies": {
-    "@generative-music/utilities": "^3.3.0"
+    "@generative-music/utilities": "^4.0.0"
   },
   "peerDependencies": {
     "tone": "^14.7.39"
   },
-  "version": "3.3.0",
+  "version": "4.0.0",
   "gitHead": "8ed39368a8376ff9ea366fe8e1ab01820553a037",
   "devDependencies": {
     "tone": "^14.7.39"

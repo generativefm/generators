@@ -27,8 +27,8 @@
   "devDependencies": {
     "tone": "^14.7.39"
   },
-  "version": "3.3.0",
+  "version": "4.0.0",
   "dependencies": {
-    "@generative-music/utilities": "^3.3.0"
+    "@generative-music/utilities": "^4.0.0"
   }
 }
