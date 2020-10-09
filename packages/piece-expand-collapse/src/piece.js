@@ -3,7 +3,7 @@ import {
   toss,
   sampleNote,
   wrapActivate,
-  createPrerenderedBuffers,
+  createPrerenderableBuffers,
   getRandomElement,
 } from '@generative-music/utilities';
 import { sampleNames } from '../expand-collapse.gfm.manifest.json';
@@ -26,7 +26,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const pianoSamples =
     samples['expand-collapse::vsco2-piano-mf'] || samples['vsco2-piano-mf'];
 
-  const pianoBuffers = await createPrerenderedBuffers({
+  const pianoBuffers = await createPrerenderableBuffers({
     samples,
     sampleLibrary,
     onProgress,

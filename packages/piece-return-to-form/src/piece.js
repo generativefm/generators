@@ -1,6 +1,6 @@
 import * as Tone from 'tone';
 import {
-  createPrerenderedSampler,
+  createPrerenderableSampler,
   shuffleArray,
   wrapActivate,
   P1,
@@ -19,7 +19,7 @@ const NOTE_TIME_S = 2;
 
 const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
-  const piano = await createPrerenderedSampler({
+  const piano = await createPrerenderableSampler({
     notes: toss(['C', 'E', 'G', 'B'], [2, 3, 4, 5]),
     samples,
     sampleLibrary,

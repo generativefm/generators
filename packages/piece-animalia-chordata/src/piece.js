@@ -1,7 +1,7 @@
 import * as Tone from 'tone';
 import {
   createBuffer,
-  createPrerenderedBufferArray,
+  createPrerenderableBufferArray,
   wrapActivate,
 } from '@generative-music/utilities';
 import { sampleNames } from '../animalia-chordata.gfm.manifest.json';
@@ -28,7 +28,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     temporaryBuffers.push(buffer, reverseBuffer);
   }
 
-  const dryerBuffers = await createPrerenderedBufferArray({
+  const dryerBuffers = await createPrerenderableBufferArray({
     samples,
     sampleLibrary,
     sourceInstrumentName: 'whales',
@@ -41,7 +41,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     onProgress: val => onProgress(val * 0.5),
   });
 
-  const wetterBuffers = await createPrerenderedBufferArray({
+  const wetterBuffers = await createPrerenderableBufferArray({
     samples,
     sampleLibrary,
     sourceInstrumentName: 'whales',

@@ -1,8 +1,8 @@
 import * as Tone from 'tone';
 import {
   wrapActivate,
-  createPrerenderedSampler,
-  createPrerenderedBufferArray,
+  createPrerenderableSampler,
+  createPrerenderableBufferArray,
 } from '@generative-music/utilities';
 import { sampleNames } from '../townsend.gfm.manifest.json';
 
@@ -11,7 +11,7 @@ const FLUTE_NOTES = ['C3', 'C4', 'G3', 'G4'];
 const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
 
-  const flute = await createPrerenderedSampler({
+  const flute = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     notes: FLUTE_NOTES,
@@ -22,7 +22,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     onProgress: val => onProgress(val * 0.2),
   });
 
-  const guitarBuffers = await createPrerenderedBufferArray({
+  const guitarBuffers = await createPrerenderableBufferArray({
     samples,
     sampleLibrary,
     sourceInstrumentName: 'acoustic-guitar-chords-cmaj',

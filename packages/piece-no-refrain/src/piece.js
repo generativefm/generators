@@ -1,14 +1,14 @@
 import * as Tone from 'tone';
 import {
   wrapActivate,
-  createPrerenderedSampler,
+  createPrerenderableSampler,
   toss,
 } from '@generative-music/utilities';
 import { sampleNames } from '../no-refrain.gfm.manifest.json';
 
 const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
-  const piano = await createPrerenderedSampler({
+  const piano = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     onProgress,

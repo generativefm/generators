@@ -1,7 +1,7 @@
 import * as Tone from 'tone';
 import {
   wrapActivate,
-  createPrerenderedSampler,
+  createPrerenderableSampler,
 } from '@generative-music/utilities';
 import { sampleNames } from '../at-sunrise.gfm.manifest.json';
 
@@ -29,7 +29,7 @@ function* makeValueOscillator(min, max) {
 const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
 
-  const vibraphone = await createPrerenderedSampler({
+  const vibraphone = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     onProgress,

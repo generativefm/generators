@@ -1,6 +1,6 @@
 import * as Tone from 'tone';
 import {
-  createPrerenderedSampler,
+  createPrerenderableSampler,
   wrapActivate,
   toss,
   sortNotes,
@@ -24,7 +24,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
 
   const getReverb = () => new Tone.Reverb(45).toDestination().generate();
 
-  const trumpet = await createPrerenderedSampler({
+  const trumpet = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     sourceInstrumentName: 'vsco2-trumpet-sus-mf',
@@ -34,7 +34,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     getDestination: getReverb,
   });
 
-  const trombone = await createPrerenderedSampler({
+  const trombone = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     sourceInstrumentName: 'vsco2-trombone-sus-mf',
@@ -44,7 +44,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     getDestination: getReverb,
   });
 
-  const tuba = await createPrerenderedSampler({
+  const tuba = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     sourceInstrumentName: 'vsco2-tuba-sus-mf',

@@ -1,6 +1,6 @@
 import * as Tone from 'tone';
 import {
-  createPrerenderedSampler,
+  createPrerenderableSampler,
   wrapActivate,
 } from '@generative-music/utilities';
 import { sampleNames } from '../yesterday.gfm.manifest.json';
@@ -12,7 +12,7 @@ const scale = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3', 'C4'];
 
 const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
-  const sax = await createPrerenderedSampler({
+  const sax = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     onProgress,

@@ -1,14 +1,14 @@
 import * as Tone from 'tone';
 import {
-  createPrerenderedSampler,
-  createPrerenderedBuffers,
+  createPrerenderableSampler,
+  createPrerenderableBuffers,
   wrapActivate,
   getRandomElement,
 } from '@generative-music/utilities';
 import { sampleNames } from '../ritual.gfm.manifest.json';
 
 const createPercussionSampler = async (prerenderOptions = {}) => {
-  const buffers = await createPrerenderedBuffers(prerenderOptions);
+  const buffers = await createPrerenderableBuffers(prerenderOptions);
   const {
     samples,
     sourceInstrumentName,
@@ -67,7 +67,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const didgeridooSamples =
     samples['ritual::vcsl-didgeridoo-sus'] || samples['vcsl-didgeridoo-sus'];
 
-  const dideridooBuffers = await createPrerenderedBuffers({
+  const dideridooBuffers = await createPrerenderableBuffers({
     samples,
     sampleLibrary,
     sourceInstrumentName: 'vcsl-didgeridoo-sus',
@@ -76,7 +76,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     onProgress: val => onProgress(val / 8),
   });
 
-  const violins = await createPrerenderedSampler({
+  const violins = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     notes: ['C#4', 'G#4'],

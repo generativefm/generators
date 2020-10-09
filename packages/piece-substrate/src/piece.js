@@ -1,6 +1,6 @@
 import * as Tone from 'tone';
 import {
-  createPrerenderedSampler,
+  createPrerenderableSampler,
   wrapActivate,
   shuffleArray,
   getPitchClass,
@@ -63,7 +63,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const renderedMarimbaNotes = toss(PITCH_CLASSES, OCTAVES.concat([5]))
     .slice(0, -2)
     .filter((_, i) => i % 3 === 0);
-  const marimba = await createPrerenderedSampler({
+  const marimba = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     notes: renderedMarimbaNotes,
@@ -73,7 +73,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     onProgress: val => onProgress(val * 0.5),
     pitchShift: -24,
   });
-  const piano = await createPrerenderedSampler({
+  const piano = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     notes: renderedMarimbaNotes.map(

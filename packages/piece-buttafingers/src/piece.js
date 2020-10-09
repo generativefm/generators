@@ -1,7 +1,7 @@
 import * as Tone from 'tone';
 import {
   wrapActivate,
-  createPrerenderedBuffers,
+  createPrerenderableBuffers,
   createPitchShiftedSampler,
 } from '@generative-music/utilities';
 import { sampleNames } from '../buttafingers.gfm.manifest.json';
@@ -28,7 +28,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
         []
       )
     ),
-    createPrerenderedBuffers({
+    createPrerenderableBuffers({
       samples,
       sampleLibrary,
       sourceInstrumentName: 'vcsl-claves',

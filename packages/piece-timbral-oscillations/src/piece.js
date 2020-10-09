@@ -1,6 +1,6 @@
 import * as Tone from 'tone';
 import {
-  createPrerenderedSampler,
+  createPrerenderableSampler,
   wrapActivate,
 } from '@generative-music/utilities';
 import { sampleNames } from '../timbral-oscillations.gfm.manifest.json';
@@ -59,7 +59,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const getPianoDestination = () =>
     Promise.resolve(new Tone.Freeverb().toDestination());
 
-  const piano = await createPrerenderedSampler({
+  const piano = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     onProgress,

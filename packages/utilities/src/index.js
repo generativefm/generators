@@ -1,38 +1,38 @@
 import createBuffer from './create-buffer';
 import createBuffers from './create-buffers';
 import createSampler from './create-sampler';
-import createPrerenderedSampler from './create-prerendered-sampler';
+import createPrerenderableSampler from './create-prerenderable-sampler';
 import wrapActivate from './wrap-activate';
 import getRandomNumberBetween from './get-random-number-between';
 import getRandomElement from './get-random-element';
 import toss from './toss';
 import renderBuffer from './render-buffer';
-import createPrerenderedBufferArray from './create-prerendered-buffer-array';
+import createPrerenderableBufferArray from './create-prerenderable-buffer-array';
 import getClosestNote from './get-closest-note';
 import sampleNote from './sample-note';
-import createPrerenderedBuffers from './create-prerendered-buffers';
+import createPrerenderableBuffers from './create-prerenderable-buffers';
 import createPitchShiftedSampler from './create-pitch-shifted-sampler';
 import shuffleArray from './shuffle-array';
-import createPrerenderedSampledBuffers from './create-prerendered-sampled-buffers';
+import createPrerenderableSampledBuffers from './create-prerenderable-sampled-buffers';
 import createReverseSampler from './create-reverse-sampler';
 
-export * from './theory';
+export * from './theory/index';
 export {
   createBuffer,
   createBuffers,
   createSampler,
-  createPrerenderedSampler,
+  createPrerenderableSampler,
   wrapActivate,
   getRandomNumberBetween,
   getRandomElement,
   toss,
   renderBuffer,
-  createPrerenderedBufferArray,
+  createPrerenderableBufferArray,
   getClosestNote,
   sampleNote,
-  createPrerenderedBuffers,
+  createPrerenderableBuffers,
   createPitchShiftedSampler,
   shuffleArray,
-  createPrerenderedSampledBuffers,
+  createPrerenderableSampledBuffers,
   createReverseSampler,
 };

@@ -1,7 +1,7 @@
 import * as Tone from 'tone';
 import {
-  createPrerenderedSampler,
-  createPrerenderedBuffers,
+  createPrerenderableSampler,
+  createPrerenderableBuffers,
   wrapActivate,
 } from '@generative-music/utilities';
 import { sampleNames } from '../above-the-rain.gfm.manifest.json';
@@ -9,7 +9,7 @@ import { sampleNames } from '../above-the-rain.gfm.manifest.json';
 const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const getReverb = () => new Tone.Reverb(15).toDestination().generate();
-  const chorus = await createPrerenderedBuffers({
+  const chorus = await createPrerenderableBuffers({
     samples,
     sampleLibrary,
     sourceInstrumentName: 'sso-chorus-female',
@@ -18,7 +18,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     onProgress: val => onProgress(val * 0.5),
   });
 
-  const trumpet = await createPrerenderedSampler({
+  const trumpet = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     notes: ['C', 'E', 'G'].map(pc => `${pc}3`),

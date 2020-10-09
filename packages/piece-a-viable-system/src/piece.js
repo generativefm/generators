@@ -1,6 +1,6 @@
 import * as Tone from 'tone';
 import {
-  createPrerenderedSampler,
+  createPrerenderableSampler,
   wrapActivate,
 } from '@generative-music/utilities';
 import { sampleNames } from '../a-viable-system.gfm.manifest.json';
@@ -155,21 +155,21 @@ const startInstrument = (instrument, instrumentConfig) => {
 const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const instrumentNames = Object.keys(instrumentConfigs);
-  const getPrerenderedeDestination = () =>
+  const getPrerenderableeDestination = () =>
     Promise.resolve(new Tone.Freeverb({ roomSize: 0.6 }).toDestination());
   const instruments = [];
   for (let i = 0; i < instrumentNames.length; i += 1) {
     const instrumentName = instrumentNames[i];
     const { notes } = instrumentConfigs[instrumentName];
     //eslint-disable-next-line no-await-in-loop
-    const sampler = await createPrerenderedSampler({
+    const sampler = await createPrerenderableSampler({
       notes: notes.filter((_, noteIndex) => noteIndex % 2 === 0),
       samples,
       sampleLibrary,
       additionalRenderLength: 1,
       sourceInstrumentName: instrumentName,
       renderedInstrumentName: `a-viable-system::${instrumentName}`,
-      getDestination: getPrerenderedeDestination,
+      getDestination: getPrerenderableeDestination,
       onProgress: val => onProgress((1 / instrumentNames.length) * (val + i)),
     });
     instruments.push(sampler);

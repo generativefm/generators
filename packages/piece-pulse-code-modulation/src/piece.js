@@ -1,6 +1,6 @@
 import * as Tone from 'tone';
 import {
-  createPrerenderedSampler,
+  createPrerenderableSampler,
   wrapActivate,
   toss,
   getRandomElement,
@@ -39,7 +39,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const renderedNotes = DRONE_NOTES.filter((_, i) => i % 3 === 0);
   const droneSamplers = await Promise.all(
     DRONE_NOTES.map(() =>
-      createPrerenderedSampler({
+      createPrerenderableSampler({
         samples,
         sampleLibrary,
         notes: renderedNotes,
@@ -51,7 +51,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
       })
     )
   );
-  const guitarSampler = await createPrerenderedSampler({
+  const guitarSampler = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     notes: toss(PITCH_CLASSES.filter((_, i) => i % 3 === 0), GUITAR_OCTAVES),
@@ -61,7 +61,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     onProgress: val => onProgress(val * 0.33 + 0.33),
   });
   guitarSampler.set({ attack: 3, curve: 'linear' });
-  const pianoSampler = await createPrerenderedSampler({
+  const pianoSampler = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     notes: toss(PITCH_CLASSES.filter((_, i) => i % 3 === 0), PIANO_OCTAVES),

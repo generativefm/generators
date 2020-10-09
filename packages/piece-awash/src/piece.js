@@ -1,8 +1,8 @@
 import * as Tone from 'tone';
 import {
   wrapActivate,
-  createPrerenderedSampler,
-  createPrerenderedBuffers,
+  createPrerenderableSampler,
+  createPrerenderableBuffers,
 } from '@generative-music/utilities';
 import { sampleNames } from '../awash.gfm.manifest.json';
 
@@ -13,7 +13,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const oceanDrumSamples =
     samples['awash::vcsl-ocean-drum'] || samples['vcsl-ocean-drum'];
 
-  const guitar = await createPrerenderedSampler({
+  const guitar = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     notes: NOTES,
@@ -24,7 +24,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     onProgress: val => onProgress(val / 2),
   });
 
-  const oceanDrum = await createPrerenderedBuffers({
+  const oceanDrum = await createPrerenderableBuffers({
     samples,
     sampleLibrary,
     sourceInstrumentName: 'vcsl-ocean-drum',

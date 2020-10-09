@@ -2,7 +2,7 @@ import sampleNote from './sample-note';
 import createBuffer from './create-buffer';
 import renderBuffer from './render-buffer';
 
-const createPrerenderedSampledBuffer = async ({
+const createPrerenderableSampledBuffer = async ({
   note,
   samplesByNote,
   getDestination,
@@ -30,4 +30,4 @@ const createPrerenderedSampledBuffer = async ({
   return renderedBuffer;
 };
 
-export default createPrerenderedSampledBuffer;
+export default createPrerenderableSampledBuffer;

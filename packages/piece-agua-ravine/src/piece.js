@@ -1,6 +1,6 @@
 import * as Tone from 'tone';
 import {
-  createPrerenderedSampler,
+  createPrerenderableSampler,
   getRandomElement,
   wrapActivate,
 } from '@generative-music/utilities';
@@ -29,7 +29,7 @@ const vibeNotes = ['C3', 'C4', 'C5', 'G3', 'G4', 'G5'];
 
 const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
-  const piano = await createPrerenderedSampler({
+  const piano = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     notes: Array.from(new Set(phrases.flat(2))).filter(
@@ -44,7 +44,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
         .toDestination()
         .generate(),
   });
-  const vibes = await createPrerenderedSampler({
+  const vibes = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     notes: vibeNotes,

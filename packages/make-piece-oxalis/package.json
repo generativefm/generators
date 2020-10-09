@@ -24,12 +24,12 @@
     "access": "public"
   },
   "devDependencies": {
-    "tone": "^13.8.25"
+    "tone": "^14.7.58"
   },
   "dependencies": {
     "@generative-music/utilities": "^3.3.0"
   },
   "peerDependencies": {
-    "tone": "^13.8.25"
+    "tone": "^14.7.58"
   }
 }

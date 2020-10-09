@@ -1,6 +1,6 @@
 import * as Tone from 'tone';
 import {
-  createPrerenderedBuffers,
+  createPrerenderableBuffers,
   wrapActivate,
 } from '@generative-music/utilities';
 import { sampleNames } from '../stratospheric.gfm.manifest.json';
@@ -53,7 +53,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
       .toDestination()
       .generate();
 
-  const coilSpankBuffers = await createPrerenderedBuffers({
+  const coilSpankBuffers = await createPrerenderableBuffers({
     samples,
     sampleLibrary,
     sourceInstrumentName: 'guitar-coil-spank',
@@ -62,7 +62,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     onProgress: val => onProgress(val * 0.5),
   });
 
-  const dustyBuffers = await createPrerenderedBuffers({
+  const dustyBuffers = await createPrerenderableBuffers({
     samples,
     sampleLibrary,
     sourceInstrumentName: 'guitar-dusty',

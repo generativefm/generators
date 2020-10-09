@@ -1,9 +1,9 @@
-import createPrerenderedBufferArray from './create-prerendered-buffer-array';
+import createPrerenderableBufferArray from './create-prerenderable-buffer-array';
 import createBuffers from './create-buffers';
 import renderBuffer from './render-buffer';
 import noop from './utilities/noop';
 
-const createPrerenderedBuffers = async options => {
+const createPrerenderableBuffers = async options => {
   const {
     samples,
     sourceInstrumentName,
@@ -19,7 +19,7 @@ const createPrerenderedBuffers = async options => {
     return createBuffers(samples[renderedInstrumentName]);
   }
   if (Array.isArray(samples[sourceInstrumentName])) {
-    const bufferArray = await createPrerenderedBufferArray(options);
+    const bufferArray = await createPrerenderableBufferArray(options);
     return createBuffers(bufferArray);
   }
   const keys = Object.keys(samples[sourceInstrumentName]).filter(keyFilter);
@@ -48,4 +48,4 @@ const createPrerenderedBuffers = async options => {
   return createBuffers(renderedBuffersByKey);
 };
 
-export default createPrerenderedBuffers;
+export default createPrerenderableBuffers;

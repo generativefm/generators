@@ -1,10 +1,10 @@
 import noop from './utilities/noop';
 import createBuffers from './create-buffers';
-import createPrerenderedSampledBuffer from './create-prerendered-sampled-buffer';
+import createPrerenderableSampledBuffer from './create-prerenderable-sampled-buffer';
 
 const inProgress = new Map();
 
-const createPrerenderedSampledBuffers = async ({
+const createPrerenderableSampledBuffers = async ({
   notes,
   samples,
   sampleLibrary,
@@ -27,7 +27,7 @@ const createPrerenderedSampledBuffers = async ({
   const samplesByNote = samples[sourceInstrumentName];
   const promise = Promise.all(
     notes.map(async (note, i) => {
-      const buffer = await createPrerenderedSampledBuffer({
+      const buffer = await createPrerenderableSampledBuffer({
         note,
         samplesByNote,
         getDestination,
@@ -53,4 +53,4 @@ const createPrerenderedSampledBuffers = async ({
   return createBuffers(renderedBuffersByNote);
 };
 
-export default createPrerenderedSampledBuffers;
+export default createPrerenderableSampledBuffers;

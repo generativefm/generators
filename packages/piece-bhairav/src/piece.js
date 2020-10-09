@@ -1,6 +1,6 @@
 import * as Tone from 'tone';
 import {
-  createPrerenderedSampler,
+  createPrerenderableSampler,
   wrapActivate,
   transpose,
   toss,
@@ -81,7 +81,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
       .set({ wet: 0.6 })
       .generate();
 
-  const piano = await createPrerenderedSampler({
+  const piano = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     sourceInstrumentName: 'vsco2-piano-mf',
@@ -92,7 +92,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
   });
   piano.connect(destination);
 
-  const cellos = await createPrerenderedSampler({
+  const cellos = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     sourceInstrumentName: 'vsco2-cellos-susvib-mp',

@@ -1,7 +1,7 @@
 import * as Tone from 'tone';
 import {
   wrapActivate,
-  createPrerenderedSampler,
+  createPrerenderableSampler,
   getRandomElement,
   toss,
 } from '@generative-music/utilities';
@@ -17,7 +17,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     SECOND_NOTES.filter((_, i) => i % 2 !== 0)
   );
 
-  const cellos = await createPrerenderedSampler({
+  const cellos = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     notes: toss(renderedPitchClasses, OCTAVES),
@@ -30,7 +30,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
 
   cellos.connect(destination);
 
-  const glock = await createPrerenderedSampler({
+  const glock = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     notes: toss(renderedPitchClasses, [5, 6]),

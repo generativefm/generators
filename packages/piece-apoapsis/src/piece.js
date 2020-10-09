@@ -1,6 +1,6 @@
 import * as Tone from 'tone';
 import {
-  createPrerenderedSampler,
+  createPrerenderableSampler,
   wrapActivate,
   toss,
 } from '@generative-music/utilities';
@@ -21,7 +21,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
       new Tone.Freeverb({ roomSize: 0.8, wet: 0.5 }).toDestination()
     );
 
-  const reversePiano = await createPrerenderedSampler({
+  const reversePiano = await createPrerenderableSampler({
     notes: pianoNotes,
     samples,
     sourceInstrumentName: 'vsco2-piano-mf',
@@ -33,7 +33,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     reverse: true,
   });
 
-  const violins = await createPrerenderedSampler({
+  const violins = await createPrerenderableSampler({
     notes: violinNotes,
     samples,
     sourceInstrumentName: 'vsco2-violins-susvib',

@@ -1,9 +1,9 @@
 import * as Tone from 'tone';
 import {
   createBuffers,
-  createPrerenderedSampler,
-  createPrerenderedBuffers,
-  createPrerenderedSampledBuffers,
+  createPrerenderableSampler,
+  createPrerenderableBuffers,
+  createPrerenderableSampledBuffers,
   wrapActivate,
   toss,
   getPitchClass,
@@ -30,7 +30,7 @@ const nextChordMap = new Map([
 const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
 
-  const stirBuffers = await createPrerenderedBuffers({
+  const stirBuffers = await createPrerenderableBuffers({
     samples,
     sampleLibrary,
     sourceInstrumentName: 'snare-brush-stir',
@@ -48,7 +48,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const renderedPitchClasses = ['C', 'E', 'G'];
   const renderedReversePianoNotes = toss(renderedPitchClasses, [3, 4]);
 
-  const reversePianoBuffers = await createPrerenderedSampledBuffers({
+  const reversePianoBuffers = await createPrerenderableSampledBuffers({
     samples,
     sampleLibrary,
     sourceInstrumentName: 'vsco2-piano-mf',
@@ -63,7 +63,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     onProgress: val => onProgress((val + 1) / 3),
   });
 
-  const lowPiano = await createPrerenderedSampler({
+  const lowPiano = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     sourceInstrumentName: 'vsco2-piano-mf',

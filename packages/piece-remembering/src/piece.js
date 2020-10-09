@@ -1,7 +1,7 @@
 import * as Tone from 'tone';
 import {
   wrapActivate,
-  createPrerenderedSampler,
+  createPrerenderableSampler,
   toss,
 } from '@generative-music/utilities';
 import { sampleNames } from '../remembering.gfm.manifest.json';
@@ -21,7 +21,7 @@ const getPhrases = (octaves = [3, 4, 5, 6]) =>
 
 const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
-  const piano = await createPrerenderedSampler({
+  const piano = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     onProgress,

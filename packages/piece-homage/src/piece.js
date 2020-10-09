@@ -3,7 +3,7 @@ import {
   wrapActivate,
   major7th,
   createPitchShiftedSampler,
-  createPrerenderedSampler,
+  createPrerenderableSampler,
   getRandomElement,
 } from '@generative-music/utilities';
 import { sampleNames } from '../homage.gfm.manifest.json';
@@ -21,7 +21,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
   });
   piano.connect(masterVol);
 
-  const violins = await createPrerenderedSampler({
+  const violins = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     onProgress,

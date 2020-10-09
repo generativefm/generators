@@ -1,6 +1,6 @@
 import * as Tone from 'tone';
 import {
-  createPrerenderedSampler,
+  createPrerenderableSampler,
   wrapActivate,
   transpose,
   P1,
@@ -86,7 +86,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
 
   const [[renderedInstrumentName, sourceInstrumentName]] = sampleNames;
 
-  const piano = await createPrerenderedSampler({
+  const piano = await createPrerenderableSampler({
     samples,
     sourceInstrumentName,
     renderedInstrumentName,

@@ -2,7 +2,7 @@ import * as Tone from 'tone';
 import {
   transpose,
   wrapActivate,
-  createPrerenderedSampler,
+  createPrerenderableSampler,
   sortNotes,
   getDistance,
 } from '@generative-music/utilities';
@@ -47,7 +47,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
 
   const [tremPiano, piano] = await Promise.all(
     Array.from({ length: 2 }, () =>
-      createPrerenderedSampler({
+      createPrerenderableSampler({
         samples,
         sampleLibrary,
         onProgress,

@@ -2,7 +2,7 @@ import createBuffer from './create-buffer';
 import renderBuffer from './render-buffer';
 import noop from './utilities/noop';
 
-const createPrerenderedBufferArray = async ({
+const createPrerenderableBufferArray = async ({
   samples,
   sourceInstrumentName,
   renderedInstrumentName,
@@ -37,4 +37,4 @@ const createPrerenderedBufferArray = async ({
   return renderedBuffers;
 };
 
-export default createPrerenderedBufferArray;
+export default createPrerenderableBufferArray;

@@ -1,6 +1,6 @@
 import * as Tone from 'tone';
 import {
-  createPrerenderedSampler,
+  createPrerenderableSampler,
   createSampler,
   wrapActivate,
   toss,
@@ -32,7 +32,7 @@ const repeat = (fn, interval) => {
 
 const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
-  const piano = await createPrerenderedSampler({
+  const piano = await createPrerenderableSampler({
     notes: NOTES.filter((_, i) => i % 2 === 0),
     samples,
     sampleLibrary,

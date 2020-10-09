@@ -1,6 +1,6 @@
 import * as Tone from 'tone';
 import {
-  createPrerenderedSampler,
+  createPrerenderableSampler,
   wrapActivate,
   minor7th,
   toss,
@@ -73,7 +73,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     .filter((_, i) => i % 3 === 0)
     .map(midi => Tone.Midi(midi).toNote());
 
-  const glock = await createPrerenderedSampler({
+  const glock = await createPrerenderableSampler({
     notes,
     samples,
     sampleLibrary,

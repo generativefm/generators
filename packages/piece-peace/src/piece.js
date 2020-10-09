@@ -1,6 +1,6 @@
 import * as Tone from 'tone';
 import {
-  createPrerenderedSampler,
+  createPrerenderableSampler,
   wrapActivate,
 } from '@generative-music/utilities';
 import { sampleNames } from '../peace.gfm.manifest.json';
@@ -11,7 +11,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const fluteVolume = new Tone.Volume(-8);
 
-  const flute = await createPrerenderedSampler({
+  const flute = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     onProgress,

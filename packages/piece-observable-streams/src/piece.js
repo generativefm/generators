@@ -3,7 +3,7 @@ import { Scale, Chord } from 'tonal';
 import { of, from, Observable } from 'rxjs';
 import { repeat, mergeMap } from 'rxjs/operators';
 import {
-  createPrerenderedSampler,
+  createPrerenderableSampler,
   wrapActivate,
   toss,
   getPitchClass,
@@ -118,7 +118,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const violinVol = new Tone.Volume(-15);
   const corAnglaisVol = new Tone.Volume(-40);
 
-  const piano = await createPrerenderedSampler({
+  const piano = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     notes: renderedPianoNotes,
@@ -132,7 +132,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     onProgress: val => onProgress(val * 0.33),
   });
 
-  const violin = await createPrerenderedSampler({
+  const violin = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     notes: renderedViolinNotes,
@@ -150,7 +150,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     },
   });
 
-  const corAnglais = await createPrerenderedSampler({
+  const corAnglais = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     notes: COR_ANGALAIS_NOTES,

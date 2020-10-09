@@ -1,7 +1,7 @@
 import * as Tone from 'tone';
 import {
   createBuffers,
-  createPrerenderedBuffers,
+  createPrerenderableBuffers,
   wrapActivate,
 } from '@generative-music/utilities';
 import { sampleNames } from '../didgeridoobeats.gfm.manifest.json';
@@ -71,7 +71,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     ['itslucid-lofi-hats', 'itslucid-lofi-kick', 'itslucid-lofi-snare']
       .map(i => percussionInstrument(i))
       .concat([
-        createPrerenderedBuffers({
+        createPrerenderableBuffers({
           samples,
           sampleLibrary,
           sourceInstrumentName: 'vcsl-didgeridoo-sus',

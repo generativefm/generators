@@ -1,13 +1,13 @@
 import * as Tone from 'tone';
 import {
-  createPrerenderedSampledBuffers,
+  createPrerenderableSampledBuffers,
   toss,
   wrapActivate,
 } from '@generative-music/utilities';
 import { sampleNames } from '../western-medicine.gfm.manifest.json';
 
 const getCustomSampler = async ({ prerenderOptions, destination }) => {
-  const buffers = await createPrerenderedSampledBuffers(prerenderOptions);
+  const buffers = await createPrerenderableSampledBuffers(prerenderOptions);
 
   const activeSources = [];
   const triggerAttack = (note, time = Tone.now()) => {

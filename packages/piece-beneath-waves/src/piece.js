@@ -1,6 +1,6 @@
 import * as Tone from 'tone';
 import {
-  createPrerenderedBuffers,
+  createPrerenderableBuffers,
   wrapActivate,
   getRandomElement,
 } from '@generative-music/utilities';
@@ -11,7 +11,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
 
   const getReverb = () => new Tone.Reverb(15).toDestination().generate();
 
-  const chorus = await createPrerenderedBuffers({
+  const chorus = await createPrerenderableBuffers({
     samples,
     sampleLibrary,
     keyFilter: key => key === 'C5' || key === 'C6',
@@ -21,7 +21,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     onProgress: val => onProgress(val / 2),
   });
 
-  const corAnglais = await createPrerenderedBuffers({
+  const corAnglais = await createPrerenderableBuffers({
     samples,
     sampleLibrary,
     keyFilter: key => key === 'F3' || key === 'F4',
