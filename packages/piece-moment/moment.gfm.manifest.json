@@ -6,16 +6,11 @@
   "id": "moment",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": [
-    "calm",
-    "acoustic",
-    "guitar",
-    "vocals"
-  ],
+  "tags": ["calm", "acoustic", "guitar", "vocals"],
   "releaseDate": "2019-07-07T00:00:00.000Z",
   "sampleNames": [
-    "acoustic-guitar",
-    "alex-hum-1",
-    "alex-hum-2"
+    ["moment__acoustic-guitar", "acoustic-guitar"],
+    ["moment__alex-hum-1", "alex-hum-1"],
+    ["moment__alex-hum-2", "alex-hum-2"]
   ]
 }
