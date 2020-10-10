@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-expand-collapse",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "generativeFmManifest": "expand-collapse.gfm.manifest.json",
   "repository": {
     "type": "git",

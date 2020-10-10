@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-bhairav",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "generativeFmManifest": "bhairav.gfm.manifest.json",
   "repository": {
     "type": "git",
