@@ -11,14 +11,14 @@ const NOTES = ['C3', 'D#3', 'G3', 'A#3', 'C4', 'D#4', 'G4', 'A#4'];
 const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const oceanDrumSamples =
-    samples['awash::vcsl-ocean-drum'] || samples['vcsl-ocean-drum'];
+    samples['awash__vcsl-ocean-drum'] || samples['vcsl-ocean-drum'];
 
   const guitar = await createPrerenderableSampler({
     samples,
     sampleLibrary,
     notes: NOTES,
     sourceInstrumentName: 'dry-guitar-vib',
-    renderedInstrumentName: 'awash::dry-guitar-vib',
+    renderedInstrumentName: 'awash__dry-guitar-vib',
     getDestination: () => new Tone.Reverb(7).toDestination(),
     additionalRenderLength: 2,
     onProgress: val => onProgress(val / 2),
@@ -28,7 +28,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     samples,
     sampleLibrary,
     sourceInstrumentName: 'vcsl-ocean-drum',
-    renderedInstrumentName: 'awash::vcsl-ocean-drum',
+    renderedInstrumentName: 'awash__vcsl-ocean-drum',
     getDestination: () => new Tone.Reverb(7).toDestination(),
     additionalRenderLength: 1,
     onProgress: val => onProgress(val / 2 + 0.5),

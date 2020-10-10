@@ -24,7 +24,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     samples,
     sampleLibrary,
     sourceInstrumentName: 'vsco2-piano-mf',
-    renderedInstrumentName: 'return-to-form::vsco2-piano-mf',
+    renderedInstrumentName: 'return-to-form__vsco2-piano-mf',
     getDestination: () =>
       Promise.resolve(new Tone.Freeverb({ roomSize: 0.5 }).toDestination()),
     onProgress,

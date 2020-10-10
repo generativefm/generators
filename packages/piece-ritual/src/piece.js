@@ -65,13 +65,13 @@ const violinPhrases = [['G#4', 'F4', 'F#4', 'C#4'], ['A#4', 'F#4', 'G#4']];
 const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const didgeridooSamples =
-    samples['ritual::vcsl-didgeridoo-sus'] || samples['vcsl-didgeridoo-sus'];
+    samples['ritual__vcsl-didgeridoo-sus'] || samples['vcsl-didgeridoo-sus'];
 
   const dideridooBuffers = await createPrerenderableBuffers({
     samples,
     sampleLibrary,
     sourceInstrumentName: 'vcsl-didgeridoo-sus',
-    renderedInstrumentName: 'ritual::vcsl-didgeridoo-sus',
+    renderedInstrumentName: 'ritual__vcsl-didgeridoo-sus',
     getDestination: () => new Tone.Reverb(30).toDestination().generate(),
     onProgress: val => onProgress(val / 8),
   });
@@ -81,7 +81,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     sampleLibrary,
     notes: ['C#4', 'G#4'],
     sourceInstrumentName: 'vsco2-violins-susvib',
-    renderedInstrumentName: 'ritual::vsco2-violins-susvib',
+    renderedInstrumentName: 'ritual__vsco2-violins-susvib',
     getDestination: () => new Tone.Reverb(30).toDestination().generate(),
     onProgress: val => onProgress((1 + val) / 8),
     pitchShift: -24,
@@ -91,7 +91,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     samples,
     sampleLibrary,
     sourceInstrumentName: 'vcsl-bassdrum-hit-ff',
-    renderedInstrumentName: 'ritual::vcsl-bassdrum-hit-ff',
+    renderedInstrumentName: 'ritual__vcsl-bassdrum-hit-ff',
     additionalRenderLength: 1,
     getDestination: () =>
       new Tone.Reverb(15)
@@ -108,7 +108,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
       samples,
       sampleLibrary,
       sourceInstrumentName: `vcsl-darbuka-${id}-f`,
-      renderedInstrumentName: `ritual::vcsl-darbuka-${id}-f`,
+      renderedInstrumentName: `ritual__vcsl-darbuka-${id}-f`,
       additionalRenderLength: 1,
       getDestination: () =>
         new Tone.Reverb(15)

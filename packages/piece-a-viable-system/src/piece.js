@@ -168,7 +168,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
       sampleLibrary,
       additionalRenderLength: 1,
       sourceInstrumentName: instrumentName,
-      renderedInstrumentName: `a-viable-system::${instrumentName}`,
+      renderedInstrumentName: `a-viable-system__${instrumentName}`,
       getDestination: getPrerenderableeDestination,
       onProgress: val => onProgress((1 / instrumentNames.length) * (val + i)),
     });

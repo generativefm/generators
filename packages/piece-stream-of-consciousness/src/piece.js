@@ -34,7 +34,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     samples,
     sampleLibrary,
     sourceInstrumentName: 'snare-brush-stir',
-    renderedInstrumentName: 'stream-of-consciousness::snare-brush-stir',
+    renderedInstrumentName: 'stream-of-consciousness__snare-brush-stir',
     getDestination: () =>
       new Tone.Reverb(15)
         .set({ wet: 0.6 })
@@ -52,7 +52,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     samples,
     sampleLibrary,
     sourceInstrumentName: 'vsco2-piano-mf',
-    renderedInstrumentName: 'stream-of-consciousness::vsco2-piano-mf-reverse',
+    renderedInstrumentName: 'stream-of-consciousness__vsco2-piano-mf-reverse',
     notes: renderedReversePianoNotes,
     reverse: true,
     getDestination: () =>
@@ -67,7 +67,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     samples,
     sampleLibrary,
     sourceInstrumentName: 'vsco2-piano-mf',
-    renderedInstrumentName: 'stream-of-consciousness::vsco2-piano-mf-low',
+    renderedInstrumentName: 'stream-of-consciousness__vsco2-piano-mf-low',
     notes: toss(renderedPitchClasses, [5, 6, 7]),
     getDestination: () =>
       new Tone.Reverb(30)

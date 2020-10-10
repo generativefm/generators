@@ -24,14 +24,14 @@ const NOTES = toss(PITCH_CLASSES, OCTAVES);
 const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const pianoSamples =
-    samples['expand-collapse::vsco2-piano-mf'] || samples['vsco2-piano-mf'];
+    samples['expand-collapse__vsco2-piano-mf'] || samples['vsco2-piano-mf'];
 
   const pianoBuffers = await createPrerenderableBuffers({
     samples,
     sampleLibrary,
     onProgress,
     sourceInstrumentName: 'vsco2-piano-mf',
-    renderedInstrumentName: 'expand-collapse::vsco2-piano-mf',
+    renderedInstrumentName: 'expand-collapse__vsco2-piano-mf',
     getDestination: () =>
       new Tone.Reverb({ decay: 4, wet: 0.5 }).toDestination().generate(),
   });

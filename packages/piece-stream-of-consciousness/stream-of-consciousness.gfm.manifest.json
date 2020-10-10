@@ -9,10 +9,10 @@
   "releaseDate": "2020-02-27T00:00:00.000Z",
   "visualizationType": "squareCut",
   "sampleNames": [
-    ["stream-of-consciousness::snare-brush-stir", "snare-brush-stir"],
+    ["stream-of-consciousness__snare-brush-stir", "snare-brush-stir"],
     "snare-brush-hit-p",
     "ride-brush-p",
-    ["stream-of-consciousness::vsco2-piano-mf-reverse", "vsco2-piano-mf"],
-    ["stream-of-consciousness::vsco2-piano-mf-low", "vsco2-piano-mf"]
+    ["stream-of-consciousness__vsco2-piano-mf-reverse", "vsco2-piano-mf"],
+    ["stream-of-consciousness__vsco2-piano-mf-low", "vsco2-piano-mf"]
   ]
 }

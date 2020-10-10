@@ -32,7 +32,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
       samples,
       sampleLibrary,
       sourceInstrumentName: 'vcsl-claves',
-      renderedInstrumentName: 'buttafingers::vcsl-claves',
+      renderedInstrumentName: 'buttafingers__vcsl-claves',
       additionalRenderLength: 0,
       getDestination: () =>
         Promise.resolve(new Tone.Freeverb({ roomSize: 0.6 }).toDestination()),
@@ -52,7 +52,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
   filter.connect(compressor);
 
   const claveSounds =
-    samples['vcsl-claves'] || samples['buttafingers::vcsl-claves'];
+    samples['vcsl-claves'] || samples['buttafingers__vcsl-claves'];
 
   const claveVol = new Tone.Volume(-15);
 

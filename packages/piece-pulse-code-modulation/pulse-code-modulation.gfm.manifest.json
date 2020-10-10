@@ -9,8 +9,8 @@
   "tags": ["drone", "electronic", "piano", "calm"],
   "releaseDate": "2019-07-21T00:00:00.000Z",
   "sampleNames": [
-    ["pulse-code-modulation::vsco2-violins-susvib", "vsco2-violins-susvib"],
-    ["pulse-code-modulation::vsco2-piano-mf", "vsco2-piano-mf"],
-    ["pulse-code-modulation::acoustic-guitar", "acoustic-guitar"]
+    ["pulse-code-modulation__vsco2-violins-susvib", "vsco2-violins-susvib"],
+    ["pulse-code-modulation__vsco2-piano-mf", "vsco2-piano-mf"],
+    ["pulse-code-modulation__acoustic-guitar", "acoustic-guitar"]
   ]
 }

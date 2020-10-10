@@ -68,7 +68,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     sampleLibrary,
     notes: renderedMarimbaNotes,
     sourceInstrumentName: 'vsco2-marimba',
-    renderedInstrumentName: 'substrate::vsco2-marimba',
+    renderedInstrumentName: 'substrate__vsco2-marimba',
     getDestination: getReverb,
     onProgress: val => onProgress(val * 0.5),
     pitchShift: -24,
@@ -80,7 +80,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
       note => `${getPitchClass(note)}${getOctave(note) + 1}`
     ),
     sourceInstrumentName: 'vsco2-piano-mf',
-    renderedInstrumentName: 'substrate::vsco2-piano-mf',
+    renderedInstrumentName: 'substrate__vsco2-piano-mf',
     getDestination: getReverb,
     onProgress: val => onProgress(val * 0.5 + 0.5),
     pitchShift: -12,

@@ -27,7 +27,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const guitar = await createPrerenderableSampler(
     Object.assign({}, basePrerenderableOpts, {
       sourceInstrumentName: 'acoustic-guitar',
-      renderedInstrumentName: 'moment::acoustic-guitar',
+      renderedInstrumentName: 'moment__acoustic-guitar',
       onProgress: val => onProgress(val * 0.33),
     })
   );
@@ -37,7 +37,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const hum1 = await createPrerenderableSampler(
     Object.assign({}, basePrerenderableOpts, {
       sourceInstrumentName: 'alex-hum-1',
-      renderedInstrumentName: 'moment::alex-hum-1',
+      renderedInstrumentName: 'moment__alex-hum-1',
       onProgress: val => onProgress(val * 0.33 + 0.33),
     })
   );
@@ -45,7 +45,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const hum2 = await createPrerenderableSampler(
     Object.assign({}, basePrerenderableOpts, {
       sourceInstrumentName: 'alex-hum-1',
-      renderedInstrumentName: 'moment::alex-hum-2',
+      renderedInstrumentName: 'moment__alex-hum-2',
       onProgress: val => onProgress(val * 0.33 + 0.66),
     })
   );

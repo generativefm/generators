@@ -9,8 +9,8 @@
   "releaseDate": "2019-11-24T00:00:00.000Z",
   "visualizationType": "squareCut",
   "sampleNames": [
-    ["documentary-films::vsco2-trumpet-sus-mf", "vsco2-trumpet-sus-mf"],
-    ["documentary-films::vsco2-trombone-sus-mf", "vsco2-trombone-sus-mf"],
-    ["documentary-films::vsco2-tuba-sus-mf", "vsco2-tuba-sus-mf"]
+    ["documentary-films__vsco2-trumpet-sus-mf", "vsco2-trumpet-sus-mf"],
+    ["documentary-films__vsco2-trombone-sus-mf", "vsco2-trombone-sus-mf"],
+    ["documentary-films__vsco2-tuba-sus-mf", "vsco2-tuba-sus-mf"]
   ]
 }

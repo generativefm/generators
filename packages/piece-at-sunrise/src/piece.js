@@ -36,7 +36,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     pitchShift: -12,
     notes: NOTES.filter(note => note !== 'G3' && note !== 'G4'),
     sourceInstrumentName: 'vcsl-vibraphone-soft-mallets-mp',
-    renderedInstrumentName: 'at-sunrise::vcsl-vibraphone-soft-mallets-mp',
+    renderedInstrumentName: 'at-sunrise__vcsl-vibraphone-soft-mallets-mp',
     getDestination: () => new Tone.Reverb(5).toDestination().generate(),
   });
 

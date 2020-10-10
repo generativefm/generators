@@ -67,7 +67,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
           notes,
           pitchShift: -24,
           sourceInstrumentName: instrumentName,
-          renderedInstrumentName: `western-medicine::${instrumentName}`,
+          renderedInstrumentName: `western-medicine__${instrumentName}`,
           getDestination: () =>
             new Tone.Reverb(15)
               .set({ wet: 0.625 })

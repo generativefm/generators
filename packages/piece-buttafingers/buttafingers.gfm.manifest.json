@@ -10,6 +10,6 @@
   "releaseDate": "2019-03-31T00:00:00.000Z",
   "sampleNames": [
     "vcsl-wine-glasses-slow",
-    ["buttafingers::vcsl-claves", "vcsl-claves"]
+    ["buttafingers__vcsl-claves", "vcsl-claves"]
   ]
 }

@@ -27,7 +27,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     onProgress,
     notes: violinNotes,
     sourceInstrumentName: 'vsco2-violins-susvib',
-    renderedInstrumentName: 'homage::vsco2-violins-susvib',
+    renderedInstrumentName: 'homage__vsco2-violins-susvib',
     getDestination: () => new Tone.Reverb(50).toDestination().generate(),
     pitchShift: -24,
   });

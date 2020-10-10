@@ -9,7 +9,7 @@
   "releaseDate": "2020-03-31T00:00:00.000Z",
   "visualizationType": "squareCut",
   "sampleNames": [
-    ["oxalis-1::vsco2-piano-mf", "vsco2-piano-mf"],
-    ["oxalis-1::vsco2-glock", "vsco2-glock"]
+    ["oxalis-1__vsco2-piano-mf", "vsco2-piano-mf"],
+    ["oxalis-1__vsco2-glock", "vsco2-glock"]
   ]
 }

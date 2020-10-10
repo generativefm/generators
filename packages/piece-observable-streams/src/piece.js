@@ -123,7 +123,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     sampleLibrary,
     notes: renderedPianoNotes,
     sourceInstrumentName: 'vsco2-piano-mf',
-    renderedInstrumentName: 'observable-streams::vsco2-piano-mf',
+    renderedInstrumentName: 'observable-streams__vsco2-piano-mf',
     additionalRenderLength: 3,
     getDestination: () =>
       Promise.resolve(
@@ -137,7 +137,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     sampleLibrary,
     notes: renderedViolinNotes,
     sourceInstrumentName: 'vsco2-violin-arcvib',
-    renderedInstrumentName: 'observable-streams::vsco2-violin-arcvib',
+    renderedInstrumentName: 'observable-streams__vsco2-violin-arcvib',
     additionalRenderLength: 0,
     getDestination: () =>
       Promise.resolve(
@@ -155,7 +155,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     sampleLibrary,
     notes: COR_ANGALAIS_NOTES,
     sourceInstrumentName: 'sso-cor-anglais',
-    renderedInstrumentName: 'observable-streams::sso-cor-anglais',
+    renderedInstrumentName: 'observable-streams__sso-cor-anglais',
     additionalRenderLength: 3,
     getDestination: () =>
       Promise.resolve(

@@ -9,7 +9,7 @@
   "tags": ["calm", "guitar", "flute", "acoustic"],
   "releaseDate": "2019-02-16T00:00:00.000Z",
   "sampleNames": [
-    ["townsend::vsco2-flute-susvib", "vsco2-flute-susvib"],
-    ["townsend::acoustic-guitar-chords-cmaj", "acoustic-guitar-chords-cmaj"]
+    ["townsend__vsco2-flute-susvib", "vsco2-flute-susvib"],
+    ["townsend__acoustic-guitar-chords-cmaj", "acoustic-guitar-chords-cmaj"]
   ]
 }

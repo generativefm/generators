@@ -26,7 +26,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     sampleLibrary,
     onProgress,
     sourceInstrumentName: 'vsco2-piano-mf',
-    renderedInstrumentName: 'remembering::vsco2-piano-mf',
+    renderedInstrumentName: 'remembering__vsco2-piano-mf',
     notes: toss(
       PITCH_CLASSES.slice(0, -1).filter(pc => pc !== 'D' && pc !== 'A'),
       [3, 4, 5, 6]

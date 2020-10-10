@@ -65,7 +65,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
 
   const didgeridooSamples =
     samples['vcsl-didgeridoo-sus'] ||
-    samples['didgeridoobeats::vcsl-didgeridoo-sus'];
+    samples['didgeridoobeats__vcsl-didgeridoo-sus'];
 
   const [hats, kick, snare, didgeridoo] = await Promise.all(
     ['itslucid-lofi-hats', 'itslucid-lofi-kick', 'itslucid-lofi-snare']
@@ -75,7 +75,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
           samples,
           sampleLibrary,
           sourceInstrumentName: 'vcsl-didgeridoo-sus',
-          renderedInstrumentName: 'didgeridoobeats::vcsl-didgeridoo-sus',
+          renderedInstrumentName: 'didgeridoobeats__vcsl-didgeridoo-sus',
           additionalRenderLength: 1,
           getDestination: () =>
             Promise.resolve(

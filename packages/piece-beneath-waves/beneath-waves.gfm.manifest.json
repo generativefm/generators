@@ -9,7 +9,7 @@
   "releaseDate": "2019-12-01T00:00:00.000Z",
   "visualizationType": "squareCut",
   "sampleNames": [
-    ["beneath-waves::sso-chorus-female", "sso-chorus-female"],
-    ["beneath-waves::sso-cor-anglais", "sso-cor-anglais"]
+    ["beneath-waves__sso-chorus-female", "sso-chorus-female"],
+    ["beneath-waves__sso-cor-anglais", "sso-cor-anglais"]
   ]
 }

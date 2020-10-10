@@ -13,8 +13,8 @@ const getReverb = () =>
     .generate();
 
 const makeOxalis = ({ notes = [], renderedInstrumentPrefix = '' }) => {
-  const renderedPianoName = `${renderedInstrumentPrefix}::vsco2-piano-mf`;
-  const renderedGlockName = `${renderedInstrumentPrefix}::vsco2-glock`;
+  const renderedPianoName = `${renderedInstrumentPrefix}__vsco2-piano-mf`;
+  const renderedGlockName = `${renderedInstrumentPrefix}__vsco2-glock`;
   const activate = async ({ destination, sampleLibrary, onProgress }) => {
     const samples = await sampleLibrary.request(Tone.context, [
       [renderedPianoName, 'vsco2-piano-mf'],

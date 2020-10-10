@@ -44,7 +44,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
         sampleLibrary,
         notes: renderedNotes,
         sourceInstrumentName: 'vsco2-violins-susvib',
-        renderedInstrumentName: 'pulse-code-modulation::vsco2-violins-susvib',
+        renderedInstrumentName: 'pulse-code-modulation__vsco2-violins-susvib',
         getDestination: getReverb,
         onProgress: val => onProgress(val * 0.33),
         pitchShift: -24,
@@ -56,7 +56,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     sampleLibrary,
     notes: toss(PITCH_CLASSES.filter((_, i) => i % 3 === 0), GUITAR_OCTAVES),
     sourceInstrumentName: 'acoustic-guitar',
-    renderedInstrumentName: 'pulse-code-modulation::acoustic-guitar',
+    renderedInstrumentName: 'pulse-code-modulation__acoustic-guitar',
     getDestination: getReverb,
     onProgress: val => onProgress(val * 0.33 + 0.33),
   });
@@ -66,7 +66,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     sampleLibrary,
     notes: toss(PITCH_CLASSES.filter((_, i) => i % 3 === 0), PIANO_OCTAVES),
     sourceInstrumentName: 'vsco2-piano-mf',
-    renderedInstrumentName: 'pulse-code-modulation::vsco2-piano-mf',
+    renderedInstrumentName: 'pulse-code-modulation__vsco2-piano-mf',
     getDestination: getReverb,
     onProgress: val => onProgress(val * 0.33 + 0.66),
   });

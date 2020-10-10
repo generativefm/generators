@@ -17,7 +17,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     onProgress,
     notes: NOTES,
     sourceInstrumentName: 'native-american-flute-susvib',
-    renderedInstrumentName: 'peace::native-american-flute-susvib',
+    renderedInstrumentName: 'peace__native-american-flute-susvib',
     additionalRenderLength: 1,
     getDestination: () =>
       new Tone.Reverb({ decay: 10 }).toDestination().generate(),

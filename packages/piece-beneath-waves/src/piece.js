@@ -16,7 +16,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     sampleLibrary,
     keyFilter: key => key === 'C5' || key === 'C6',
     sourceInstrumentName: 'sso-chorus-female',
-    renderedInstrumentName: 'beneath-waves::sso-chorus-female',
+    renderedInstrumentName: 'beneath-waves__sso-chorus-female',
     getDestination: getReverb,
     onProgress: val => onProgress(val / 2),
   });
@@ -26,7 +26,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     sampleLibrary,
     keyFilter: key => key === 'F3' || key === 'F4',
     sourceInstrumentName: 'sso-cor-anglais',
-    renderedInstrumentName: 'beneath-waves::sso-cor-anglais',
+    renderedInstrumentName: 'beneath-waves__sso-cor-anglais',
     getDestination: getReverb,
     onProgress: val => onProgress((val + 1) / 2),
   });

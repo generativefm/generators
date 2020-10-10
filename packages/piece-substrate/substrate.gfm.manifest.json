@@ -9,7 +9,7 @@
   "tags": ["electronic", "calm"],
   "releaseDate": "2019-07-14T00:00:00.000Z",
   "sampleNames": [
-    ["substrate::vsco2-marimba", "vsco2-marimba"],
-    ["substrate::vsco2-piano-mf", "vsco2-piano-mf"]
+    ["substrate__vsco2-marimba", "vsco2-marimba"],
+    ["substrate__vsco2-piano-mf", "vsco2-piano-mf"]
   ]
 }

@@ -13,7 +13,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     sampleLibrary,
     onProgress,
     sourceInstrumentName: 'vsco2-piano-mf',
-    renderedInstrumentName: 'no-refrain::vsco2-piano-mf',
+    renderedInstrumentName: 'no-refrain__vsco2-piano-mf',
     getDestination: () =>
       new Tone.Reverb(5)
         .set({ wet: 0.5 })

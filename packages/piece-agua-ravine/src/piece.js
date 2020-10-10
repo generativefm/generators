@@ -36,7 +36,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
       ([pc]) => pc === 'C' || pc === 'E' || pc === 'G' || pc === 'A'
     ),
     sourceInstrumentName: 'vsco2-piano-mf',
-    renderedInstrumentName: 'agua-ravine::vsco2-piano-mf',
+    renderedInstrumentName: 'agua-ravine__vsco2-piano-mf',
     onProgress: val => onProgress(val * 0.5),
     getDestination: () =>
       new Tone.Reverb(15)
@@ -49,7 +49,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     sampleLibrary,
     notes: vibeNotes,
     sourceInstrumentName: 'vcsl-vibraphone-soft-mallets-mp',
-    renderedInstrumentName: 'agua-ravine::vcsl-vibraphone-soft-mallets-mp',
+    renderedInstrumentName: 'agua-ravine__vcsl-vibraphone-soft-mallets-mp',
     onProgress: val => onProgress(val * 0.5 + 0.5),
     getDestination: () =>
       new Tone.Reverb(30)

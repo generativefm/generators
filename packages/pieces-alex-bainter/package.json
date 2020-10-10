@@ -2,7 +2,7 @@
   "name": "@generative-music/pieces-alex-bainter",
   "version": "4.0.1",
   "description": "A collection of generative music systems by Alex Bainter",
-  "main": "dist/esm.js",
+  "main": "dist/cjs.js",
   "module": "dist/esm.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

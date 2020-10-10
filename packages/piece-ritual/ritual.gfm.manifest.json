@@ -9,13 +9,13 @@
   "releaseDate": "2019-11-10T00:00:00.000Z",
   "visualizationType": "squareCut",
   "sampleNames": [
-    ["ritual::vcsl-didgeridoo-sus", "vcsl-didgeridoo-sus"],
-    ["ritual::vsco2-violins-susvib", "vsco2-violins-susvib"],
-    ["ritual::vcsl-bassdrum-hit-ff", "vcsl-bassdrum-hit-ff"],
-    ["ritual::vcsl-darbuka-1-f", "vcsl-darbuka-1-f"],
-    ["ritual::vcsl-darbuka-2-f", "vcsl-darbuka-2-f"],
-    ["ritual::vcsl-darbuka-3-f", "vcsl-darbuka-3-f"],
-    ["ritual::vcsl-darbuka-4-f", "vcsl-darbuka-4-f"],
-    ["ritual::vcsl-darbuka-5-f", "vcsl-darbuka-5-f"]
+    ["ritual__vcsl-didgeridoo-sus", "vcsl-didgeridoo-sus"],
+    ["ritual__vsco2-violins-susvib", "vsco2-violins-susvib"],
+    ["ritual__vcsl-bassdrum-hit-ff", "vcsl-bassdrum-hit-ff"],
+    ["ritual__vcsl-darbuka-1-f", "vcsl-darbuka-1-f"],
+    ["ritual__vcsl-darbuka-2-f", "vcsl-darbuka-2-f"],
+    ["ritual__vcsl-darbuka-3-f", "vcsl-darbuka-3-f"],
+    ["ritual__vcsl-darbuka-4-f", "vcsl-darbuka-4-f"],
+    ["ritual__vcsl-darbuka-5-f", "vcsl-darbuka-5-f"]
   ]
 }

@@ -37,7 +37,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     samples,
     sampleLibrary,
     sourceInstrumentName: 'vsco2-piano-mf',
-    renderedInstrumentName: 'spring-again::vsco2-piano-mf',
+    renderedInstrumentName: 'spring-again__vsco2-piano-mf',
     getDestination: () =>
       Promise.resolve(
         new Tone.Freeverb({

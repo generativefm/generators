@@ -17,8 +17,8 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const temporaryBuffers = [];
 
   if (
-    !samples['animalia-chordata::whales-dryer'] &&
-    !samples['animalia-chordata::whales-wetter']
+    !samples['animalia-chordata__whales-dryer'] &&
+    !samples['animalia-chordata__whales-wetter']
   ) {
     const buffer = await createBuffer(samples.whales[0]);
     const reverseBuffer = Tone.ToneAudioBuffer.fromArray(buffer.toArray());
@@ -32,7 +32,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     samples,
     sampleLibrary,
     sourceInstrumentName: 'whales',
-    renderedInstrumentName: 'animalia-chordata::whales-dryer',
+    renderedInstrumentName: 'animalia-chordata__whales-dryer',
     getDestination: () =>
       new Tone.Reverb(30)
         .set({ wet: 0.5 })
@@ -45,7 +45,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     samples,
     sampleLibrary,
     sourceInstrumentName: 'whales',
-    renderedInstrumentName: 'animalia-chordata::whales-wetter',
+    renderedInstrumentName: 'animalia-chordata__whales-wetter',
     getDestination: () =>
       new Tone.Reverb(30)
         .set({ wet: 0.9 })

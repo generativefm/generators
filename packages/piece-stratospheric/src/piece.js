@@ -43,9 +43,9 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
   };
 
   const coilSpankUrls =
-    samples['stratospheric::guitar-coil-spank'] || samples['guitar-coil-spank'];
+    samples['stratospheric__guitar-coil-spank'] || samples['guitar-coil-spank'];
   const dustyUrls =
-    samples['stratospheric::guitar-dusty'] || samples['guitar-dusty'];
+    samples['stratospheric__guitar-dusty'] || samples['guitar-dusty'];
 
   const getReverb = () =>
     new Tone.Reverb(30)
@@ -57,7 +57,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     samples,
     sampleLibrary,
     sourceInstrumentName: 'guitar-coil-spank',
-    renderedInstrumentName: 'stratospheric::guitar-coil-spank',
+    renderedInstrumentName: 'stratospheric__guitar-coil-spank',
     getDestination: getReverb,
     onProgress: val => onProgress(val * 0.5),
   });
@@ -66,7 +66,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     samples,
     sampleLibrary,
     sourceInstrumentName: 'guitar-dusty',
-    renderedInstrumentName: 'stratospheric::guitar-dusty',
+    renderedInstrumentName: 'stratospheric__guitar-dusty',
     getDestination: getReverb,
     onProgress: val => onProgress(val * 0.5 + 0.5),
   });

@@ -16,7 +16,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     sampleLibrary,
     notes: FLUTE_NOTES,
     sourceInstrumentName: 'vsco2-flute-susvib',
-    renderedInstrumentName: 'townsend::vsco2-flute-susvib',
+    renderedInstrumentName: 'townsend__vsco2-flute-susvib',
     additionalRenderLength: 2,
     getDestination: () => new Tone.Reverb(50).toDestination().generate(),
     onProgress: val => onProgress(val * 0.2),
@@ -26,7 +26,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     samples,
     sampleLibrary,
     sourceInstrumentName: 'acoustic-guitar-chords-cmaj',
-    renderedInstrumentName: 'townsend::acoustic-guitar-chords-cmaj',
+    renderedInstrumentName: 'townsend__acoustic-guitar-chords-cmaj',
     additionalRenderLength: 0.5,
     getDestination: () =>
       Promise.resolve(

@@ -13,7 +13,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     samples,
     sampleLibrary,
     sourceInstrumentName: 'sso-chorus-female',
-    renderedInstrumentName: 'above-the-rain::sso-chorus-female',
+    renderedInstrumentName: 'above-the-rain__sso-chorus-female',
     getDestination: getReverb,
     onProgress: val => onProgress(val * 0.5),
   });
@@ -23,7 +23,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     sampleLibrary,
     notes: ['C', 'E', 'G'].map(pc => `${pc}3`),
     sourceInstrumentName: 'vsco2-trumpet-sus-mf',
-    renderedInstrumentName: 'above-the-rain::vsco2-trumpet-sus-mf',
+    renderedInstrumentName: 'above-the-rain__vsco2-trumpet-sus-mf',
     getDestination: getReverb,
     onProgress: val => onProgress(val * 0.5 + 0.5),
   });

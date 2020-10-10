@@ -9,7 +9,7 @@
   "tags": ["guitar"],
   "releaseDate": "2019-08-04T00:00:00.000Z",
   "sampleNames": [
-    ["stratospheric::guitar-coil-spank", "guitar-coil-spank"],
-    ["stratospheric::guitar-dusty", "guitar-dusty"]
+    ["stratospheric__guitar-coil-spank", "guitar-coil-spank"],
+    ["stratospheric__guitar-dusty", "guitar-dusty"]
   ]
 }

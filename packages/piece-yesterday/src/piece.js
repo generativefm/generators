@@ -18,7 +18,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     onProgress,
     notes: scale.filter((_, i) => i % 2 === 0),
     sourceInstrumentName: 'vcsl-tenor-sax-vib',
-    renderedInstrumentName: 'yesterday::vcsl-tenor-sax-vib',
+    renderedInstrumentName: 'yesterday__vcsl-tenor-sax-vib',
     getDestination: () =>
       new Tone.Reverb(20)
         .set({ wet: 0.9 })
