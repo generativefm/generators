@@ -18,8 +18,8 @@
     "worker-loader": "^3.0.2"
   },
   "dependencies": {
-    "@generative-music/samples-alex-bainter": "^1.1.0",
-    "@generative-music/web-library": "^0.1.1",
+    "@generative-music/samples-alex-bainter": "^1.2.0",
+    "@generative-music/web-library": "^0.2.0",
     "@generative-music/web-provider": "^2.0.4",
     "tone": "^14.7.39"
   }

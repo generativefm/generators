@@ -173,9 +173,9 @@ const activate = async ({ destination, sampleLibrary }) => {
         source.stop(0);
       });
       pitchShiftPiano.releaseAll(0);
-      droneStacks.forEach(([, gain, sampler]) => {
-        gain.cancelScheduledValues(Tone.now());
-        gain.setValueAtTime(0, Tone.now());
+      droneStacks.forEach(([, gainNode, sampler]) => {
+        gainNode.gain.cancelScheduledValues(Tone.now());
+        gainNode.gain.setValueAtTime(0, Tone.now());
         sampler.releaseAll(0);
       });
       [pianoGainLfo, crossFadeLfo, stereoLfo, autoLowPass].forEach(node => {
