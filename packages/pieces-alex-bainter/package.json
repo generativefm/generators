@@ -1,6 +1,6 @@
 {
   "name": "@generative-music/pieces-alex-bainter",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "description": "A collection of generative music systems by Alex Bainter",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
@@ -27,7 +27,7 @@
     "tone": "^14.7.58"
   },
   "dependencies": {
-    "@generative-music/piece-420hz-gamma-waves-for-big-brain": "^4.0.0",
+    "@generative-music/piece-420hz-gamma-waves-for-big-brain": "^4.1.2",
     "@generative-music/piece-a-viable-system": "^4.1.0",
     "@generative-music/piece-above-the-rain": "^4.1.0",
     "@generative-music/piece-agua-ravine": "^4.1.0",
