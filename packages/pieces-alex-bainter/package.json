@@ -1,6 +1,6 @@
 {
   "name": "@generative-music/pieces-alex-bainter",
-  "version": "4.1.2",
+  "version": "4.1.3",
   "description": "A collection of generative music systems by Alex Bainter",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
@@ -50,7 +50,7 @@
     "@generative-music/piece-eyes-closed": "^4.0.0",
     "@generative-music/piece-homage": "^4.1.0",
     "@generative-music/piece-impact": "^4.0.0",
-    "@generative-music/piece-last-transit": "^4.0.1",
+    "@generative-music/piece-last-transit": "^4.1.3",
     "@generative-music/piece-lemniscate": "^4.0.0",
     "@generative-music/piece-little-bells": "^4.1.0",
     "@generative-music/piece-meditation": "^4.0.0",
