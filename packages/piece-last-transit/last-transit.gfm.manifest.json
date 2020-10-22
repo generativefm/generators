@@ -6,12 +6,7 @@
   "id": "last-transit",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": [
-    "industrial",
-    "noise"
-  ],
+  "tags": ["industrial", "noise"],
   "releaseDate": "2019-08-18T00:00:00.000Z",
-  "sampleNames": [
-    "idling-truck"
-  ]
+  "sampleNames": [["last-transit__idling-truck", "idling-truck"]]
 }

@@ -8,17 +8,24 @@ import { sampleNames } from '../last-transit.gfm.manifest.json';
 
 const activate = async ({ destination, sampleLibrary }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
-  const buffer = await createBuffer(samples['idling-truck'][0]);
-  const bufferWithReverb = await renderBuffer({
-    buffer,
-    getDestination: () =>
-      new Tone.Reverb(5)
-        .set({ wet: 0.5 })
-        .toDestination()
-        .generate(),
-    duration: buffer.duration,
-  });
+  let reverbBuffers = samples['last-transit__idling-truck'];
+  if (!reverbBuffers) {
+    const buffer = await createBuffer(samples['idling-truck'][0]);
+    const bufferWithReverb = await renderBuffer({
+      buffer,
+      getDestination: () =>
+        new Tone.Reverb(5)
+          .set({ wet: 0.5 })
+          .toDestination()
+          .generate(),
+      duration: buffer.duration,
+    });
+    buffer.dispose();
+    reverbBuffers = [bufferWithReverb];
+    sampleLibrary.save([['last-transit__idling-truck', reverbBuffers]]);
+  }
 
+  const [bufferWithReverb] = reverbBuffers;
   const activeSources = [];
   const vol = new Tone.Volume(10).connect(destination);
 
@@ -38,7 +45,7 @@ const activate = async ({ destination, sampleLibrary }) => {
     source.start();
     Tone.Transport.scheduleOnce(() => {
       play({ sourceDestination, playbackRateLfo });
-    }, `+${buffer.duration / 0.25 - Math.random()}`);
+    }, `+${bufferWithReverb.duration / 0.25 - Math.random()}`);
   };
 
   const schedule = () => {
@@ -58,7 +65,7 @@ const activate = async ({ destination, sampleLibrary }) => {
   };
 
   const deactivate = () => {
-    [buffer, vol, ...activeSources].forEach(node => node.dispose());
+    [vol, ...activeSources, ...reverbBuffers].forEach(node => node.dispose());
   };
 
   return [deactivate, schedule];
