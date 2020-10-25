@@ -79,7 +79,8 @@
     "@generative-music/piece-trees": "^4.1.0",
     "@generative-music/piece-uun": "^4.0.0",
     "@generative-music/piece-western-medicine": "^4.1.0",
-    "@generative-music/piece-yesterday": "^4.1.0"
+    "@generative-music/piece-yesterday": "^4.1.0",
+    "@generative-music/piece-zed": "^0.0.0"
   },
   "devDependencies": {
     "tone": "^14.7.58"

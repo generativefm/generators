@@ -1,5 +1,5 @@
 {
-  "extends": "metalex9",
+  "extends": "eslint:recommended",
   "env": {
     "node": true,
     "es6": true

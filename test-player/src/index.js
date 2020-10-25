@@ -22,7 +22,7 @@ activate({
   context: toneContext,
   sampleLibrary: library,
   destination: toneContext.destination,
-}).then(([, schedule]) => {
+}).then(([deactivate, schedule]) => {
   console.log('activated');
 
   let dispose = schedule();
@@ -45,5 +45,10 @@ activate({
     console.log('resetting');
     window.stop();
     window.start();
+  };
+
+  window.deactivate = () => {
+    console.log('deactivating');
+    deactivate();
   };
 });

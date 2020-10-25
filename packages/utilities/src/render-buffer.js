@@ -1,46 +1,28 @@
-import * as Tone from 'tone';
+import { ToneBufferSource } from 'tone';
+import createPrerenderedBuffer from './create-prerendered-buffer';
 
-const _renderBuffer = async ({
+const renderBuffer = ({
   buffer,
   getDestination,
   duration,
-  bufferSourceOptions = {},
+  bufferSourceOptions,
 }) => {
-  const disposableNodes = [];
-  const renderedBuffer = await Tone.Offline(async () => {
+  const createSource = async () => {
     const destination = await getDestination();
-    const bufferSource = new Tone.ToneBufferSource(
-      Object.assign({}, bufferSourceOptions, {
-        url: buffer,
-      })
+    const bufferSource = new ToneBufferSource(
+      Object.assign({}, bufferSourceOptions, { url: buffer })
     );
     bufferSource.connect(destination);
-    disposableNodes.push(destination);
-    disposableNodes.push(bufferSource);
-    bufferSource.start();
-  }, duration);
-  disposableNodes.forEach(node => {
-    node.dispose();
-  });
-  return renderedBuffer;
-};
-
-const queue = [];
-const renderBuffer = options =>
-  new Promise(resolve => {
-    const renderFn = async () => {
-      const renderedBuffer = await _renderBuffer(options);
-      const index = queue.indexOf(renderFn);
-      queue.splice(index, 1);
-      resolve(renderedBuffer);
-      if (queue.length > 0) {
-        queue[0]();
-      }
+    const start = () => {
+      bufferSource.start();
     };
-    queue.push(renderFn);
-    if (queue.length === 1) {
-      renderFn();
-    }
-  });
+    const dispose = () => {
+      bufferSource.dispose();
+      destination.dispose();
+    };
+    return { start, dispose };
+  };
+  return createPrerenderedBuffer({ createSource, duration });
+};
 
 export default renderBuffer;

@@ -1,0 +1,12 @@
+{
+  "title": "Zed",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "zed",
+  "artistId": "alex-bainter",
+  "isRecordable": true,
+  "tags": ["calm", "electronic"],
+  "releaseDate": "2020-10-23T00:00:00.000Z",
+  "visualizationType": "squareCut",
+  "sampleNames": [["zed__pad", ""], ["zed__noise", ""]]
+}
