@@ -65,7 +65,7 @@ const activate = async ({ destination, sampleLibrary }) => {
   };
 
   const deactivate = () => {
-    [vol, ...activeSources, ...reverbBuffers].forEach(node => node.dispose());
+    [vol, ...activeSources].forEach(node => node.dispose());
   };
 
   return [deactivate, schedule];
