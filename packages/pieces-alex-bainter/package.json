@@ -82,7 +82,5 @@
     "@generative-music/piece-yesterday": "^4.2.0",
     "@generative-music/piece-zed": "^4.2.0"
   },
-  "devDependencies": {
-    "tone": "^14.7.58"
-  }
+  "devDependencies": {}
 }

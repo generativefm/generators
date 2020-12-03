@@ -27,7 +27,5 @@
   "module": "dist/esm.js",
   "generativeFmManifest": "sevenths.gfm.manifest.json",
   "gitHead": "8ed39368a8376ff9ea366fe8e1ab01820553a037",
-  "devDependencies": {
-    "tone": "^14.7.39"
-  }
+  "devDependencies": {}
 }

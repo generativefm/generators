@@ -25,9 +25,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "devDependencies": {
-    "tone": "^14.7.58"
-  },
+  "devDependencies": {},
   "dependencies": {
     "@generative-music/make-piece-oxalis": "^4.2.0"
   }

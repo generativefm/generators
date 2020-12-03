@@ -21,8 +21,7 @@
   },
   "homepage": "https://github.com/generative-music/piece-aisatsana#readme",
   "devDependencies": {
-    "rollup-plugin-json": "^3.1.0",
-    "tone": "^14.7.39"
+    "rollup-plugin-json": "^3.1.0"
   },
   "dependencies": {
     "@generative-music/utilities": "^4.2.0",

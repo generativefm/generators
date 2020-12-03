@@ -25,9 +25,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "devDependencies": {
-    "tone": "^14.7.39"
-  },
+  "devDependencies": {},
   "dependencies": {
     "@generative-music/utilities": "^4.2.0"
   }

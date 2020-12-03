@@ -19,9 +19,7 @@
     "url": "https://github.com/generative-music/piece-drones/issues"
   },
   "homepage": "https://github.com/generative-music/piece-drones#readme",
-  "devDependencies": {
-    "tone": "^14.7.39"
-  },
+  "devDependencies": {},
   "peerDependencies": {
     "tone": "^14.7.39"
   },
