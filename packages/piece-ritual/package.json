@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-ritual",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "4.2.0",
+  "version": "4.3.0",
   "generativeFmManifest": "ritual.gfm.manifest.json",
   "repository": {
     "type": "git",
@@ -25,9 +25,8 @@
   "publishConfig": {
     "access": "public"
   },
-  "devDependencies": {},
   "dependencies": {
-    "@generative-music/utilities": "^4.2.0",
+    "@generative-music/utilities": "^4.3.0",
     "tonal": "^2.2.2"
   }
 }

@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-lullaby",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "0.0.0",
+  "version": "4.3.0",
   "generativeFmManifest": "piece.gfm.manifest.json",
   "repository": {
     "type": "git",
@@ -29,6 +29,6 @@
     "tone": "^14.7.58"
   },
   "dependencies": {
-    "@generative-music/utilities": "^4.2.0"
+    "@generative-music/utilities": "^4.3.0"
   }
 }

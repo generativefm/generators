@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-day-dream",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "4.2.0",
+  "version": "4.3.0",
   "generativeFmManifest": "day-dream.gfm.manifest.json",
   "repository": {
     "type": "git",
@@ -25,8 +25,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "devDependencies": {},
   "dependencies": {
-    "@generative-music/utilities": "^4.2.0"
+    "@generative-music/utilities": "^4.3.0"
   }
 }

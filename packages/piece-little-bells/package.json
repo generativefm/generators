@@ -1,10 +1,10 @@
 {
   "name": "@generative-music/piece-little-bells",
-  "version": "4.2.0",
+  "version": "4.3.0",
   "description": "",
   "main": "dist/cjs.js",
   "dependencies": {
-    "@generative-music/utilities": "^4.2.0"
+    "@generative-music/utilities": "^4.3.0"
   },
   "peerDependencies": {
     "tone": "^14.7.39"
@@ -26,6 +26,5 @@
   "homepage": "https://github.com/generative-music/piece-little-bells#readme",
   "module": "dist/esm.js",
   "generativeFmManifest": "little-bells.gfm.manifest.json",
-  "gitHead": "8ed39368a8376ff9ea366fe8e1ab01820553a037",
-  "devDependencies": {}
+  "gitHead": "8ed39368a8376ff9ea366fe8e1ab01820553a037"
 }
