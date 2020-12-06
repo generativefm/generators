@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-stratospheric",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "4.3.0",
+  "version": "4.3.1",
   "generativeFmManifest": "stratospheric.gfm.manifest.json",
   "repository": {
     "type": "git",
@@ -26,6 +26,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@generative-music/utilities": "^4.3.0"
+    "@generative-music/utilities": "^4.3.1"
   }
 }

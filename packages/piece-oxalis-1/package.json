@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-oxalis-1",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "4.3.0",
+  "version": "4.3.1",
   "generativeFmManifest": "oxalis-1.gfm.manifest.json",
   "repository": {
     "type": "git",
@@ -26,6 +26,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@generative-music/make-piece-oxalis": "^4.3.0"
+    "@generative-music/make-piece-oxalis": "^4.3.1"
   }
 }
