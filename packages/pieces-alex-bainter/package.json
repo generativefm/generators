@@ -53,6 +53,7 @@
     "@generative-music/piece-last-transit": "^4.2.1",
     "@generative-music/piece-lemniscate": "^4.2.0",
     "@generative-music/piece-little-bells": "^4.2.0",
+    "@generative-music/piece-lullaby": "^0.0.0",
     "@generative-music/piece-meditation": "^4.2.0",
     "@generative-music/piece-moment": "^4.2.0",
     "@generative-music/piece-nakaii": "^4.2.0",
@@ -81,6 +82,5 @@
     "@generative-music/piece-western-medicine": "^4.2.0",
     "@generative-music/piece-yesterday": "^4.2.0",
     "@generative-music/piece-zed": "^4.2.0"
-  },
-  "devDependencies": {}
+  }
 }

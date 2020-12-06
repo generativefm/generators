@@ -37,7 +37,8 @@
     "karma-mocha": "^1.3.0",
     "karma-rollup-preprocessor": "^7.0.3",
     "mocha": "^7.1.0",
-    "rollup": "^2.0.2"
+    "rollup": "^2.0.2",
+    "tone": "^14.7.58"
   },
   "peerDependencies": {
     "tone": "^14.7.39"
