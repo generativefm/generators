@@ -1,0 +1,16 @@
+{
+  "title": "Lullaby",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "lullaby",
+  "artistId": "alex-bainter",
+  "isRecordable": true,
+  "tags": ["dream", "piano", "melodic", "calm", "electronic"],
+  "releaseDate": "2020-12-06T00:00:00.000Z",
+  "visualizationType": "squareCut",
+  "sampleNames": [
+    "vsco2-piano-mf",
+    ["lullaby__birds", "birds"],
+    ["lullaby__explosion", "explosion"]
+  ]
+}

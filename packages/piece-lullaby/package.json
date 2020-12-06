@@ -1,0 +1,34 @@
+{
+  "name": "@generative-music/piece-lullaby",
+  "main": "dist/cjs.js",
+  "module": "dist/esm.js",
+  "version": "0.0.0",
+  "generativeFmManifest": "piece.gfm.manifest.json",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/generative-music/pieces-alex-bainter.git"
+  },
+  "files": [
+    "dist",
+    "image.png",
+    "piece.gfm.manifest.json"
+  ],
+  "author": "Alex Bainter <alex@alexbainter.com> (https://alexbainter.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/generative-music/pieces-alex-bainter/issues"
+  },
+  "homepage": "https://github.com/generative-music/pieces-alex-bainter#readme",
+  "peerDependencies": {
+    "tone": "14.*.*"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "tone": "^14.7.58"
+  },
+  "dependencies": {
+    "@generative-music/utilities": "^4.2.0"
+  }
+}
