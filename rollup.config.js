@@ -59,8 +59,6 @@ const createPieceScriptConfig = dirname => ({
 
 const pieceConfigsPromise = globPromise('./packages/piece-*').then(dirnames =>
   dirnames.reduce((buildConfigs, dirname) => {
-    console.log(createPieceScriptConfig(dirname));
-    process.exit(0);
     const {
       dependencies,
       peerDependencies,
