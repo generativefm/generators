@@ -26,6 +26,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@babel/runtime": "^7.12.5",
     "@generative-music/make-piece-oxalis": "^4.3.1"
   }
 }

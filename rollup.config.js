@@ -1,10 +1,11 @@
 'use strict';
 
 const glob = require('glob');
-const babel = require('rollup-plugin-babel');
-const json = require('rollup-plugin-json');
+const { babel } = require('@rollup/plugin-babel');
+const json = require('@rollup/plugin-json');
 const { terser } = require('rollup-plugin-terser');
 const { nodeResolve } = require('@rollup/plugin-node-resolve');
+const commonJs = require('@rollup/plugin-commonjs');
 
 const globPromise = (pattern, options) =>
   new Promise((resolve, reject) =>
@@ -30,12 +31,16 @@ const createPiecePackageConfig = (
     {
       file: `${dirname}/dist/cjs.js`,
       format: 'cjs',
+      exports: 'auto',
     },
   ],
-  external: ['rxjs/operators']
+  external: [/rxjs/, /@babel\/runtime/]
     .concat(Reflect.ownKeys(dependencies))
     .concat(Reflect.ownKeys(peerDependencies)),
-  plugins: [json(), babel({ exclude: 'node_modules/**' })],
+  plugins: [
+    json(),
+    babel({ exclude: 'node_modules/**', babelHelpers: 'runtime' }),
+  ],
 });
 
 const convertKebabToCamel = kebabCaseString =>
@@ -52,9 +57,18 @@ const createPieceScriptConfig = dirname => ({
     file: `${dirname}/dist/iife.min.js`,
     format: 'iife',
     name: convertKebabToCamel(dirname.replace('./packages/', '')),
+    globals: {
+      tone: 'Tone',
+    },
   },
   external: ['tone'],
-  plugins: [nodeResolve(), terser()],
+  plugins: [
+    babel({ exclude: 'node_modules/**', babelHelpers: 'bundled' }),
+    nodeResolve(),
+    commonJs(),
+    json(),
+    terser(),
+  ],
 });
 
 const pieceConfigsPromise = globPromise('./packages/piece-*').then(dirnames =>
@@ -66,7 +80,7 @@ const pieceConfigsPromise = globPromise('./packages/piece-*').then(dirnames =>
     } = require(`${dirname}/package.json`);
     return buildConfigs.concat([
       createPiecePackageConfig(dirname, dependencies, peerDependencies),
-      //createPieceScriptConfig(dirname),
+      createPieceScriptConfig(dirname),
     ]);
   }, [])
 );
@@ -81,9 +95,11 @@ const utilitiesConfig = {
     {
       format: 'cjs',
       file: 'packages/utilities/dist/cjs.js',
+      exports: 'auto',
     },
   ],
-  external: ['tone'],
+  external: ['tone', /@babel\/runtime/],
+  plugins: [babel({ exclude: 'node_modules/**', babelHelpers: 'runtime' })],
 };
 
 const makeOxalisConfig = {
@@ -96,9 +112,11 @@ const makeOxalisConfig = {
     {
       format: 'cjs',
       file: 'packages/make-piece-oxalis/dist/cjs.js',
+      exports: 'auto',
     },
   ],
-  external: ['tone', '@generative-music/utilities'],
+  external: ['tone', '@generative-music/utilities', /@babel\/runtime/],
+  plugins: [babel({ exclude: 'node_modules/**', babelHelpers: 'runtime' })],
 };
 
 module.exports = pieceConfigsPromise.then(pieceConfigs =>

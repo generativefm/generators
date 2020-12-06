@@ -27,6 +27,7 @@
     "tone": "^14.7.58"
   },
   "dependencies": {
+    "@babel/runtime": "^7.12.5",
     "@generative-music/piece-420hz-gamma-waves-for-big-brain": "^4.3.1",
     "@generative-music/piece-a-viable-system": "^4.3.1",
     "@generative-music/piece-above-the-rain": "^4.3.1",

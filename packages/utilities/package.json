@@ -42,5 +42,8 @@
   },
   "peerDependencies": {
     "tone": "^14.7.39"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.12.5"
   }
 }

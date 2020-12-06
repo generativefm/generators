@@ -24,6 +24,7 @@
     "rollup-plugin-json": "^3.1.0"
   },
   "dependencies": {
+    "@babel/runtime": "^7.12.5",
     "@generative-music/utilities": "^4.3.1",
     "markov-chains": "^1.0.2"
   },
