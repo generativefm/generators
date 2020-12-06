@@ -3,6 +3,8 @@
 const glob = require('glob');
 const babel = require('rollup-plugin-babel');
 const json = require('rollup-plugin-json');
+const { terser } = require('rollup-plugin-terser');
+const { nodeResolve } = require('@rollup/plugin-node-resolve');
 
 const globPromise = (pattern, options) =>
   new Promise((resolve, reject) =>
@@ -14,7 +16,7 @@ const globPromise = (pattern, options) =>
     })
   );
 
-const makePieceConfig = (
+const createPiecePackageConfig = (
   dirname,
   dependencies = {},
   peerDependencies = {}
@@ -36,16 +38,38 @@ const makePieceConfig = (
   plugins: [json(), babel({ exclude: 'node_modules/**' })],
 });
 
+const convertKebabToCamel = kebabCaseString =>
+  kebabCaseString
+    .split('-')
+    .map((word, i) =>
+      i === 0 ? word : `${word.charAt(0).toUpperCase()}${word.slice(1)}`
+    )
+    .join('');
+
+const createPieceScriptConfig = dirname => ({
+  input: `${dirname}/src/piece.js`,
+  output: {
+    file: `${dirname}/dist/iife.min.js`,
+    format: 'iife',
+    name: convertKebabToCamel(dirname.replace('./packages/', '')),
+  },
+  external: ['tone'],
+  plugins: [nodeResolve(), terser()],
+});
+
 const pieceConfigsPromise = globPromise('./packages/piece-*').then(dirnames =>
   dirnames.reduce((buildConfigs, dirname) => {
+    console.log(createPieceScriptConfig(dirname));
+    process.exit(0);
     const {
       dependencies,
       peerDependencies,
       //eslint-disable-next-line global-require
     } = require(`${dirname}/package.json`);
-    return buildConfigs.concat(
-      makePieceConfig(dirname, dependencies, peerDependencies)
-    );
+    return buildConfigs.concat([
+      createPiecePackageConfig(dirname, dependencies, peerDependencies),
+      //createPieceScriptConfig(dirname),
+    ]);
   }, [])
 );
 

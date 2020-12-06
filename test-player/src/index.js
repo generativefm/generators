@@ -4,9 +4,12 @@ import createProvider from '@generative-music/web-provider';
 import createLibrary from '@generative-music/web-library';
 import SaveWorker from '@generative-music/web-provider/worker/save-worker.esm';
 
-const { ogg } = getSamplesByFormat();
+const sampleIndex = getSamplesByFormat({
+  host: 'http://localhost:6969',
+  format: 'ogg',
+});
 const provider = createProvider(new SaveWorker());
-const library = createLibrary({ sampleIndex: ogg, provider });
+const library = createLibrary({ sampleIndex, provider });
 
 // overridden by webpack to load a specific piece;
 import activate from 'piece';
