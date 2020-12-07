@@ -1,6 +1,6 @@
 {
   "name": "@generative-music/piece-sevenths",
-  "version": "4.3.1",
+  "version": "4.4.0",
   "description": "",
   "main": "dist/cjs.js",
   "repository": {
@@ -20,7 +20,7 @@
   "homepage": "https://github.com/generative-music/piece-sevenths#readme",
   "dependencies": {
     "@babel/runtime": "^7.12.5",
-    "@generative-music/utilities": "^4.3.1"
+    "@generative-music/utilities": "^4.4.0"
   },
   "peerDependencies": {
     "tone": "^14.7.39"
