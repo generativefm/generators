@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/generative-music/piece-aisatsana#readme",
   "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.12.1",
     "rollup-plugin-json": "^3.1.0"
   },
   "dependencies": {
@@ -31,5 +32,6 @@
   "peerDependencies": {
     "tone": "^14.7.39"
   },
-  "gitHead": "8ed39368a8376ff9ea366fe8e1ab01820553a037"
+  "gitHead": "8ed39368a8376ff9ea366fe8e1ab01820553a037",
+  "unpkg": "dist/umd.min.js"
 }

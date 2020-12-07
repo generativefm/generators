@@ -26,10 +26,12 @@
     "access": "public"
   },
   "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.12.1",
     "tone": "^14.7.58"
   },
   "dependencies": {
     "@babel/runtime": "^7.12.5",
     "@generative-music/utilities": "^4.3.1"
-  }
+  },
+  "unpkg": "dist/umd.min.js"
 }

@@ -8,14 +8,13 @@
     "@rollup/plugin-babel": "^5.2.2",
     "@rollup/plugin-commonjs": "^17.0.0",
     "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^11.0.0",
+    "@rollup/plugin-node-resolve": "^10.0.0",
     "eslint": "^7.10.0",
     "eslint-config-metalex9": "^0.3.0",
     "glob": "^7.1.3",
     "lerna": "^3.22.1",
     "prettier": "^1.16.4",
     "rollup": "^2.34.2",
-    "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-terser": "^7.0.2"
   },
   "scripts": {

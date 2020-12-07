@@ -27,5 +27,9 @@
   "homepage": "https://github.com/generative-music/piece-little-bells#readme",
   "module": "dist/esm.js",
   "generativeFmManifest": "little-bells.gfm.manifest.json",
-  "gitHead": "8ed39368a8376ff9ea366fe8e1ab01820553a037"
+  "gitHead": "8ed39368a8376ff9ea366fe8e1ab01820553a037",
+  "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.12.1"
+  },
+  "unpkg": "dist/umd.min.js"
 }

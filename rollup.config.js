@@ -39,7 +39,12 @@ const createPiecePackageConfig = (
     .concat(Reflect.ownKeys(peerDependencies)),
   plugins: [
     json(),
-    babel({ exclude: 'node_modules/**', babelHelpers: 'runtime' }),
+    babel({
+      exclude: 'node_modules/**',
+      babelHelpers: 'runtime',
+      plugins: ['@babel/plugin-transform-runtime'],
+      presets: ['@babel/preset-env'],
+    }),
   ],
 });
 
@@ -54,8 +59,8 @@ const convertKebabToCamel = kebabCaseString =>
 const createPieceScriptConfig = dirname => ({
   input: `${dirname}/src/piece.js`,
   output: {
-    file: `${dirname}/dist/iife.min.js`,
-    format: 'iife',
+    file: `${dirname}/dist/umd.min.js`,
+    format: 'umd',
     name: convertKebabToCamel(dirname.replace('./packages/', '')),
     globals: {
       tone: 'Tone',
@@ -63,9 +68,13 @@ const createPieceScriptConfig = dirname => ({
   },
   external: ['tone'],
   plugins: [
-    babel({ exclude: 'node_modules/**', babelHelpers: 'bundled' }),
-    nodeResolve(),
     commonJs(),
+    babel({
+      exclude: 'node_modules/**',
+      babelHelpers: 'bundled',
+      presets: ['@babel/preset-env'],
+    }),
+    nodeResolve({ extensions: ['.js', '.json'] }),
     json(),
     terser(),
   ],
@@ -99,7 +108,14 @@ const utilitiesConfig = {
     },
   ],
   external: ['tone', /@babel\/runtime/],
-  plugins: [babel({ exclude: 'node_modules/**', babelHelpers: 'runtime' })],
+  plugins: [
+    babel({
+      exclude: 'node_modules/**',
+      babelHelpers: 'runtime',
+      plugins: ['@babel/plugin-transform-runtime'],
+      presets: ['@babel/preset-env'],
+    }),
+  ],
 };
 
 const makeOxalisConfig = {
@@ -116,9 +132,16 @@ const makeOxalisConfig = {
     },
   ],
   external: ['tone', '@generative-music/utilities', /@babel\/runtime/],
-  plugins: [babel({ exclude: 'node_modules/**', babelHelpers: 'runtime' })],
+  plugins: [
+    babel({
+      exclude: 'node_modules/**',
+      babelHelpers: 'runtime',
+      plugins: ['@babel/plugin-transform-runtime'],
+      presets: ['@babel/preset-env'],
+    }),
+  ],
 };
 
 module.exports = pieceConfigsPromise.then(pieceConfigs =>
-  pieceConfigs.concat([utilitiesConfig, makeOxalisConfig])
+  [utilitiesConfig, makeOxalisConfig].concat(pieceConfigs)
 );

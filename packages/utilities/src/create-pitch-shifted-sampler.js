@@ -8,10 +8,9 @@ const createPitchShiftedSampler = async ({
   attack = 0,
   release = 0,
   curve = 'linear',
-  volume = 0,
 } = {}) => {
   let isDisposed = false;
-  const output = new Tone.Volume(volume);
+  const output = new Tone.Gain();
   const buffers = await createBuffers(samplesByNote);
   const activeSources = [];
   const sampledNotes = Object.keys(samplesByNote);

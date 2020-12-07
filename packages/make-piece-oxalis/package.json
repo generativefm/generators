@@ -29,5 +29,9 @@
   },
   "peerDependencies": {
     "tone": "^14.7.58"
-  }
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.12.1"
+  },
+  "unpkg": "dist/umd.min.js"
 }

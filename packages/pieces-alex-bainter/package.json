@@ -83,5 +83,9 @@
     "@generative-music/piece-western-medicine": "^4.3.1",
     "@generative-music/piece-yesterday": "^4.3.1",
     "@generative-music/piece-zed": "^4.3.1"
-  }
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.12.1"
+  },
+  "unpkg": "dist/umd.min.js"
 }
