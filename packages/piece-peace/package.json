@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-peace",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "4.4.0",
+  "version": "4.5.0",
   "generativeFmManifest": "peace.gfm.manifest.json",
   "repository": {
     "type": "git",
@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.12.5",
-    "@generative-music/utilities": "^4.4.0"
+    "@generative-music/utilities": "^4.5.0"
   },
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.12.1"
