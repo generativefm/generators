@@ -6,7 +6,7 @@ import {
 } from '@generative-music/utilities';
 import { sampleNames } from '../no-refrain.gfm.manifest.json';
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const piano = await createPrerenderableSampler({
     samples,
@@ -23,8 +23,6 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
       toss(['C', 'E', 'G', 'B'], [4, 5])
     ),
   });
-
-  piano.connect(destination);
 
   const rightHandPcs = ['C', 'D', 'E', 'G', 'B', 'C'];
   let rightHandOct = 4;
@@ -72,7 +70,8 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     }, `+${time * 16 + Math.random() * 1.5}`);
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    piano.connect(destination);
     leftHand();
     return () => {
       piano.releaseAll(0);

@@ -9,7 +9,7 @@ import { sampleNames } from '../eyes-closed.gfm.manifest.json';
 const PHRASE = [['G#5', 1], ['F#5', 2], ['D#5', 3.5], ['C#5', 4], ['D#5', 4.5]];
 const CHORD = ['G#3', 'G#4'];
 
-const activate = async ({ destination, sampleLibrary }) => {
+const activate = async ({ sampleLibrary }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const danTranh = await createBuffer(samples['dan-tranh-gliss-ps'][0]);
   const piano = await createPitchShiftedSampler({
@@ -65,7 +65,7 @@ const activate = async ({ destination, sampleLibrary }) => {
     }, `+${Math.random() * 60 + 30}`);
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
     const danTranhFilter = new Tone.AutoFilter(Math.random() / 100 + 0.01, 200);
     const pianoFilter = new Tone.AutoFilter(Math.random() / 100 + 0.01, 400);
 

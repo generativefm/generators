@@ -26,7 +26,7 @@ function* makeValueOscillator(min, max) {
   }
 }
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
 
   const vibraphone = await createPrerenderableSampler({
@@ -40,7 +40,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     getDestination: () => new Tone.Reverb(5).toDestination().generate(),
   });
 
-  const vol = new Tone.Volume(10).connect(destination);
+  const vol = new Tone.Volume(10);
   const filter = new Tone.Filter(2000);
   filter.connect(vol);
 
@@ -51,7 +51,8 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     }, `+${Math.random() * timeGenerator.next().value + timeGenerator.next().value}`);
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    vol.connect(destination);
     const delay = new Tone.FeedbackDelay({
       delayTime: 0.2,
       feedback: 0.7,

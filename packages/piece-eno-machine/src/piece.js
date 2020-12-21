@@ -16,12 +16,12 @@ const NOTES = toss(invert(major9th('Db'), 1), OCTAVES);
 
 const getPiano = samples => createSampler(samples['vsco2-piano-mf']);
 
-const activate = async ({ destination, sampleLibrary }) => {
+const activate = async ({ sampleLibrary }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const piano = await getPiano(samples);
-  piano.connect(destination);
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    piano.connect(destination);
     NOTES.forEach(note => {
       const interval = getRandomNumberBetween(MIN_REPEAT_S, MAX_REPEAT_S);
       const delay = getRandomNumberBetween(0, MAX_REPEAT_S - MIN_REPEAT_S);

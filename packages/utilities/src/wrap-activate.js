@@ -6,7 +6,11 @@ const wrapActivate = activate => async options => {
     setContext(options.context);
   }
   const [deactivate, schedule] = await activate(options);
-  return makeActiveStage(deactivate, schedule);
+  return makeActiveStage({
+    deactivate,
+    schedule,
+    destination: options.destination,
+  });
 };
 
 export default wrapActivate;

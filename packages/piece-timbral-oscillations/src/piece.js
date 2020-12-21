@@ -53,7 +53,7 @@ const playPhrase = piano => {
   }, `+${Math.random() * 10 + 10}`);
 };
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
 
   const getPianoDestination = () =>
@@ -70,7 +70,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     getDestination: getPianoDestination,
   });
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
     const delayFudge = Math.random() * 3;
     const delay = new Tone.FeedbackDelay({
       wet: 0.5,

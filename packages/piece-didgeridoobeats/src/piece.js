@@ -27,9 +27,9 @@ const getPattern = (quarterP, eighthP, sixteethP) => {
   return pattern;
 };
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
-  const masterVol = new Tone.Volume(-5).connect(destination);
+  const masterVol = new Tone.Volume(-5);
   const drumGain = new Tone.Gain(0).connect(masterVol);
   const hatVolume = new Tone.Volume(-5).connect(drumGain);
 
@@ -153,7 +153,8 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     }, `+${Math.random() < 0.03 ? Math.random() * 10 + 10 : Math.random() * 5 + 5}`);
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    masterVol.connect(destination);
     const didgeridooAutoFilter = new Tone.AutoFilter({
       frequency: 0.06,
       octaves: 4,

@@ -6,7 +6,7 @@ import {
 } from '@generative-music/utilities';
 import { sampleNames } from '../last-transit.gfm.manifest.json';
 
-const activate = async ({ destination, sampleLibrary }) => {
+const activate = async ({ sampleLibrary }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   let reverbBuffers = samples['last-transit__idling-truck'];
   if (!reverbBuffers) {
@@ -27,7 +27,7 @@ const activate = async ({ destination, sampleLibrary }) => {
 
   const [bufferWithReverb] = reverbBuffers;
   const activeSources = [];
-  const vol = new Tone.Volume(10).connect(destination);
+  const vol = new Tone.Volume(10);
 
   const play = ({ sourceDestination, playbackRateLfo }) => {
     const source = new Tone.BufferSource(bufferWithReverb)
@@ -48,7 +48,8 @@ const activate = async ({ destination, sampleLibrary }) => {
     }, `+${bufferWithReverb.duration / 0.25 - Math.random()}`);
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    vol.connect(destination);
     const filter = new Tone.AutoFilter(Math.random() / 30).connect(vol);
     filter.start();
     const lfo = new Tone.LFO(Math.random() / 100, 0.05, 0.25);

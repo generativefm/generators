@@ -6,10 +6,10 @@ import {
 } from '@generative-music/utilities';
 import { sampleNames } from '../animalia-chordata.gfm.manifest.json';
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const activeSources = [];
-  const masterVol = new Tone.Volume(-7).connect(destination);
+  const masterVol = new Tone.Volume(-7);
   const filter = new Tone.Filter(500);
   const compressor = new Tone.Compressor().connect(filter);
   const crossFade = new Tone.CrossFade().connect(compressor);
@@ -88,7 +88,8 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     }, `+${buffers[0].duration / playbackRate - Math.random() * 15 - 15}`);
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    masterVol.connect(destination);
     const feedbackDelay = new Tone.FeedbackDelay({
       delayTime: 0.7,
       feedback: 0.8,

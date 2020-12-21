@@ -78,7 +78,7 @@ const playProgression = (piano, notes) => {
   }, `+${Math.random() * 3 + (progression.length + 1) * perChordDelay}`);
 };
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
 
   const getPianoDestination = () =>
@@ -97,9 +97,8 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     getDestination: getPianoDestination,
   });
 
-  piano.connect(destination);
-
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    piano.connect(destination);
     const tonic = getRandomElement([
       'C',
       'C#',

@@ -27,7 +27,7 @@ const nextChordMap = new Map([
   [3, [0, 2]],
 ]);
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
 
   const stirBuffers = await createPrerenderableBuffers({
@@ -277,7 +277,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     }, `+${spb * beats}`);
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
     const percussionAutoFilter = new Tone.AutoFilter(
       Math.random() / 500 + 0.005,
       150,

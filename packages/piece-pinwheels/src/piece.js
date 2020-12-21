@@ -110,11 +110,11 @@ const startPinwheelChain = instrument => {
 
 const getPiano = samples => createSampler(samples['vsco2-piano-mf']);
 
-const activate = async ({ destination, sampleLibrary }) => {
+const activate = async ({ sampleLibrary }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const piano = await getPiano(samples);
-  piano.connect(destination);
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    piano.connect(destination);
     startPinwheelChain(piano);
     return () => {
       piano.releaseAll(0);

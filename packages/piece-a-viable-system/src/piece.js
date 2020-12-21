@@ -152,7 +152,7 @@ const startInstrument = (instrument, instrumentConfig) => {
   }, Math.random() * 10 + 10);
 };
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const instrumentNames = Object.keys(instrumentConfigs);
   const getPrerenderableeDestination = () =>
@@ -175,7 +175,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     instruments.push(sampler);
   }
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
     const delayTime = 10 + Math.random() * 2;
     const delay = new Tone.FeedbackDelay({
       delayTime,
@@ -183,8 +183,9 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
       wet: 0.5,
       maxDelay: delayTime,
     });
+    delay.connect(destination);
     instruments.forEach((instrument, i) => {
-      instrument.chain(delay, destination);
+      instrument.connect(delay);
       startInstrument(instrument, instrumentConfigs[instrumentNames[i]]);
     });
 

@@ -27,7 +27,7 @@ const phrases = [phrase1, phrase2, phrase3, phrase4, phrase5, phrase6, phrase7];
 
 const vibeNotes = ['C3', 'C4', 'C5', 'G3', 'G4', 'G5'];
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const piano = await createPrerenderableSampler({
     samples,
@@ -58,8 +58,6 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
         .generate(),
   });
 
-  vibes.connect(destination);
-  piano.connect(destination);
   const playPhrase = (phrase = getRandomElement(phrases)) => {
     const noteTime = (Math.random() * 2 + 3) / phrase.length;
     (Math.random() < 0.25 ? phrase.slice(0).reverse() : phrase)
@@ -93,7 +91,9 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     }, `+${Math.random() * 40 + 20}`);
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    vibes.connect(destination);
+    piano.connect(destination);
     playPhrase();
     playVibes();
     return () => {

@@ -15,13 +15,13 @@ const NOTES = toss(['C'], [4, 5, 6])
   .map(minor7th)
   .flat();
 
-const activate = async ({ destination, sampleLibrary }) => {
+const activate = async ({ sampleLibrary }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const samplesByNote = samples['vsco2-piano-mf'];
   const sampledNotes = Object.keys(samplesByNote);
   const buffers = await createBuffers(samplesByNote);
   const activeSources = [];
-  const playNote = note => {
+  const playNote = ({ note, destination }) => {
     const date = new Date();
     const hour = date.getHours();
     const minute = date.getMinutes();
@@ -62,7 +62,7 @@ const activate = async ({ destination, sampleLibrary }) => {
     return semitoneChange;
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
     const firstDelays = NOTES.map(
       () =>
         Math.random() *
@@ -75,7 +75,7 @@ const activate = async ({ destination, sampleLibrary }) => {
     NOTES.forEach((note, i) => {
       const play = time => {
         Tone.Transport.scheduleOnce(() => {
-          const semitoneChange = playNote(note);
+          const semitoneChange = playNote({ note, destination });
           play(Math.random() * (semitoneChange + 12) + 3);
         }, `+${time}`);
       };

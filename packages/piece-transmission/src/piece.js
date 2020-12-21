@@ -30,7 +30,7 @@ const TREMOLO_PATTERN = [
 const MIN_BPM = 40;
 const MAX_BPM = 80;
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
 
   const renderedNotes = sortNotes(
@@ -63,9 +63,9 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     )
   );
 
-  const filter = new Tone.Filter().connect(destination);
+  const filter = new Tone.Filter();
   const gain = new Tone.Gain().connect(filter);
-  const synth = new Tone.Synth().set({ volume: -25 }).connect(destination);
+  const synth = new Tone.Synth().set({ volume: -25 });
 
   const tremoloChord = (
     transposition = 0,
@@ -124,10 +124,13 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
 
   tremPiano.connect(gain);
 
-  const chorus = new Tone.Chorus().connect(destination);
+  const chorus = new Tone.Chorus();
   piano.connect(chorus);
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    filter.connect(destination);
+    synth.connect(destination);
+    chorus.connect(destination);
     const chorusWetLfo = new Tone.LFO(Math.random() / 1000 + 0.001).set({
       phase: Math.random() * 360,
     });

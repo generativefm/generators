@@ -6,7 +6,7 @@ import {
 } from '@generative-music/utilities';
 import { sampleNames } from '../above-the-rain.gfm.manifest.json';
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const getReverb = () => new Tone.Reverb(15).toDestination().generate();
   const chorus = await createPrerenderableBuffers({
@@ -30,7 +30,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
 
   trumpet.set({ attack: 5, curve: 'linear' });
 
-  const compressor = new Tone.Compressor().connect(destination);
+  const compressor = new Tone.Compressor();
   trumpet.connect(compressor);
 
   const playbackRate = 0.25;
@@ -66,7 +66,8 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     }, `+${buf.duration / playbackRate - 4 + Math.random() * 5 - 2.5}`);
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    compressor.connect(destination);
     const autoFilter = new Tone.AutoFilter(Math.random() / 100 + 0.01, 100, 4);
     autoFilter.connect(compressor);
     autoFilter.start();

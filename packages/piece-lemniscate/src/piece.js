@@ -40,17 +40,20 @@ const generateTiming = (instruments, getPlayProbability) => {
   });
 };
 
-const activate = async ({ destination, sampleLibrary }) => {
+const activate = async ({ sampleLibrary }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
-  const rightPanner = new Tone.Panner().connect(destination);
-  const leftPanner = new Tone.Panner().connect(destination);
+  const rightPanner = new Tone.Panner();
+  const leftPanner = new Tone.Panner();
   const pianoSamples = samples[INSTRUMENT_NAME];
   const instruments = await Promise.all([
     createSampler(pianoSamples),
     createSampler(pianoSamples),
   ]);
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    [rightPanner, leftPanner].forEach(panner => {
+      panner.connect(destination);
+    });
     const primaryControlLfo = new Tone.LFO(1 / 480).set({ phase: 270 });
 
     const negate = new Tone.Negate();

@@ -60,12 +60,12 @@ const makeScheduleChord = instrument => {
 
 const getPiano = samples => createSampler(samples['vsco2-piano-mf']);
 
-const activate = async ({ destination, sampleLibrary }) => {
+const activate = async ({ sampleLibrary }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const piano = await getPiano(samples);
-  piano.connect(destination);
   const scheduleChord = makeScheduleChord(piano);
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    piano.connect(destination);
     scheduleChord();
     return () => {
       piano.releaseAll(0);

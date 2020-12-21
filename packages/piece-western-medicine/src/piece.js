@@ -49,9 +49,9 @@ const MARIMBA_OCTS = [2, 3, 4, 5, 6];
 const HARP_NOTES = ['C4', 'G4', 'C5', 'G5', 'C6', 'G6'];
 const PIANO_NOTES = toss(['C', 'E', 'G'], [3, 4, 5, 6]);
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
-  const filter = new Tone.Filter(3000).connect(destination);
+  const filter = new Tone.Filter(3000);
 
   const [harmonics, marimba, harp, piano] = await Promise.all(
     [
@@ -130,7 +130,8 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     }, `+${Math.random() * 15 + 15}`);
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    filter.connect(destination);
     playHarmonics();
     playMarimba();
     playHarp();

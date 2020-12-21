@@ -62,7 +62,7 @@ const createPercussionSampler = async (prerenderOptions = {}) => {
 
 const violinPhrases = [['G#4', 'F4', 'F#4', 'C#4'], ['A#4', 'F#4', 'G#4']];
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const didgeridooSamples =
     samples['ritual__vcsl-didgeridoo-sus'] || samples['vcsl-didgeridoo-sus'];
@@ -122,7 +122,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
 
   const activeSources = [];
 
-  const drone = () => {
+  const drone = ({ destination }) => {
     const buffer = dideridooBuffers.get(
       Math.floor(Math.random() * didgeridooSamples.length)
     );
@@ -142,10 +142,9 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     activeSources.push(source);
     source.start('+1');
     Tone.Transport.scheduleOnce(() => {
-      drone();
+      drone({ destination });
     }, `+${1 + buffer.duration / 3 / playbackRate}`);
   };
-  violins.connect(destination);
 
   const playViolinPhrase = () => {
     const phrase = getRandomElement(violinPhrases);
@@ -160,7 +159,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     }, `+${totalDelay + 10}`);
   };
 
-  const percussionGain = new Tone.Gain().connect(destination);
+  const percussionGain = new Tone.Gain();
   bassdrum.connect(percussionGain);
 
   darbukas.forEach(darbuka => {
@@ -192,7 +191,9 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     }, `+${32 * beatTime}`);
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    percussionGain.connect(destination);
+    violins.connect(destination);
     const percussionGainLfo = new Tone.LFO(
       Math.random() / 1000 + 0.001,
       0,
@@ -201,7 +202,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     percussionGainLfo.connect(percussionGain.gain);
     percussionGainLfo.start();
 
-    drone();
+    drone({ destination });
     playViolinPhrase();
     percussion(Math.random() * 0.4 + 0.2, true);
 

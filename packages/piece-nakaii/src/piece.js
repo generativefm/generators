@@ -28,16 +28,14 @@ const getPhrase = () =>
     );
   }, []);
 
-const activate = async ({ destination, sampleLibrary }) => {
+const activate = async ({ sampleLibrary }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
-  const violinGain = new Tone.Gain(0).connect(destination);
+  const violinGain = new Tone.Gain(0);
 
   const piano = await createPitchShiftedSampler({
     samplesByNote: samples['vsco2-piano-mf'],
     pitchShift: -24,
   });
-
-  piano.connect(destination);
 
   const violins = await createPitchShiftedSampler({
     samplesByNote: samples['vsco2-violins-susvib'],
@@ -76,7 +74,9 @@ const activate = async ({ destination, sampleLibrary }) => {
     }, `+${Math.random() * 5 + multiplier * phrase.length + 3}`);
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    violinGain.connect(destination);
+    piano.connect(destination);
     const gainLfo = new Tone.LFO(0.001, 0, 1).set({
       phase: 90,
     });

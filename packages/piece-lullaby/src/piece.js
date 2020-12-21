@@ -51,7 +51,7 @@ const playProgression = piano => {
   }, `+${t3 + Math.random() * 10 + 5}`);
 };
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(getContext(), sampleNames);
   const pianos = await Promise.all([
     createPitchShiftedSampler({
@@ -77,7 +77,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
 
   const activeSources = [];
 
-  const playBirdSnippet = () => {
+  const playBirdSnippet = ({ destination }) => {
     const startTime = Math.random() * (birdBuffer.duration - 6);
     const duration = Math.max(
       6,
@@ -99,7 +99,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     source.connect(destination);
     source.start('+1', startTime, duration / playbackRate, 0.33);
     Transport.scheduleOnce(() => {
-      playBirdSnippet();
+      playBirdSnippet({ destination });
     }, `+${duration + Math.random() * 5}`);
   };
 
@@ -116,7 +116,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     onProgress: val => onProgress(val / 2 + 0.5),
   });
 
-  const explosionGain = new Gain(0.05).connect(destination);
+  const explosionGain = new Gain(0.05);
   const lowpass = new Filter(200).connect(explosionGain);
   const explosionBuffer = explosionBuffers.get(0);
 
@@ -141,7 +141,8 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     }, `+${Math.random() * 100 + 60}`);
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    explosionGain.connect(destination);
     const pianoAutoFilters = pianos.map(piano => {
       const autoFilter = new AutoFilter(0.01 * Math.random() + 0.005).connect(
         destination
@@ -151,7 +152,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
       playProgression(piano);
       return autoFilter;
     });
-    playBirdSnippet();
+    playBirdSnippet({ destination });
     playReverseExplosion();
 
     return () => {

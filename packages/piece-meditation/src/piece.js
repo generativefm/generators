@@ -52,13 +52,13 @@ const pitchClassesOverOctaves = (pitchClasses, octaves) =>
     []
   );
 
-const activate = async ({ destination, sampleLibrary }) => {
+const activate = async ({ sampleLibrary }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const bowls = await getBowls(samples);
   const volume = new Tone.Volume(VOLUME_ADJUSTMENT);
-  volume.connect(destination);
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    volume.connect(destination);
     const delay = new Tone.FeedbackDelay({
       wet: 0.5,
       delayTime: 20,

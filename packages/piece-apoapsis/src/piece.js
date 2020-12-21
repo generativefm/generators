@@ -9,7 +9,7 @@ import { sampleNames } from '../apoapsis.gfm.manifest.json';
 const pianoNotes = toss(['C', 'E', 'G', 'B'], [3, 4, 5]);
 const violinNotes = toss(['C', 'E', 'G', 'B'], [2, 3, 4]);
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
 
   const getPianoDestination = () =>
@@ -50,9 +50,10 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
 
   const violinVol = new Tone.Volume(-25);
 
-  violins.chain(violinVol, destination);
+  violins.connect(violinVol);
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    violinVol.connect(destination);
     const delay1 = new Tone.FeedbackDelay({
       feedback: 0.7,
       delayTime: 0.2,

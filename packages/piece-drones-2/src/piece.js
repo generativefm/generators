@@ -8,14 +8,14 @@ import { sampleNames } from '../drones-2.gfm.manifest.json';
 
 const NOTES = ['C4', 'G4', 'C5', 'G5', 'E5'];
 
-const activate = async ({ destination, sampleLibrary }) => {
+const activate = async ({ sampleLibrary }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const samplesByNote = samples['vsco2-violins-susvib'];
   const sampledNotes = Object.keys(samplesByNote);
 
   const buffers = await createBuffers(samplesByNote);
 
-  const filter = new Tone.Filter(6000, 'lowpass', -48).connect(destination);
+  const filter = new Tone.Filter(6000, 'lowpass', -48);
   const activeSources = [];
 
   const drone = (note, droneDestination, pitchShift = 0, reverse = false) => {
@@ -40,7 +40,8 @@ const activate = async ({ destination, sampleLibrary }) => {
     source.start('+1');
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    filter.connect(destination);
     const autoFilter = new Tone.AutoFilter(Math.random() / 10, 150, 4)
       .connect(filter)
       .start();

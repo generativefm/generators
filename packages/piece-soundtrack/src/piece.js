@@ -10,7 +10,7 @@ import { sampleNames } from '../soundtrack.gfm.manifest.json';
 const SECOND_NOTES = ['D', 'Eb', 'F', 'G', 'A'];
 const OCTAVES = [2, 3, 4];
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const getReverb = () => new Tone.Reverb(50).toDestination().generate();
   const renderedPitchClasses = ['C'].concat(
@@ -27,8 +27,6 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     onProgress: val => onProgress(val * 0.5),
     pitchShift: -24,
   });
-
-  cellos.connect(destination);
 
   const glock = await createPrerenderableSampler({
     samples,
@@ -70,7 +68,9 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     }, `+${Math.random() * 20 + 30}`);
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    cellos.connect(destination);
+
     const glockDelay = new Tone.PingPongDelay(0.7, 0.7)
       .set({ wet: 0.4 })
       .connect(destination);

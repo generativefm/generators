@@ -21,7 +21,7 @@ const PITCH_CLASSES = ['C', 'E', 'G'];
 const OCTAVES = [3, 4, 5, 6];
 const NOTES = toss(PITCH_CLASSES, OCTAVES);
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const pianoSamples =
     samples['expand-collapse__vsco2-piano-mf'] || samples['vsco2-piano-mf'];
@@ -96,7 +96,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     }, `+${time * 2 + Math.random() + 1}`);
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
     const feedbackDelay = new Tone.FeedbackDelay({
       delayTime: 1,
       feedback: 0.3,

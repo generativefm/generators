@@ -9,7 +9,7 @@ import { sampleNames } from '../buttafingers.gfm.manifest.json';
 const NOTES = ['C4', 'E4', 'F4', 'G4'];
 const PITCH_CHANGES = [-36, -24];
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const [wines, claves] = await Promise.all([
     Promise.all(
@@ -47,7 +47,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
       disposableNodes.splice(i, 1);
     }
   };
-  const compressor = new Tone.Compressor().connect(destination);
+  const compressor = new Tone.Compressor();
   const filter = new Tone.Filter(200, 'lowpass', -48);
   filter.connect(compressor);
 
@@ -87,7 +87,8 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     }, `+${Math.random() * 10 + 10}`);
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    compressor.connect(destination);
     const delay = new Tone.FeedbackDelay({
       delayTime: 3,
       feedback: 0.3,

@@ -17,7 +17,7 @@ const INTERVALS = [P1, M3, P4, P5];
 const STARTING_TONICS = ['C3', 'C4'];
 const NOTE_TIME_S = 2;
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const piano = await createPrerenderableSampler({
     notes: toss(['C', 'E', 'G', 'B'], [2, 3, 4, 5]),
@@ -60,7 +60,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     }, `+${32 * NOTE_TIME_S}`);
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
     tonics = STARTING_TONICS;
     const delay = new Tone.FeedbackDelay({
       delayTime: NOTE_TIME_S / 2,

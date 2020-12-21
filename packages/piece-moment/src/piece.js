@@ -9,9 +9,9 @@ import { sampleNames } from '../moment.gfm.manifest.json';
 
 const NOTES = ['C2', 'E2', 'G2', 'C3', 'E3', 'G3', 'C4', 'E4', 'G4'];
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
-  const masterVol = new Tone.Volume(-5).connect(destination);
+  const masterVol = new Tone.Volume(-5);
 
   const basePrerenderableOpts = {
     samples,
@@ -73,7 +73,8 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     }
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    masterVol.connect(destination);
     const firstDelays = NOTES.map(
       note => Math.random() * 20 * (getPitchClass(note) === 'E' ? 3 : 1)
     );

@@ -7,7 +7,7 @@ import { sampleNames } from '../peace.gfm.manifest.json';
 
 const NOTES = ['A3', 'C4', 'D4', 'E4', 'G4', 'A4'];
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const fluteVolume = new Tone.Volume(-8);
 
@@ -26,7 +26,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
 
   flute.set({ fadeIn: 5, fadeOut: 5, curve: 'linear' });
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
     const delay = new Tone.FeedbackDelay({
       feedback: 0.7,
       delayTime: 1,

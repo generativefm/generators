@@ -8,9 +8,9 @@ import {
 } from '@generative-music/utilities';
 import { sampleNames } from '../homage.gfm.manifest.json';
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
-  const masterVol = new Tone.Volume(5).connect(destination);
+  const masterVol = new Tone.Volume(5);
   const violinNotes = ['C3', 'C4'];
   const pianoNotes = [...major7th('C5'), ...major7th('C6'), 'C7'];
 
@@ -51,7 +51,8 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     }, `+${Math.random() * 10}`);
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    masterVol.connect(destination);
     const filterLfo = new Tone.LFO(
       Math.random() * 0.001 + 0.0005,
       100,

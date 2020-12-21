@@ -51,9 +51,9 @@ const PITCH_CLASSES = [
   'B',
 ];
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
-  const masterVol = new Tone.Volume(5).connect(destination);
+  const masterVol = new Tone.Volume(5);
   const getReverb = () =>
     new Tone.Reverb(20)
       .set({ wet: 0.5 })
@@ -121,7 +121,8 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     }
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    masterVol.connect(destination);
     const tonic =
       PITCH_CLASSES[Math.floor(Math.random() * PITCH_CLASSES.length)];
     const notes = shuffleArray(getNotes(tonic));

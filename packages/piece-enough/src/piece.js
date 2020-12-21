@@ -7,7 +7,7 @@ import {
 } from '@generative-music/utilities';
 import { sampleNames } from '../enough.gfm.manifest.json';
 
-const activate = async ({ destination, sampleLibrary }) => {
+const activate = async ({ sampleLibrary }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const corAnglaisSamplesByNote = samples['sso-cor-anglais'];
   const corAnglais = await createPitchShiftedSampler({
@@ -17,7 +17,7 @@ const activate = async ({ destination, sampleLibrary }) => {
     release: 5,
     curve: 'linear',
   });
-  const masterVol = new Tone.Volume(-10).connect(destination);
+  const masterVol = new Tone.Volume(-10);
   const delayVolume = new Tone.Volume(-28).connect(masterVol);
   const compressor = new Tone.Compressor().connect(masterVol);
 
@@ -44,7 +44,8 @@ const activate = async ({ destination, sampleLibrary }) => {
     }, `+${Math.random() * 5 + 12}`);
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    masterVol.connect(destination);
     const delay = new Tone.FeedbackDelay({
       feedback: 0.5,
       delayTime: 10,

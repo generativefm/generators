@@ -97,7 +97,7 @@ const createNoise = async context => {
   };
 };
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
 
   const padSynth = await createPrerenderableInstrument({
@@ -127,16 +127,18 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     onProgress(1);
   }
 
-  const padFilter = new Tone.Filter({ type: 'lowpass' }).connect(destination);
+  const padFilter = new Tone.Filter({ type: 'lowpass' });
   padSynth.connect(padFilter);
-  const noiseFilter = new Tone.Filter({ type: 'lowpass' }).connect(destination);
+  const noiseFilter = new Tone.Filter({ type: 'lowpass' });
   const noiseSynthMasterGain = new Tone.Gain().connect(noiseFilter);
 
   const noisePlayer = new Tone.Player(samples['zed__noise'][0])
     .set({ loop: true })
     .connect(noiseSynthMasterGain);
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    padFilter.connect(destination);
+    noiseFilter.connect(destination);
     const noiseSynthMasterGainLfo = new Tone.LFO({
       frequency: Math.random() * 0.05 + 0.05,
     })

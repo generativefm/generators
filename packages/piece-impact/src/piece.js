@@ -87,7 +87,7 @@ const makeNextNote = (
   return nextNote;
 };
 
-const activate = async ({ destination, sampleLibrary }) => {
+const activate = async ({ sampleLibrary }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
 
   const [regularInstrument, reverseInstrument] = await Promise.all([
@@ -95,9 +95,6 @@ const activate = async ({ destination, sampleLibrary }) => {
     createReverseSampler(samples['vsco2-piano-mf']),
   ]);
 
-  [reverseInstrument, regularInstrument].forEach(instrument =>
-    instrument.connect(destination)
-  );
   const durationsByMidi = new Map();
   const nextNote = makeNextNote(
     reverseInstrument,
@@ -105,7 +102,10 @@ const activate = async ({ destination, sampleLibrary }) => {
     durationsByMidi
   );
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    [reverseInstrument, regularInstrument].forEach(instrument =>
+      instrument.connect(destination)
+    );
     nextNote();
     return () =>
       [regularInstrument, reverseInstrument].forEach(instrument =>

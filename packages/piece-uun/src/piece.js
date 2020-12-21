@@ -20,10 +20,9 @@ const trillNoteSets = [['D5', 'C5'], ['D#5', 'D5'], ['F5', 'D#5']];
 
 const trillGenerators = trillNoteSets.map(notes => makeNoteGenerator(notes));
 
-const activate = async ({ destination, sampleLibrary }) => {
+const activate = async ({ sampleLibrary }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const piano = await createSampler(samples['vsco2-piano-mf']);
-  piano.connect(destination);
   const splatterNotes = transposeUp => {
     const multiplier = Math.pow(Math.random(), 2) * 0.5 + 0.01;
     ['C3', 'D#3', 'G3', 'A#3', 'D4']
@@ -79,7 +78,8 @@ const activate = async ({ destination, sampleLibrary }) => {
     }, `+${Math.random() * 5 + lastTrillTime - 0.5}`);
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    piano.connect(destination);
     playMoment();
     return () => {
       piano.releaseAll(0);

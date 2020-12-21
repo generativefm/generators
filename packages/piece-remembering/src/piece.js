@@ -19,7 +19,7 @@ const getPhrase = octave => {
 const getPhrases = (octaves = [3, 4, 5, 6]) =>
   octaves.map(octave => getPhrase(octave));
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const piano = await createPrerenderableSampler({
     samples,
@@ -34,7 +34,6 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     getDestination: () =>
       Promise.resolve(new Tone.Freeverb(0.5).set({ wet: 0.5 }).toDestination()),
   });
-  piano.connect(destination);
 
   const playPhrase = () => {
     const phrases = getPhrases();
@@ -55,7 +54,8 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     }, `+${phrases[0].length / divisor + Math.random() * 5 + 3}`);
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    piano.connect(destination);
     playPhrase();
 
     return () => {

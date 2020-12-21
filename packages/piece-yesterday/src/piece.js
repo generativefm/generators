@@ -10,7 +10,7 @@ const randomIntBetween = (min, max) =>
 
 const scale = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3', 'C4'];
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const sax = await createPrerenderableSampler({
     samples,
@@ -70,7 +70,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     );
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
     const autoFilter = new Tone.AutoFilter(
       Math.random() / 100,
       1500,

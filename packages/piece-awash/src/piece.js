@@ -8,7 +8,7 @@ import { sampleNames } from '../awash.gfm.manifest.json';
 
 const NOTES = ['C3', 'D#3', 'G3', 'A#3', 'C4', 'D#4', 'G4', 'A#4'];
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const oceanDrumSamples =
     samples['awash__vcsl-ocean-drum'] || samples['vcsl-ocean-drum'];
@@ -39,7 +39,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
   const filter = new Tone.Filter(5000, 'notch', -12);
   guitar.connect(filter);
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
     const delay1 = new Tone.FeedbackDelay({
       feedback: 0.7,
       delayTime: Math.random() * 0.2 + 0.8,

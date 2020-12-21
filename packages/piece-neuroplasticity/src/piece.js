@@ -10,7 +10,7 @@ import { sampleNames } from '../neuroplasticity.gfm.manifest.json';
 const PIANO_NOTES = toss(['C#', 'D#'], [3, 4, 5, 6]);
 const GUITAR_NOTES = ['G2', 'C3', 'G3', 'C4'];
 
-const activate = async ({ destination, sampleLibrary }) => {
+const activate = async ({ sampleLibrary }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const [buffers, piano] = await Promise.all([
     createBuffers(samples['guitar-namaste']),
@@ -20,7 +20,7 @@ const activate = async ({ destination, sampleLibrary }) => {
   const guitarVol = new Tone.Volume(-10);
   const activeSources = [];
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
     const autoFilter = new Tone.AutoFilter(Math.random() / 50, 200, 5)
       .start()
       .connect(destination);

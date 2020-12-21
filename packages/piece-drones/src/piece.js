@@ -8,14 +8,15 @@ import { sampleNames } from '../drones.gfm.manifest.json';
 
 const NOTES = ['C4', 'G4', 'E4'];
 
-const activate = async ({ destination, sampleLibrary }) => {
+const activate = async ({ sampleLibrary }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
-  const masterVol = new Tone.Volume(-12).connect(destination);
+  const masterVol = new Tone.Volume(-12);
   const instrumentBuffers = await Promise.all(
     sampleNames.map(instrumentName => createBuffers(samples[instrumentName]))
   );
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    masterVol.connect(destination);
     const disposableNodes = [];
 
     instrumentBuffers.forEach((buffers, i) => {

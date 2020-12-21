@@ -5,7 +5,7 @@ import {
 } from '@generative-music/utilities';
 import { sampleNames } from '../stratospheric.gfm.manifest.json';
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const activeSources = [];
 
@@ -71,11 +71,12 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     onProgress: val => onProgress(val * 0.5 + 0.5),
   });
 
-  const dustyVol = new Tone.Volume(-15).connect(destination);
+  const dustyVol = new Tone.Volume(-15);
   const getCoilSpankP = () => 1 - ((Tone.now() / 60) % 60) / 60;
   const getDustyP = () => 1 - getCoilSpankP();
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    dustyVol.connect(destination);
     getBufferPlayer(
       coilSpankUrls,
       coilSpankBuffers,

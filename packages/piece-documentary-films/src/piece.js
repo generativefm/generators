@@ -15,7 +15,7 @@ const phrases = [
   ['A#', 'F', 'G', 'D'],
 ];
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
 
   const renderedPitchClasses = sortNotes(
@@ -90,7 +90,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     }, `+${sliceLength * trumpetMultiplier + 1 + Math.random() * 20}`);
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
     const delay = new Tone.FeedbackDelay(0.2, 0.6).connect(destination);
     const trumpetFilter = new Tone.AutoFilter(
       Math.random() / 100 + 0.01

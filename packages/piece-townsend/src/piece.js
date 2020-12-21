@@ -8,7 +8,7 @@ import { sampleNames } from '../townsend.gfm.manifest.json';
 
 const FLUTE_NOTES = ['C3', 'C4', 'G3', 'G4'];
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
 
   const flute = await createPrerenderableSampler({
@@ -39,11 +39,11 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     onProgress: val => onProgress(val * 0.8 + 0.2),
   });
 
-  const fluteGain = new Tone.Gain().connect(destination);
+  const fluteGain = new Tone.Gain();
   flute.connect(fluteGain);
   const intervalTimes = FLUTE_NOTES.map(() => Math.random() * 10 + 5);
   const shortestInterval = Math.min(...intervalTimes);
-  const limiter = new Tone.Limiter().connect(destination);
+  const limiter = new Tone.Limiter();
   const activeSources = [];
 
   const playRandomChord = lastChord => {
@@ -64,7 +64,9 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     }, `+${Math.random() * 10 + 5}`);
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    fluteGain.connect(destination);
+    limiter.connect(destination);
     const fluteGainLfo = new Tone.LFO({
       frequency: Math.random() / 100,
       min: 0,

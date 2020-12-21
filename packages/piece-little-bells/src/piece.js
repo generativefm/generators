@@ -53,7 +53,7 @@ const makeChordInterval = instrument => (
   );
 };
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const getGlockDestination = () =>
     Promise.resolve(
@@ -84,7 +84,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     getDestination: getGlockDestination,
   });
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
     const delay = new Tone.FeedbackDelay({
       delayTime: 8,
       maxDelay: 8,

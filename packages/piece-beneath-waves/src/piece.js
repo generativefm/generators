@@ -6,7 +6,7 @@ import {
 } from '@generative-music/utilities';
 import { sampleNames } from '../beneath-waves.gfm.manifest.json';
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
 
   const getReverb = () => new Tone.Reverb(15).toDestination().generate();
@@ -31,7 +31,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     onProgress: val => onProgress((val + 1) / 2),
   });
 
-  const compressor = new Tone.Compressor().connect(destination);
+  const compressor = new Tone.Compressor();
 
   const synthGain = new Tone.Gain().connect(compressor);
   const lPan = new Tone.Panner(-1);
@@ -108,7 +108,8 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     }, `+${buf.duration * 10 + Math.random() * buf.duration * 10}`);
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    compressor.connect(destination);
     const delay = new Tone.FeedbackDelay({
       feedback: 0.7,
       delayTime: 2,

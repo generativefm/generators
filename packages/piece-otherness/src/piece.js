@@ -39,13 +39,14 @@ const playNote = (instrument, sineSynth, lastNoteMidi) => {
   }, `+${Math.random() * 10 + 10}`);
 };
 
-const activate = async ({ destination, sampleLibrary }) => {
+const activate = async ({ sampleLibrary }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const instrument = await createSampler(samples.otherness);
-  const volume = new Tone.Volume(-5).connect(destination);
+  const volume = new Tone.Volume(-5);
   instrument.connect(volume);
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    volume.connect(destination);
     const sineSynth = new Tone.MonoSynth({
       oscillator: { type: 'sine' },
       envelope: {

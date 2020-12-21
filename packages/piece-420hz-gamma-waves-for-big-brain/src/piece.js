@@ -13,7 +13,7 @@ const getRandomPhase = () => Math.random() * 360;
 
 const MAX_DRONE_GAIN = 0.4;
 
-const activate = async ({ destination, sampleLibrary }) => {
+const activate = async ({ sampleLibrary }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const stereoWidener = new Tone.StereoWidener();
   const crossFade = new Tone.CrossFade().connect(stereoWidener);
@@ -129,9 +129,9 @@ const activate = async ({ destination, sampleLibrary }) => {
     }, `+${transitionTime + nextChordChangeDelay}`);
   };
 
-  stereoWidener.connect(destination);
+  const schedule = ({ destination }) => {
+    stereoWidener.connect(destination);
 
-  const schedule = () => {
     const pianoGainLfo = new Tone.LFO(Math.random() / 10000 + 0.0001).set({
       phase: getRandomPhase(),
     });

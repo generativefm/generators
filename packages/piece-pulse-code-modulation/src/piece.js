@@ -28,7 +28,7 @@ const PITCH_CLASSES = [
 ];
 const DRONE_NOTES = toss(PITCH_CLASSES, DRONE_OCTAVES);
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const getReverb = () =>
     new Tone.Reverb(15)
@@ -71,11 +71,7 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     onProgress: val => onProgress(val * 0.33 + 0.66),
   });
 
-  const filter = new Tone.Filter(Math.random() * 300 + 300).connect(
-    destination
-  );
-  pianoSampler.connect(destination);
-  guitarSampler.connect(destination);
+  const filter = new Tone.Filter(Math.random() * 300 + 300);
 
   const droneGainsByNote = droneSamplers.reduce((dronesHash, sampler, i) => {
     const note = DRONE_NOTES[i];
@@ -170,7 +166,10 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     }, `+${time}`);
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    filter.connect(destination);
+    pianoSampler.connect(destination);
+    guitarSampler.connect(destination);
     droneSamplers.forEach((sampler, i) => {
       const note = DRONE_NOTES[i];
       const play = () => {

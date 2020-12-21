@@ -30,7 +30,7 @@ const repeat = (fn, interval) => {
   schedule();
 };
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const piano = await createPrerenderableSampler({
     notes: NOTES.filter((_, i) => i % 2 === 0),
@@ -51,9 +51,10 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     createSampler(samples['vsco2-violins-susvib']),
     createSampler(samples['vsco2-cello-susvib-f']),
   ]);
-  const volume = new Tone.Volume(-5).connect(destination);
+  const volume = new Tone.Volume(-5);
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    volume.connect(destination);
     const delay = new Tone.FeedbackDelay({
       feedback: 0.5,
       delayTime: 0.44,

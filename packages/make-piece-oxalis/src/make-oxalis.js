@@ -9,13 +9,13 @@ import {
 const getReverb = () =>
   new Tone.Reverb(15)
     .set({ wet: 0.5 })
-    .toMaster()
+    .toDestination()
     .generate();
 
 const makeOxalis = ({ notes = [], renderedInstrumentPrefix = '' }) => {
   const renderedPianoName = `${renderedInstrumentPrefix}__vsco2-piano-mf`;
   const renderedGlockName = `${renderedInstrumentPrefix}__vsco2-glock`;
-  const activate = async ({ destination, sampleLibrary, onProgress }) => {
+  const activate = async ({ sampleLibrary, onProgress }) => {
     const samples = await sampleLibrary.request(Tone.context, [
       [renderedPianoName, 'vsco2-piano-mf'],
       [renderedGlockName, 'vsco2-glock'],
@@ -45,7 +45,7 @@ const makeOxalis = ({ notes = [], renderedInstrumentPrefix = '' }) => {
     });
     const glockVol = new Tone.Volume(-15);
 
-    const schedule = () => {
+    const schedule = ({ destination }) => {
       const delay = new Tone.FeedbackDelay({
         delayTime: 5,
         maxDelay: 5,

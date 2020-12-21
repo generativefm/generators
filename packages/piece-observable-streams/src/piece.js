@@ -113,7 +113,7 @@ const notes$ = scheduledNote().pipe(
   humanize()
 );
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const violinVol = new Tone.Volume(-15);
   const corAnglaisVol = new Tone.Volume(-40);
@@ -164,11 +164,11 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     onProgress: val => onProgress(0.66 + val * 0.33),
   });
 
-  piano.connect(destination);
   violin.connect(violinVol);
   corAnglais.connect(corAnglaisVol);
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    piano.connect(destination);
     const violinDelay = new Tone.FeedbackDelay({
       feedback: 0.75,
       delayTime: 0.08,

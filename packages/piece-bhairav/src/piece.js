@@ -73,7 +73,7 @@ function* makeRagaGenerator(raga) {
   }
 }
 
-const activate = async ({ destination, sampleLibrary, onProgress }) => {
+const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const getReverb = () =>
     new Tone.Reverb(15)
@@ -90,7 +90,6 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     notes: toss([0, 4, 7].map(transpose('C#')), [4, 5]),
     onProgress: val => onProgress(val * 0.5),
   });
-  piano.connect(destination);
 
   const cellos = await createPrerenderableSampler({
     samples,
@@ -132,7 +131,9 @@ const activate = async ({ destination, sampleLibrary, onProgress }) => {
     }, `+${time + Math.random() - 0.5}`);
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    piano.connect(destination);
+
     const ragaGenerator = makeRagaGenerator(ragaBhairav);
 
     Tone.Transport.scheduleOnce(() => {

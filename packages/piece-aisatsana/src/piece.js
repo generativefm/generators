@@ -14,7 +14,7 @@ const SONG_LENGTH = 301;
 
 const getPiano = samples => createSampler(samples['vsco2-piano-mf']);
 
-const activate = async ({ destination, sampleLibrary }) => {
+const activate = async ({ sampleLibrary }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const notes = instructions.tracks[1].notes.slice(0);
   const eighthNotes = [];
@@ -45,9 +45,10 @@ const activate = async ({ destination, sampleLibrary }) => {
   const chain = new Chain(phrasesWithIndex);
 
   const piano = await getPiano(samples);
-  piano.connect(destination);
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    piano.connect(destination);
+
     const schedulePhrase = () => {
       const phrase = chain.walk();
       phrase.forEach(str => {
