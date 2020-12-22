@@ -6,7 +6,7 @@
   "id": "yesterday",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["calm", "sax", "acoustic"],
+  "tags": ["calm", "acoustic"],
   "releaseDate": "2019-08-11T00:00:00.000Z",
   "sampleNames": [["yesterday__vcsl-tenor-sax-vib", "vcsl-tenor-sax-vib"]]
 }

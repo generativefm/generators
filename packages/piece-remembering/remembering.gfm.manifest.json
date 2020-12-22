@@ -5,7 +5,7 @@
   "id": "remembering",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["piano", "acoustic"],
+  "tags": ["acoustic"],
   "releaseDate": "2019-10-20T00:00:00.000Z",
   "visualizationType": "squareCut",
   "sampleNames": [["remembering__vsco2-piano-mf", "vsco2-piano-mf"]]

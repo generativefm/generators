@@ -6,13 +6,7 @@
   "id": "neuroplasticity",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": [
-    "electronic",
-    "guitar"
-  ],
+  "tags": ["electronic"],
   "releaseDate": "2019-05-26T00:00:00.000Z",
-  "sampleNames": [
-    "guitar-namaste",
-    "vsco2-piano-mf"
-  ]
+  "sampleNames": ["guitar-namaste", "vsco2-piano-mf"]
 }

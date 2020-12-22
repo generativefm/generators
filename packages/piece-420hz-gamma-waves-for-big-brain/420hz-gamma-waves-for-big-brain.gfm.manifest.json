@@ -5,17 +5,8 @@
   "id": "420hz-gamma-waves-for-big-brain",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": [
-    "dream",
-    "electronic",
-    "drone",
-    "piano"
-  ],
+  "tags": ["dream", "electronic", "drone"],
   "releaseDate": "2020-01-21T00:00:00.000Z",
   "visualizationType": "squareCut",
-  "sampleNames": [
-    "waves",
-    "vsco2-piano-mf",
-    "sso-chorus-male"
-  ]
+  "sampleNames": ["waves", "vsco2-piano-mf", "sso-chorus-male"]
 }
