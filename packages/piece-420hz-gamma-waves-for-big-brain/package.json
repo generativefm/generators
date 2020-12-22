@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-420hz-gamma-waves-for-big-brain",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "4.5.0",
+  "version": "4.6.0",
   "generativeFmManifest": "420hz-gamma-waves-for-big-brain.gfm.manifest.json",
   "repository": {
     "type": "git",
