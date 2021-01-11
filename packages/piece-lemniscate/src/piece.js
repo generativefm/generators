@@ -23,7 +23,7 @@ const generateTiming = (instruments, getPlayProbability) => {
   notes.forEach(note => {
     const interval =
       Math.random() * (MAX_REPEAT_S - MIN_REPEAT_S) + MIN_REPEAT_S;
-    const delay = Math.random() * (MAX_REPEAT_S - MIN_REPEAT_S) - MIN_REPEAT_S;
+    const delay = interval - MIN_REPEAT_S;
     Tone.Transport.scheduleRepeat(
       () => {
         const random = Math.random();
