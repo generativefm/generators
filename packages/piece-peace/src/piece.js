@@ -38,11 +38,11 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     const playRandom = lastNote => {
       const eligibleNotes = NOTES.filter(note => note !== lastNote);
       const randomNote =
-        eligibleNotes[Math.floor(Math.random() * eligibleNotes.length)];
-      flute.triggerAttackRelease(randomNote, Math.random() * 2 + 10, '+1');
+        eligibleNotes[Math.floor(window.generativeMusic.rng() * eligibleNotes.length)];
+      flute.triggerAttackRelease(randomNote, window.generativeMusic.rng() * 2 + 10, '+1');
       Tone.Transport.scheduleOnce(() => {
         playRandom(randomNote);
-      }, `+${Math.random() * 10 + 15}`);
+      }, `+${window.generativeMusic.rng() * 10 + 15}`);
     };
 
     playRandom();

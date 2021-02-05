@@ -140,7 +140,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     padFilter.connect(destination);
     noiseFilter.connect(destination);
     const noiseSynthMasterGainLfo = new Tone.LFO({
-      frequency: Math.random() * 0.05 + 0.05,
+      frequency: window.generativeMusic.rng() * 0.05 + 0.05,
     })
       .set({ phase: 90 })
       .connect(noiseSynthMasterGain.gain)
@@ -149,7 +149,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     const noiseSynthMasterGainLfoFrequencyLfo = new Tone.LFO({
       min: 0.01,
       max: 0.05,
-      frequency: Math.random() * 0.05 + 0.05,
+      frequency: window.generativeMusic.rng() * 0.05 + 0.05,
     })
       .connect(noiseSynthMasterGainLfo.frequency)
       .start();
@@ -157,7 +157,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     const padFilterFreqLfo = new Tone.LFO({
       min: 100,
       max: 250,
-      frequency: Math.random() * 0.05 + 0.05,
+      frequency: window.generativeMusic.rng() * 0.05 + 0.05,
     })
       .connect(padFilter.frequency)
       .start();
@@ -165,7 +165,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     const noiseFilterFreqLfo = new Tone.LFO({
       min: 5000,
       max: 10000,
-      frequency: Math.random() * 0.05 + 0.05,
+      frequency: window.generativeMusic.rng() * 0.05 + 0.05,
     })
       .connect(noiseFilter.frequency)
       .start();
@@ -173,21 +173,21 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     noisePlayer.start();
 
     const playRandomChord = () => {
-      const root = Math.floor(Math.random() * (NOTES.length - 5));
+      const root = Math.floor(window.generativeMusic.rng() * (NOTES.length - 5));
       const chord = [root, root + 2, root + 5];
       const notes = chord.map(index => NOTES[index]);
-      const baseDuration = Math.random() * 3 + 4;
+      const baseDuration = window.generativeMusic.rng() * 3 + 4;
       notes.forEach(note => {
         padSynth.triggerAttackRelease(
           note,
-          baseDuration + Math.random() - 0.5,
-          `+${Math.random()}`
+          baseDuration + window.generativeMusic.rng() - 0.5,
+          `+${window.generativeMusic.rng()}`
         );
       });
 
       Tone.Transport.scheduleOnce(() => {
         playRandomChord();
-      }, `+${Math.random() * 3 + 4 + Math.random() * 3 + 4}`);
+      }, `+${window.generativeMusic.rng() * 3 + 4 + window.generativeMusic.rng() * 3 + 4}`);
     };
 
     playRandomChord();

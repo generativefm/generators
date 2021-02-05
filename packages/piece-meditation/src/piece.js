@@ -28,17 +28,17 @@ const TONIC_PITCH_CLASSES = ['C', 'C#', 'D', 'D#'];
 const startInterval = (notes, minIntervalInSeconds, instrument) => {
   const playNotes = () => {
     instrument.triggerAttack(getRandomElement(notes), '+1');
-    if (Math.random() > P_SECOND_NOTE) {
+    if (window.generativeMusic.rng() > P_SECOND_NOTE) {
       instrument.triggerAttack(
         getRandomElement(notes),
         `+${1 +
-          Math.random() * SECOND_NOTE_DELAY_MULTIPLIER_S +
+          window.generativeMusic.rng() * SECOND_NOTE_DELAY_MULTIPLIER_S +
           MIN_SECOND_NOTE_DELAY_S}`
       );
     }
     Tone.Transport.scheduleOnce(() => {
       playNotes();
-    }, `+${Math.random() * INTERVAL_MULTIPLIER_S + minIntervalInSeconds}`);
+    }, `+${window.generativeMusic.rng() * INTERVAL_MULTIPLIER_S + minIntervalInSeconds}`);
   };
   playNotes();
 };

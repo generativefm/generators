@@ -12,7 +12,7 @@ const getPhrase = octave => {
     .concat()
     .concat([`${PITCH_CLASSES[0]}${octave + 1}`]);
   return Array.from({ length: 4 }).map(
-    () => notes[Math.floor(Math.random() * notes.length)]
+    () => notes[Math.floor(window.generativeMusic.rng() * notes.length)]
   );
 };
 
@@ -37,13 +37,13 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
   const playPhrase = () => {
     const phrases = getPhrases();
-    const divisor = Math.random() * 0.15 + 0.5;
+    const divisor = window.generativeMusic.rng() * 0.15 + 0.5;
     phrases.forEach(phrase =>
       phrase.forEach((note, i) => {
-        if (Math.random() < 0.85) {
+        if (window.generativeMusic.rng() < 0.85) {
           piano.triggerAttack(
             note,
-            `+${i / divisor + Math.random() / 5 - 0.1}`
+            `+${i / divisor + window.generativeMusic.rng() / 5 - 0.1}`
           );
         }
       })
@@ -51,7 +51,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
     Tone.Transport.scheduleOnce(() => {
       playPhrase();
-    }, `+${phrases[0].length / divisor + Math.random() * 5 + 3}`);
+    }, `+${phrases[0].length / divisor + window.generativeMusic.rng() * 5 + 3}`);
   };
 
   const schedule = ({ destination }) => {

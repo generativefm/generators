@@ -71,7 +71,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     onProgress: val => onProgress(val * 0.33 + 0.66),
   });
 
-  const filter = new Tone.Filter(Math.random() * 300 + 300);
+  const filter = new Tone.Filter(window.generativeMusic.rng() * 300 + 300);
 
   const droneGainsByNote = droneSamplers.reduce((dronesHash, sampler, i) => {
     const note = DRONE_NOTES[i];
@@ -82,7 +82,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   }, {});
 
   const playChord = (notes = getSimilarNotes([], DRONE_OCTAVES)) => {
-    const time = Math.random() * 30 + 30;
+    const time = window.generativeMusic.rng() * 30 + 30;
     notes.forEach(note => {
       const { gain } = droneGainsByNote[note];
       gain.cancelScheduledValues(Tone.now());
@@ -90,7 +90,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
       gain.linearRampToValueAtTime(1, `+${time / 2}`);
     });
     const nextNotes = getSimilarNotes(
-      notes.filter(() => Math.random() < 0.5),
+      notes.filter(() => window.generativeMusic.rng() < 0.5),
       DRONE_OCTAVES
     );
     const notesToMute = notes.filter(note => !nextNotes.includes(note));
@@ -101,12 +101,12 @@ const activate = async ({ sampleLibrary, onProgress }) => {
         gain.setValueAtTime(gain.value, Tone.now());
         gain.linearRampToValueAtTime(0, `+${time / 2}`);
       });
-      if (Math.random() < 0.75) {
+      if (window.generativeMusic.rng() < 0.75) {
         let primarySampler;
         let primaryOctaves;
         let secondarySampler;
         let secondaryOctaves;
-        if (Math.random() < 0.5) {
+        if (window.generativeMusic.rng() < 0.5) {
           primarySampler = pianoSampler;
           primaryOctaves = PIANO_OCTAVES;
           secondarySampler = guitarSampler;
@@ -118,19 +118,19 @@ const activate = async ({ sampleLibrary, onProgress }) => {
           secondaryOctaves = PIANO_OCTAVES;
         }
         const firstPc = getPitchClass(getRandomElement(notes));
-        const noteTime = 1 + Math.random();
+        const noteTime = 1 + window.generativeMusic.rng();
         primarySampler.triggerAttack(
           `${firstPc}${getRandomElement(primaryOctaves)}`,
           `+${noteTime}`
         );
-        if (Math.random() < 0.5) {
+        if (window.generativeMusic.rng() < 0.5) {
           secondarySampler.triggerAttack(
             `${firstPc}${getRandomElement(secondaryOctaves)}`,
             `+${noteTime * 3}`
           );
         }
-        if (Math.random() < 0.5) {
-          const otherNoteTime = 3 + Math.random() * 2;
+        if (window.generativeMusic.rng() < 0.5) {
+          const otherNoteTime = 3 + window.generativeMusic.rng() * 2;
           const secondPc = getPitchClass(
             getRandomElement(
               notes.filter(note => getPitchClass(note) !== firstPc)
@@ -141,7 +141,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
             `+${otherNoteTime}`
           );
 
-          if (Math.random() < 0.5) {
+          if (window.generativeMusic.rng() < 0.5) {
             secondarySampler.triggerAttack(
               `${secondPc}${getRandomElement(secondaryOctaves)}`,
               `+${otherNoteTime * 3}`
@@ -156,8 +156,8 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   };
 
   const changeFilterFrequency = () => {
-    const time = Math.random() * 30 + 30;
-    const frequency = Math.random() * 300 + 300;
+    const time = window.generativeMusic.rng() * 30 + 30;
+    const frequency = window.generativeMusic.rng() * 300 + 300;
     filter.frequency.cancelScheduledValues(Tone.now());
     filter.frequency.setValueAtTime(filter.frequency.value, Tone.now());
     filter.frequency.linearRampToValueAtTime(frequency, `+${time}`);
@@ -176,7 +176,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
         sampler.triggerAttack(note, '+1');
         Tone.Transport.scheduleOnce(() => {
           play();
-        }, `+${30 - Math.random() * 5}`);
+        }, `+${30 - window.generativeMusic.rng() * 5}`);
       };
       play();
     });

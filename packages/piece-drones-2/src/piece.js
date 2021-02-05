@@ -42,11 +42,11 @@ const activate = async ({ sampleLibrary }) => {
 
   const schedule = ({ destination }) => {
     filter.connect(destination);
-    const autoFilter = new Tone.AutoFilter(Math.random() / 10, 150, 4)
+    const autoFilter = new Tone.AutoFilter(window.generativeMusic.rng() / 10, 150, 4)
       .connect(filter)
       .start();
 
-    const lfoMin = Math.random() / 100;
+    const lfoMin = window.generativeMusic.rng() / 100;
     const lfoMax = lfoMin * 10;
 
     const frequencyLfo = new Tone.LFO({ min: lfoMin, max: lfoMax });
@@ -59,7 +59,7 @@ const activate = async ({ sampleLibrary }) => {
         drone(note, autoFilter, -36);
         Tone.Transport.scheduleOnce(() => {
           playDrone();
-        }, `+${Math.random() * 20 + 40}`);
+        }, `+${window.generativeMusic.rng() * 20 + 40}`);
       };
       playDrone();
     });
@@ -69,17 +69,17 @@ const activate = async ({ sampleLibrary }) => {
         drone(note, droneDestination, -24, true);
         Tone.Transport.scheduleOnce(() => {
           playDrone();
-        }, `+${Math.random() * 45 + 45}`);
+        }, `+${window.generativeMusic.rng() * 45 + 45}`);
       };
       Tone.Transport.scheduleOnce(() => {
         playDrone();
       }, `+${delay}`);
     };
-    const firstDroneDelay = Math.random() * 15 + 15;
-    const secondDroneDelay = firstDroneDelay + Math.random() * 30;
+    const firstDroneDelay = window.generativeMusic.rng() * 15 + 15;
+    const secondDroneDelay = firstDroneDelay + window.generativeMusic.rng() * 30;
     startDrone('D5', filter, firstDroneDelay);
     startDrone('E5', filter, secondDroneDelay);
-    startDrone('C5', filter, 60 + Math.random() * 60);
+    startDrone('C5', filter, 60 + window.generativeMusic.rng() * 60);
 
     return () => {
       activeSources.forEach(source => source.dispose());

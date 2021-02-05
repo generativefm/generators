@@ -1,3 +1,3 @@
-const getRandomNumberBetween = (min, max) => Math.random() * (max - min) + min;
+const getRandomNumberBetween = (min, max) => window.generativeMusic.rng() * (max - min) + min;
 
 export default getRandomNumberBetween;

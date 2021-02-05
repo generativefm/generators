@@ -51,7 +51,7 @@ const makeOxalis = ({ notes = [], renderedInstrumentPrefix = '' }) => {
         maxDelay: 5,
         feedback: 0.5,
       }).connect(destination);
-      const first = Math.floor(Math.random() * notes.length);
+      const first = Math.floor(window.generativeMusic.rng() * notes.length);
       glockVol.connect(delay);
       glock.connect(glockVol);
       piano.connect(delay);
@@ -64,13 +64,13 @@ const makeOxalis = ({ notes = [], renderedInstrumentPrefix = '' }) => {
           }
           Tone.Transport.scheduleOnce(() => {
             piano.triggerAttack(note, '+1');
-            if (Math.random() < 0.05) {
+            if (window.generativeMusic.rng() < 0.05) {
               const pc = note.slice(0, note.length - 1);
               const oct = Number.parseInt(note.slice(-1), 10);
               glock.triggerAttack(`${pc}${Math.max(oct + 1, 5)}`, '+1');
             }
             play();
-          }, `+${Math.random() * 15 + (initialized || isFirst ? 15 : 0) * (i === 0 ? 3 : 1)}`);
+          }, `+${window.generativeMusic.rng() * 15 + (initialized || isFirst ? 15 : 0) * (i === 0 ? 3 : 1)}`);
           initialized = true;
         };
         play();

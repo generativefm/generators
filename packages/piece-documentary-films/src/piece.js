@@ -61,18 +61,18 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
     Tone.Transport.scheduleOnce(() => {
       droneTuba(note);
-    }, `+${Math.random() * 3 + 2}`);
+    }, `+${window.generativeMusic.rng() * 3 + 2}`);
   };
 
   const trumpetPhrase = () => {
-    const trumpetOct = Math.floor(Math.random() * 2) + 2;
+    const trumpetOct = Math.floor(window.generativeMusic.rng() * 2) + 2;
     const tromboneOct = 1;
-    const trumpetMultiplier = Math.random() * 10 + 5;
-    const tromboneMultiplier = Math.random() * 10 + 5;
-    const tromboneDelay = Math.random() * 15 + 15;
-    const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+    const trumpetMultiplier = window.generativeMusic.rng() * 10 + 5;
+    const tromboneMultiplier = window.generativeMusic.rng() * 10 + 5;
+    const tromboneDelay = window.generativeMusic.rng() * 15 + 15;
+    const phrase = phrases[Math.floor(window.generativeMusic.rng() * phrases.length)];
     const sliceLength = Math.floor(
-      Math.pow(Math.random(), 0.1) * phrase.length
+      Math.pow(window.generativeMusic.rng(), 0.1) * phrase.length
     );
     phrase.slice(0, sliceLength).forEach((pc, i) => {
       trumpet.triggerAttack(
@@ -87,22 +87,22 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
     Tone.Transport.scheduleOnce(() => {
       trumpetPhrase();
-    }, `+${sliceLength * trumpetMultiplier + 1 + Math.random() * 20}`);
+    }, `+${sliceLength * trumpetMultiplier + 1 + window.generativeMusic.rng() * 20}`);
   };
 
   const schedule = ({ destination }) => {
     const delay = new Tone.FeedbackDelay(0.2, 0.6).connect(destination);
     const trumpetFilter = new Tone.AutoFilter(
-      Math.random() / 100 + 0.01
+      window.generativeMusic.rng() / 100 + 0.01
     ).connect(delay);
     trumpetFilter.start();
     trumpet.connect(trumpetFilter);
     const tromboneFilter = new Tone.AutoFilter(
-      Math.random() / 100 + 0.01
+      window.generativeMusic.rng() / 100 + 0.01
     ).connect(delay);
     tromboneFilter.start();
     trombone.connect(tromboneFilter);
-    const tubaFilter = new Tone.AutoFilter(Math.random() / 100 + 0.01).connect(
+    const tubaFilter = new Tone.AutoFilter(window.generativeMusic.rng() / 100 + 0.01).connect(
       destination
     );
     tubaFilter.start();

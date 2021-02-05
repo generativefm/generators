@@ -37,7 +37,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   const vol = new Tone.Volume(-10);
   const activeSources = [];
   const play = notes => {
-    const note = notes[Math.floor(Math.random() * notes.length)];
+    const note = notes[Math.floor(window.generativeMusic.rng() * notes.length)];
     const buf = chorus.get(note);
     const source = new Tone.BufferSource(buf)
       .set({
@@ -56,19 +56,19 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     source.start('+1', 0, buf.duration / playbackRate);
     activeSources.push(source);
 
-    if (Math.random() < 0.15) {
+    if (window.generativeMusic.rng() < 0.15) {
       const [pc] = note;
-      trumpet.triggerAttack(`${pc}3`, `${1 + Math.random() * 5}`);
+      trumpet.triggerAttack(`${pc}3`, `${1 + window.generativeMusic.rng() * 5}`);
     }
 
     Tone.Transport.scheduleOnce(() => {
       play(notes);
-    }, `+${buf.duration / playbackRate - 4 + Math.random() * 5 - 2.5}`);
+    }, `+${buf.duration / playbackRate - 4 + window.generativeMusic.rng() * 5 - 2.5}`);
   };
 
   const schedule = ({ destination }) => {
     compressor.connect(destination);
-    const autoFilter = new Tone.AutoFilter(Math.random() / 100 + 0.01, 100, 4);
+    const autoFilter = new Tone.AutoFilter(window.generativeMusic.rng() / 100 + 0.01, 100, 4);
     autoFilter.connect(compressor);
     autoFilter.start();
 

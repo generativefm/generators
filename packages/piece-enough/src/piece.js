@@ -26,22 +26,22 @@ const activate = async ({ sampleLibrary }) => {
     .flat();
 
   const playChord = (first = false) => {
-    let chord = notes.filter(() => Math.random() < 0.5).slice(0, 4);
+    let chord = notes.filter(() => window.generativeMusic.rng() < 0.5).slice(0, 4);
     while (first && chord.length === 0) {
-      chord = notes.filter(() => Math.random() < 0.5).slice(0, 4);
+      chord = notes.filter(() => window.generativeMusic.rng() < 0.5).slice(0, 4);
     }
     const immediateNoteIndex = first
-      ? Math.floor(Math.random() * chord.length)
+      ? Math.floor(window.generativeMusic.rng() * chord.length)
       : -1;
     chord.forEach((note, i) =>
       corAnglais.triggerAttack(
         note,
-        `+${immediateNoteIndex === i ? 0 : Math.random() * 2}`
+        `+${immediateNoteIndex === i ? 0 : window.generativeMusic.rng() * 2}`
       )
     );
     Tone.Transport.scheduleOnce(() => {
       playChord();
-    }, `+${Math.random() * 5 + 12}`);
+    }, `+${window.generativeMusic.rng() * 5 + 12}`);
   };
 
   const schedule = ({ destination }) => {

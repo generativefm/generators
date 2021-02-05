@@ -59,11 +59,11 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   });
 
   const play = () => {
-    const bufferIndex = Math.round(Math.random() * 0.5);
+    const bufferIndex = Math.round(window.generativeMusic.rng() * 0.5);
     const buffers = [dryerBuffers, wetterBuffers].map(
       bufferArray => bufferArray[bufferIndex]
     );
-    const playbackRate = Math.random() * 0.2 + 0.1;
+    const playbackRate = window.generativeMusic.rng() * 0.2 + 0.1;
     buffers.forEach(buf => {
       const source = new Tone.BufferSource(buf)
         .set({
@@ -85,7 +85,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
     Tone.Transport.scheduleOnce(() => {
       play();
-    }, `+${buffers[0].duration / playbackRate - Math.random() * 15 - 15}`);
+    }, `+${buffers[0].duration / playbackRate - window.generativeMusic.rng() * 15 - 15}`);
   };
 
   const schedule = ({ destination }) => {
@@ -95,7 +95,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
       feedback: 0.8,
     });
     filter.connect(feedbackDelay);
-    const lfo = new Tone.LFO(Math.random() * 0.005 + 0.005).set({
+    const lfo = new Tone.LFO(window.generativeMusic.rng() * 0.005 + 0.005).set({
       phase: 90,
     });
     lfo.connect(crossFade.fade);

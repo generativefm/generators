@@ -30,13 +30,13 @@ const notes = OCTAVES.reduce(
 
 const playNote = (instrument, sineSynth, lastNoteMidi) => {
   const newNotes = notes.filter(n => Tone.Midi(n).toMidi() !== lastNoteMidi);
-  const note = newNotes[Math.floor(Math.random() * newNotes.length)];
+  const note = newNotes[Math.floor(window.generativeMusic.rng() * newNotes.length)];
   instrument.triggerAttack(note, '+1.5');
   const pitchClass = note.slice(0, -1);
   sineSynth.triggerAttackRelease(`${pitchClass}1`, 5, '+1.5');
   Tone.Transport.scheduleOnce(() => {
     playNote(instrument, sineSynth, Tone.Midi(note).toMidi());
-  }, `+${Math.random() * 10 + 10}`);
+  }, `+${window.generativeMusic.rng() * 10 + 10}`);
 };
 
 const activate = async ({ sampleLibrary }) => {

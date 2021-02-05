@@ -37,14 +37,14 @@ const CHORDS_BY_NOTE = Scale.chords(SCALE)
 
 const minDelay = 700;
 
-const getDelayTimeInMS = () => Math.random() * 10000 + minDelay;
+const getDelayTimeInMS = () => window.generativeMusic.rng() * 10000 + minDelay;
 
 const scheduledNote = (noteArg, timeArg) =>
   Observable.create(observer => {
     let note = noteArg;
     let time = timeArg;
     if (typeof note === 'undefined') {
-      note = NOTES[Math.floor(Math.random() * NOTES.length)];
+      note = NOTES[Math.floor(window.generativeMusic.rng() * NOTES.length)];
     }
     if (typeof time === 'undefined') {
       time = getDelayTimeInMS() / 1000;
@@ -56,12 +56,12 @@ const scheduledNote = (noteArg, timeArg) =>
   });
 
 const humanize = () => source =>
-  source.pipe(mergeMap(note => scheduledNote(note, Math.random() / 10)));
+  source.pipe(mergeMap(note => scheduledNote(note, window.generativeMusic.rng() / 10)));
 
 const delayed = () => source =>
   source.pipe(
     mergeMap(note => {
-      if (Math.random() < 0.2) {
+      if (window.generativeMusic.rng() < 0.2) {
         return scheduledNote(note);
       }
       return of(note);
@@ -71,10 +71,10 @@ const delayed = () => source =>
 const chord = p => source =>
   source.pipe(
     mergeMap(note => {
-      if (CHORDS_BY_NOTE.has(note) && Math.random() < p) {
+      if (CHORDS_BY_NOTE.has(note) && window.generativeMusic.rng() < p) {
         const chordsWithNote = CHORDS_BY_NOTE.get(note);
         return from(
-          chordsWithNote[Math.floor(Math.random() * chordsWithNote.length)]
+          chordsWithNote[Math.floor(window.generativeMusic.rng() * chordsWithNote.length)]
         );
       }
       return of(note);
@@ -190,7 +190,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     violinVol.chain(violinDelay, destination);
     corAnglaisVol.chain(corAnglaisDelay1, corAnglaisDelay2, destination);
 
-    const intervals = COR_ANGALAIS_NOTES.map(() => Math.random() * 10 + 10);
+    const intervals = COR_ANGALAIS_NOTES.map(() => window.generativeMusic.rng() * 10 + 10);
     const minInterval = Math.min(...intervals);
     COR_ANGALAIS_NOTES.forEach((note, i) => {
       const interval = intervals[i];
@@ -203,7 +203,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     let lastViolinTimeS = Tone.now();
     const noteSubscription = notes$.subscribe(note => {
       if (
-        Math.random() < 0.1 &&
+        window.generativeMusic.rng() < 0.1 &&
         getOctave(note) > 3 &&
         Tone.now() - lastViolinTimeS > 20
       ) {

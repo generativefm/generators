@@ -59,7 +59,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
       delayTime: 0.2,
       wet: 0.5,
     });
-    const delay2Time = Math.random() * 10 + 20;
+    const delay2Time = window.generativeMusic.rng() * 10 + 20;
     const delay2 = new Tone.FeedbackDelay({
       feedback: 0.6,
       delayTime: delay2Time,
@@ -72,12 +72,12 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     violinNotes.forEach(note => {
       Tone.Transport.scheduleRepeat(
         () => violins.triggerAttack(note, '+1'),
-        Math.random() * 120 + 60,
-        `+${Math.random() * 15 + 15}`
+        window.generativeMusic.rng() * 120 + 60,
+        `+${window.generativeMusic.rng() * 15 + 15}`
       );
     });
 
-    const intervals = pianoNotes.map(() => Math.random() * 30 + 30);
+    const intervals = pianoNotes.map(() => window.generativeMusic.rng() * 30 + 30);
     const minInterval = Math.min(...intervals);
     pianoNotes.forEach((note, i) => {
       const intervalTime = intervals[i];

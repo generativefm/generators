@@ -6,7 +6,7 @@ const getSimilarNotes = (currentNotes, octaves) => {
     new Set(currentNotes.map(note => getPitchClass(note)))
   );
   return toss(getSimilarPitchClasses(pitchClasses), octaves)
-    .filter(() => Math.random() < (11 - pitchClasses.length) / 10)
+    .filter(() => window.generativeMusic.rng() < (11 - pitchClasses.length) / 10)
     .reduce(
       (noYuckyIntervals, note) =>
         noYuckyIntervals.every(otherNote => {

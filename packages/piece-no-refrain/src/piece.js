@@ -27,12 +27,12 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   const rightHandPcs = ['C', 'D', 'E', 'G', 'B', 'C'];
   let rightHandOct = 4;
   const leftHand = () => {
-    const time = Math.random() / 1.5 + 0.7;
+    const time = window.generativeMusic.rng() / 1.5 + 0.7;
     ['A2', 'C3', 'G3', 'G2', 'D3', 'G3'].forEach((note, i) => {
-      piano.triggerAttack(note, `+${1 + i * time + Math.random() / 5 - 0.1}`);
-      if (Math.random() < 0.8) {
+      piano.triggerAttack(note, `+${1 + i * time + window.generativeMusic.rng() / 5 - 0.1}`);
+      if (window.generativeMusic.rng() < 0.8) {
         const rightHandPcIndex = Math.floor(
-          Math.random() * rightHandPcs.length
+          window.generativeMusic.rng() * rightHandPcs.length
         );
         const rightHandPc = rightHandPcs[rightHandPcIndex];
         const oct =
@@ -41,13 +41,13 @@ const activate = async ({ sampleLibrary, onProgress }) => {
             : rightHandOct + 1;
         piano.triggerAttack(
           `${rightHandPc}${oct}`,
-          `+${1 + i * time + Math.random() / 5 - 0.1}`
+          `+${1 + i * time + window.generativeMusic.rng() / 5 - 0.1}`
         );
       }
     });
 
-    if (Math.random() < 0.1) {
-      const rightHandPcIndex = Math.floor(Math.random() * rightHandPcs.length);
+    if (window.generativeMusic.rng() < 0.1) {
+      const rightHandPcIndex = Math.floor(window.generativeMusic.rng() * rightHandPcs.length);
       const rightHandPc = rightHandPcs[rightHandPcIndex];
       const oct =
         rightHandPcIndex < rightHandPcs.length - 1
@@ -55,19 +55,19 @@ const activate = async ({ sampleLibrary, onProgress }) => {
           : rightHandOct + 1;
       piano.triggerAttack(
         `${rightHandPc}${oct}`,
-        `+${1 + 12 * time + Math.random() / 5 - 0.1}`
+        `+${1 + 12 * time + window.generativeMusic.rng() / 5 - 0.1}`
       );
     }
 
-    if (rightHandOct === 4 && Math.random() < 0.05) {
+    if (rightHandOct === 4 && window.generativeMusic.rng() < 0.05) {
       rightHandOct = 5;
-    } else if (rightHandOct === 5 && Math.random() < 0.1) {
+    } else if (rightHandOct === 5 && window.generativeMusic.rng() < 0.1) {
       rightHandOct = 4;
     }
 
     Tone.Transport.scheduleOnce(() => {
       leftHand();
-    }, `+${time * 16 + Math.random() * 1.5}`);
+    }, `+${time * 16 + window.generativeMusic.rng() * 1.5}`);
   };
 
   const schedule = ({ destination }) => {

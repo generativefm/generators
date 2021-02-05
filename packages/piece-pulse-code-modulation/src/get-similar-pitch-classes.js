@@ -39,7 +39,7 @@ const getSimilarPitchClasses = (includingPitchClasses = []) => {
   return Array.from(
     new Set([
       ...includingPitchClasses,
-      ...Array.from(randomCompatibleScale).filter(() => Math.random() < 0.5),
+      ...Array.from(randomCompatibleScale).filter(() => window.generativeMusic.rng() < 0.5),
     ])
   );
 };

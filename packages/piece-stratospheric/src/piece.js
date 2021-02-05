@@ -10,13 +10,13 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   const activeSources = [];
 
   const getBufferPlayer = (bufferUrls, buffers, bufferDestination, getP) => {
-    const firstDelays = bufferUrls.map(() => Math.random() * 90);
+    const firstDelays = bufferUrls.map(() => window.generativeMusic.rng() * 90);
     const minFirstDelay = Math.min(...firstDelays);
     bufferUrls
       .map((url, i) => buffers.get(i))
       .forEach((buffer, i) => {
         const play = () => {
-          if (Math.random() < getP()) {
+          if (window.generativeMusic.rng() < getP()) {
             const source = new Tone.BufferSource(buffer).set({
               playbackRate: 0.75,
               onended: () => {
@@ -33,7 +33,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
           Tone.Transport.scheduleOnce(() => {
             play();
-          }, `+${Math.random() * 60 + 30}`);
+          }, `+${window.generativeMusic.rng() * 60 + 30}`);
         };
         const firstDelay = firstDelays[i] - minFirstDelay;
         Tone.Transport.scheduleOnce(() => {

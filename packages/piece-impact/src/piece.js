@@ -51,7 +51,7 @@ const makeNextNote = (
           ),
         });
         nextNote();
-        if (Math.random() < EXTRA_NOTE_CHANCE_P) {
+        if (window.generativeMusic.rng() < EXTRA_NOTE_CHANCE_P) {
           const extraNote = getRandomElement(regularNotes);
           Tone.Transport.scheduleOnce(() => {
             regularInstrument.triggerAttack(
@@ -60,7 +60,7 @@ const makeNextNote = (
               EXTRA_NOTE_VELOCITY
             );
           }, `+${durationsByMidi.get(midi) / 4}`);
-        } else if (Math.random() < EXTRA_CHORD_CHANCE_P) {
+        } else if (window.generativeMusic.rng() < EXTRA_CHORD_CHANCE_P) {
           let extraChordOctave = regularOctave;
           while (
             REGULAR_OCTAVES.length > 1 &&

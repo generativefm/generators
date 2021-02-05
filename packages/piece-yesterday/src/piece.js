@@ -6,7 +6,7 @@ import {
 import { sampleNames } from '../yesterday.gfm.manifest.json';
 
 const randomIntBetween = (min, max) =>
-  Math.floor(min + Math.random() * (max - min));
+  Math.floor(min + window.generativeMusic.rng() * (max - min));
 
 const scale = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3', 'C4'];
 
@@ -34,9 +34,9 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
   const getMelody = () => {
     const melody = [];
-    const length = Math.random() < 0.9 ? 4 : 3;
+    const length = window.generativeMusic.rng() < 0.9 ? 4 : 3;
     let currentIndex =
-      Math.random() < 0.5
+      window.generativeMusic.rng() < 0.5
         ? randomIntBetween(3, scale.length)
         : scale.length - 1;
     for (let i = 0; i < length; i += 1) {
@@ -57,7 +57,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
   const playMelody = () => {
     const melody = getMelody();
-    const baseTime = Math.random() * 2 + 1;
+    const baseTime = window.generativeMusic.rng() * 2 + 1;
     melody.forEach((note, i) => {
       playNote(note, i >= 2 ? i * baseTime + baseTime : i * baseTime);
     });
@@ -66,13 +66,13 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
     Tone.Transport.scheduleOnce(
       () => playMelody(),
-      `+${baseTime * 8 + Math.random()}`
+      `+${baseTime * 8 + window.generativeMusic.rng()}`
     );
   };
 
   const schedule = ({ destination }) => {
     const autoFilter = new Tone.AutoFilter(
-      Math.random() / 100,
+      window.generativeMusic.rng() / 100,
       1500,
       2
     ).connect(destination);

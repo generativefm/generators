@@ -26,17 +26,17 @@ const getNextNotesForNote = note => {
 };
 
 const generatePhrase = (
-  phrase = [notes[Math.floor(Math.random() * notes.length)]]
+  phrase = [notes[Math.floor(window.generativeMusic.rng() * notes.length)]]
 ) => {
   if (
     phrase.length < MAX_PHRASE_LENGTH &&
-    Math.random() < PHRASE_P_BASE ** phrase.length
+    window.generativeMusic.rng() < PHRASE_P_BASE ** phrase.length
   ) {
     const lastNote = phrase[phrase.length - 1];
     const possibleNextNotes = getNextNotesForNote(lastNote);
     return generatePhrase(
       phrase.concat([
-        possibleNextNotes[Math.floor(Math.random() * possibleNextNotes.length)],
+        possibleNextNotes[Math.floor(window.generativeMusic.rng() * possibleNextNotes.length)],
       ])
     );
   }
@@ -50,7 +50,7 @@ const playPhrase = piano => {
   });
   Tone.Transport.scheduleOnce(() => {
     playPhrase(piano);
-  }, `+${Math.random() * 10 + 10}`);
+  }, `+${window.generativeMusic.rng() * 10 + 10}`);
 };
 
 const activate = async ({ sampleLibrary, onProgress }) => {
@@ -71,7 +71,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   });
 
   const schedule = ({ destination }) => {
-    const delayFudge = Math.random() * 3;
+    const delayFudge = window.generativeMusic.rng() * 3;
     const delay = new Tone.FeedbackDelay({
       wet: 0.5,
       delayTime: 5 + delayFudge,
@@ -84,7 +84,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     }).chain(delay);
 
     const chorusLfo = new Tone.LFO({
-      frequency: Math.random() / 100,
+      frequency: window.generativeMusic.rng() / 100,
       phase: 90,
     });
     chorusLfo.start();
@@ -92,7 +92,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     chorusLfo.connect(chorus.wet);
 
     const autoFilter = new Tone.AutoFilter({
-      frequency: Math.random() / 100,
+      frequency: window.generativeMusic.rng() / 100,
       baseFrequency: 250,
       octaves: 5,
       type: 'sine',
@@ -100,7 +100,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     autoFilter.start();
 
     const pitchLfo = new Tone.LFO({
-      frequency: Math.random() / 100,
+      frequency: window.generativeMusic.rng() / 100,
       phase: 90,
     });
     pitchLfo.start();
@@ -108,13 +108,13 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     pitchLfo.connect(pitchShift.wet);
 
     const tremoloFrequencyLfo = new Tone.LFO({
-      frequency: Math.random() / 100,
+      frequency: window.generativeMusic.rng() / 100,
       phase: 90,
       min: 0.1,
       max: 10,
     });
     const tremoloLfo = new Tone.LFO({
-      frequency: Math.random() / 100,
+      frequency: window.generativeMusic.rng() / 100,
       phase: 90,
     });
     tremoloFrequencyLfo.start();

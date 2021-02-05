@@ -24,7 +24,7 @@ const getPhrase = () =>
       note => note !== phrase[phrase.length - 1]
     );
     return phrase.concat(
-      nextPossibleNotes[Math.floor(Math.random() * nextPossibleNotes.length)]
+      nextPossibleNotes[Math.floor(window.generativeMusic.rng() * nextPossibleNotes.length)]
     );
   }, []);
 
@@ -46,14 +46,14 @@ const activate = async ({ sampleLibrary }) => {
 
   const playRandomPhrase = () => {
     let phrase = getPhrase();
-    if (Math.random() < 0.5) {
+    if (window.generativeMusic.rng() < 0.5) {
       phrase = phrase.map(
         note => `${note[0]}${Number.parseInt(note[1], 10) + 1}`
       );
     }
-    const multiplier = Math.random() + 1.75;
+    const multiplier = window.generativeMusic.rng() + 1.75;
     phrase.forEach((note, i) => {
-      const offset = Math.random() * 0.1 - 0.05 + 1;
+      const offset = window.generativeMusic.rng() * 0.1 - 0.05 + 1;
       if (i <= 2) {
         piano.triggerAttack(note, `+${i * multiplier + offset}`);
       } else if (i >= 3 && i <= 5) {
@@ -61,7 +61,7 @@ const activate = async ({ sampleLibrary }) => {
           note,
           `+${3 * multiplier + ((i - 3) * multiplier) / 3 + offset}`
         );
-      } else if (i < phrase.length - 1 || Math.random() < 0.95) {
+      } else if (i < phrase.length - 1 || window.generativeMusic.rng() < 0.95) {
         piano.triggerAttack(
           note,
           `+${4.5 * multiplier + ((i - 4.5) * multiplier) / 2 + offset}`
@@ -71,7 +71,7 @@ const activate = async ({ sampleLibrary }) => {
 
     Tone.Transport.scheduleOnce(() => {
       playRandomPhrase();
-    }, `+${Math.random() * 5 + multiplier * phrase.length + 3}`);
+    }, `+${window.generativeMusic.rng() * 5 + multiplier * phrase.length + 3}`);
   };
 
   const schedule = ({ destination }) => {
@@ -91,7 +91,7 @@ const activate = async ({ sampleLibrary }) => {
 
         Tone.Transport.scheduleOnce(() => {
           play();
-        }, `+${Math.random() * 30 + 30}`);
+        }, `+${window.generativeMusic.rng() * 30 + 30}`);
       };
       play();
     });

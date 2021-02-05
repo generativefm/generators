@@ -12,7 +12,7 @@ const getCustomSampler = async ({ prerenderOptions, destination }) => {
   const activeSources = [];
   const triggerAttack = (note, time = Tone.now()) => {
     const buffer = buffers.get(note);
-    buffer.reverse = Math.random() < 0.5;
+    buffer.reverse = window.generativeMusic.rng() < 0.5;
     const bufferSource = new Tone.BufferSource(buffer)
       .set({
         onended: () => {
@@ -83,51 +83,51 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
   const playHarmonics = () => {
     const note =
-      HARMONICS_NOTES[Math.floor(Math.random() * HARMONICS_NOTES.length)];
+      HARMONICS_NOTES[Math.floor(window.generativeMusic.rng() * HARMONICS_NOTES.length)];
     harmonics.triggerAttack(note, '+1');
     Tone.Transport.scheduleOnce(() => {
       playHarmonics();
-    }, `+${Math.random() * 20 + 5}`);
+    }, `+${window.generativeMusic.rng() * 20 + 5}`);
   };
 
   const playMarimba = () => {
     const notes = ['C', 'G'].map(
       note =>
         `${note}${
-          MARIMBA_OCTS[Math.floor(Math.random() * MARIMBA_OCTS.length)]
+          MARIMBA_OCTS[Math.floor(window.generativeMusic.rng() * MARIMBA_OCTS.length)]
         }`
     );
     notes.forEach(note => {
-      marimba.triggerAttack(note, `+${Math.random() * 0.2 + 1}`);
+      marimba.triggerAttack(note, `+${window.generativeMusic.rng() * 0.2 + 1}`);
     });
     Tone.Transport.scheduleOnce(() => {
       playMarimba();
-    }, `+${Math.random() * 20 + 20}`);
+    }, `+${window.generativeMusic.rng() * 20 + 20}`);
   };
 
   const playHarp = () => {
-    const note = HARP_NOTES[Math.floor(Math.random() * HARP_NOTES.length)];
+    const note = HARP_NOTES[Math.floor(window.generativeMusic.rng() * HARP_NOTES.length)];
 
     harp.triggerAttack(note, '+1');
     Tone.Transport.scheduleOnce(() => {
       playHarp();
-    }, `+${Math.random() * 10 + 10}`);
+    }, `+${window.generativeMusic.rng() * 10 + 10}`);
   };
 
   piano.triggerAttack('C3');
   const playPiano = () => {
     const notes = Array.from({
-      length: Math.ceil(Math.random() * 5),
-    }).map(() => PIANO_NOTES[Math.floor(Math.random() * PIANO_NOTES.length)]);
-    const maxOffset = Math.random() * 3;
+      length: Math.ceil(window.generativeMusic.rng() * 5),
+    }).map(() => PIANO_NOTES[Math.floor(window.generativeMusic.rng() * PIANO_NOTES.length)]);
+    const maxOffset = window.generativeMusic.rng() * 3;
 
     notes.forEach(note => {
-      piano.triggerAttack(note, `+${1 + Math.random() * maxOffset}`);
+      piano.triggerAttack(note, `+${1 + window.generativeMusic.rng() * maxOffset}`);
     });
 
     Tone.Transport.scheduleOnce(() => {
       playPiano();
-    }, `+${Math.random() * 15 + 15}`);
+    }, `+${window.generativeMusic.rng() * 15 + 15}`);
   };
 
   const schedule = ({ destination }) => {

@@ -33,11 +33,11 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   let tonics = STARTING_TONICS;
 
   const play = () => {
-    if (Math.random() < 0.2) {
+    if (window.generativeMusic.rng() < 0.2) {
       const up =
-        (tonics.some(tonic => getOctave(tonic) <= 2) || Math.random() < 0.5) &&
+        (tonics.some(tonic => getOctave(tonic) <= 2) || window.generativeMusic.rng() < 0.5) &&
         !tonics.some(tonic => getOctave(tonic) >= 5);
-      const change = Math.random() < 0.5 ? P5 : M3;
+      const change = window.generativeMusic.rng() < 0.5 ? P5 : M3;
       tonics = tonics.map(tonic => transpose(tonic, up ? change : -change));
     }
     shuffleArray(

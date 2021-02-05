@@ -23,7 +23,9 @@ const makeChordInterval = instrument => (
   Tone.Transport.scheduleRepeat(
     () => {
       const notes = minor7th(tonic);
-      const numNotesToPlay = Math.floor(Math.random() * (notes.length + 1));
+      const numNotesToPlay = Math.floor(
+        window.generativeMusic.rng() * (notes.length + 1)
+      );
       let playedNotes = 0;
       let beat = 1;
       while (
@@ -35,10 +37,12 @@ const makeChordInterval = instrument => (
           (beat % MODULO_DIVISOR_ONE === 1 ? BASE_P_TO_PLAY : 0) +
           (beat % MODULO_DIVISOR_TWO === 1 ? BASE_P_TO_PLAY : 0);
         if (
-          Math.random() < chanceToPlay ||
+          window.generativeMusic.rng() < chanceToPlay ||
           (shouldPlayImmediately && !hasPlayed)
         ) {
-          const noteIndex = Math.floor(Math.random() * notes.length);
+          const noteIndex = Math.floor(
+            window.generativeMusic.rng() * notes.length
+          );
           const note = notes[noteIndex];
           notes.splice(noteIndex, 1);
           instrument.triggerAttack(note, `+${beat}`);
@@ -96,8 +100,10 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
     const chordInterval = makeChordInterval(glock);
     const pitchClass =
-      PITCH_CLASSES[Math.floor(Math.random() * PITCH_CLASSES.length)];
-    const p = Math.random();
+      PITCH_CLASSES[
+        Math.floor(window.generativeMusic.rng() * PITCH_CLASSES.length)
+      ];
+    const p = window.generativeMusic.rng();
     chordInterval(`${pitchClass}4`, LOWER_INTERVAL_TIME, p >= 0.33);
     chordInterval(`${pitchClass}5`, HIGHER_INTERVAL_TIME, p < 0.66);
 

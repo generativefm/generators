@@ -19,10 +19,10 @@ const getNotes = tonic =>
 
 const swapTwo = arr => {
   const copy = arr.slice(0);
-  const index1 = Math.floor(Math.random() * copy.length);
+  const index1 = Math.floor(window.generativeMusic.rng() * copy.length);
   let index2 = index1;
   while (index1 === index2) {
-    index2 = Math.floor(Math.random() * copy.length);
+    index2 = Math.floor(window.generativeMusic.rng() * copy.length);
   }
   const tmp = copy[index1];
   copy[index1] = copy[index2];
@@ -104,27 +104,27 @@ const activate = async ({ sampleLibrary, onProgress }) => {
       marimba.triggerAttack(next.value, '+1');
       const pc = getPitchClass(next.value);
       const oct = getOctave(next.value);
-      if (Math.random() < 0.5) {
-        const delay = Math.random() < 0.5 ? 1 : Math.random() * 2 + 1;
+      if (window.generativeMusic.rng() < 0.5) {
+        const delay = window.generativeMusic.rng() < 0.5 ? 1 : window.generativeMusic.rng() * 2 + 1;
         piano.triggerAttack(`${pc}${oct + 1}`, `+${delay}`);
       }
 
       Tone.Transport.scheduleOnce(() => {
         playAndScheduleNext(noteGenerator, notes);
-      }, `+${3 + Math.random()}`);
+      }, `+${3 + window.generativeMusic.rng()}`);
     } else {
       Tone.Transport.scheduleOnce(() => {
         const newNotes = swapTwo(notes);
         const newNoteGenerator = makeNoteGenerator(newNotes);
         playAndScheduleNext(newNoteGenerator, newNotes);
-      }, `+${Math.random() + 4}`);
+      }, `+${window.generativeMusic.rng() + 4}`);
     }
   };
 
   const schedule = ({ destination }) => {
     masterVol.connect(destination);
     const tonic =
-      PITCH_CLASSES[Math.floor(Math.random() * PITCH_CLASSES.length)];
+      PITCH_CLASSES[Math.floor(window.generativeMusic.rng() * PITCH_CLASSES.length)];
     const notes = shuffleArray(getNotes(tonic));
     const noteGenerator = makeNoteGenerator(notes);
 

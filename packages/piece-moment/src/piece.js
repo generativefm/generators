@@ -67,7 +67,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     const now = Tone.now();
     if (!lastHumTime.has(note) || now - lastHumTime.get(note) > 30) {
       [hum1, hum2].forEach(humSampler =>
-        humSampler.triggerAttackRelease(note, Math.random() + 4)
+        humSampler.triggerAttackRelease(note, window.generativeMusic.rng() + 4)
       );
       lastHumTime.set(note, now);
     }
@@ -76,21 +76,21 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   const schedule = ({ destination }) => {
     masterVol.connect(destination);
     const firstDelays = NOTES.map(
-      note => Math.random() * 20 * (getPitchClass(note) === 'E' ? 3 : 1)
+      note => window.generativeMusic.rng() * 20 * (getPitchClass(note) === 'E' ? 3 : 1)
     );
     const minFirstDelay = Math.min(...firstDelays);
 
     NOTES.forEach((note, i) => {
       const pc = getPitchClass(note);
-      const play = (time = (Math.random() * 20 + 5) * (pc === 'E' ? 3 : 1)) => {
+      const play = (time = (window.generativeMusic.rng() * 20 + 5) * (pc === 'E' ? 3 : 1)) => {
         Tone.Transport.scheduleOnce(() => {
           const octave = getOctave(note);
           if (
             (octave === 3 || (octave === 2 && pc === 'G')) &&
-            Math.random() < 0.1
+            window.generativeMusic.rng() < 0.1
           ) {
             playHums(note);
-          } else if (Math.random() < 0.1) {
+          } else if (window.generativeMusic.rng() < 0.1) {
             playHums('E3');
           }
           guitar.triggerAttack(note);

@@ -57,12 +57,12 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   const claveVol = new Tone.Volume(-15);
 
   const ballBounceClave = () => {
-    const panner = new Tone.Panner(Math.random() * 2 - 1).connect(claveVol);
+    const panner = new Tone.Panner(window.generativeMusic.rng() * 2 - 1).connect(claveVol);
     disposableNodes.push(panner);
-    const buffer = claves.get(Math.floor(Math.random() * claveSounds.length));
-    let time = Math.random() + 1;
-    const deltaMultiplier = Math.random() * 0.1 + 0.75;
-    const playbackRate = Math.random() + 0.5;
+    const buffer = claves.get(Math.floor(window.generativeMusic.rng() * claveSounds.length));
+    let time = window.generativeMusic.rng() + 1;
+    const deltaMultiplier = window.generativeMusic.rng() * 0.1 + 0.75;
+    const playbackRate = window.generativeMusic.rng() + 0.5;
     for (
       let delayDelta = 1;
       delayDelta >= (1 - deltaMultiplier - 0.15) / 10;
@@ -84,7 +84,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     }, `+60`);
     Tone.Transport.scheduleOnce(() => {
       ballBounceClave();
-    }, `+${Math.random() * 10 + 10}`);
+    }, `+${window.generativeMusic.rng() * 10 + 10}`);
   };
 
   const schedule = ({ destination }) => {
@@ -97,13 +97,13 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
     claveVol.connect(delay);
 
-    const firstIndex = Math.floor(Math.random() * wines.length);
+    const firstIndex = Math.floor(window.generativeMusic.rng() * wines.length);
 
     wines.forEach((wine, i) => {
       const gain = new Tone.Gain().connect(filter);
       const lfo = new Tone.LFO({
-        frequency: Math.random() / 100,
-        phase: firstIndex === i ? 270 : Math.random() * 360,
+        frequency: window.generativeMusic.rng() / 100,
+        phase: firstIndex === i ? 270 : window.generativeMusic.rng() * 360,
       });
       lfo.connect(gain.gain).start();
       wine.connect(gain);
@@ -119,13 +119,13 @@ const activate = async ({ sampleLibrary, onProgress }) => {
       } else {
         Tone.Transport.scheduleOnce(() => {
           playNote();
-        }, `+${Math.random() * 60}`);
+        }, `+${window.generativeMusic.rng() * 60}`);
       }
     });
 
     Tone.Transport.scheduleOnce(() => {
       ballBounceClave(delay);
-    }, `+${Math.random() * 10 + 10}`);
+    }, `+${window.generativeMusic.rng() * 10 + 10}`);
 
     delay.connect(destination);
 

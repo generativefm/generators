@@ -42,13 +42,13 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   const schedule = ({ destination }) => {
     const delay1 = new Tone.FeedbackDelay({
       feedback: 0.7,
-      delayTime: Math.random() * 0.2 + 0.8,
+      delayTime: window.generativeMusic.rng() * 0.2 + 0.8,
     }).connect(destination);
     const delay2 = new Tone.FeedbackDelay({
       feedback: 0.5,
       delayTime: 0.25,
     }).connect(delay1);
-    const autoFilter = new Tone.AutoFilter(Math.random() / 10, 200, 5)
+    const autoFilter = new Tone.AutoFilter(window.generativeMusic.rng() / 10, 200, 5)
       .start()
       .connect(delay2);
 
@@ -56,13 +56,13 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
     const activeSources = [];
 
-    const firstOceanDelays = oceanDrumSamples.map(() => Math.random() * 30);
+    const firstOceanDelays = oceanDrumSamples.map(() => window.generativeMusic.rng() * 30);
     const minOceanDelay = Math.min(...firstOceanDelays);
 
     oceanDrumSamples.forEach((_, i) => {
       const buffer = oceanDrum.get(i);
       const play = () => {
-        buffer.reverse = Math.random() < 0.5;
+        buffer.reverse = window.generativeMusic.rng() < 0.5;
         const source = new Tone.BufferSource(buffer)
           .set({
             fadeIn: 3,
@@ -81,28 +81,28 @@ const activate = async ({ sampleLibrary, onProgress }) => {
         source.start('+1');
         Tone.Transport.scheduleOnce(() => {
           play();
-        }, `+${Math.random() * buffer.duration * 2 + buffer.duration * 2 + 1}`);
+        }, `+${window.generativeMusic.rng() * buffer.duration * 2 + buffer.duration * 2 + 1}`);
       };
       Tone.Transport.scheduleOnce(() => {
         play();
       }, `+${firstOceanDelays[i] - minOceanDelay}`);
     });
 
-    const firstIndex = Math.floor(Math.random() * NOTES.length);
+    const firstIndex = Math.floor(window.generativeMusic.rng() * NOTES.length);
 
     NOTES.forEach((note, i) => {
       const play = () => {
         guitar.triggerAttack(note, '+1');
         Tone.Transport.scheduleOnce(() => {
           play();
-        }, `+${Math.random() * 25 + 25}`);
+        }, `+${window.generativeMusic.rng() * 25 + 25}`);
       };
       if (i === firstIndex) {
         play();
       } else {
         Tone.Transport.scheduleOnce(() => {
           play();
-        }, `+${Math.random() * 50}`);
+        }, `+${window.generativeMusic.rng() * 50}`);
       }
     });
 

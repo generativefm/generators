@@ -9,7 +9,7 @@ import {
 } from '@generative-music/utilities';
 import { sampleNames } from '../420hz-gamma-waves-for-big-brain.gfm.manifest.json';
 
-const getRandomPhase = () => Math.random() * 360;
+const getRandomPhase = () => window.generativeMusic.rng() * 360;
 
 const MAX_DRONE_GAIN = 0.4;
 
@@ -76,14 +76,14 @@ const activate = async ({ sampleLibrary }) => {
 
     Tone.Transport.scheduleOnce(() => {
       drone(chorus, note, min, max);
-    }, `+${Math.random() * (max - min) + min}`);
+    }, `+${window.generativeMusic.rng() * (max - min) + min}`);
   };
 
   let unmutedDroneGain = getRandomElement(droneStacks)[1];
   unmutedDroneGain.gain.setValueAtTime(MAX_DRONE_GAIN, Tone.now());
 
   const changeChord = () => {
-    const transitionTime = Math.ceil(Math.random() * 10 + 10);
+    const transitionTime = Math.ceil(window.generativeMusic.rng() * 10 + 10);
     const mutedDroneStacks = droneStacks.filter(
       ([, gain]) => gain !== unmutedDroneGain
     );
@@ -101,7 +101,7 @@ const activate = async ({ sampleLibrary }) => {
       `+${transitionTime}`
     );
 
-    const nextChordChangeDelay = Math.random() * 10 + 10;
+    const nextChordChangeDelay = window.generativeMusic.rng() * 10 + 10;
 
     const [unmutedDroneChord] = nextUnmutedDroneStack;
 
@@ -111,10 +111,10 @@ const activate = async ({ sampleLibrary }) => {
     const playChance = (minutes / 60) % 1;
     const octaveChange = hours <= 6 || hours >= 18 ? 2 : 1;
     unmutedDroneChord
-      .filter(() => Math.random() < playChance)
+      .filter(() => window.generativeMusic.rng() < playChance)
       .forEach(note => {
         const noteTime =
-          Math.random() * (nextChordChangeDelay + transitionTime / 2) +
+          window.generativeMusic.rng() * (nextChordChangeDelay + transitionTime / 2) +
           transitionTime / 2;
         const pc = getPitchClass(note);
         const oct = getOctave(note);
@@ -132,32 +132,32 @@ const activate = async ({ sampleLibrary }) => {
   const schedule = ({ destination }) => {
     stereoWidener.connect(destination);
 
-    const pianoGainLfo = new Tone.LFO(Math.random() / 10000 + 0.0001).set({
+    const pianoGainLfo = new Tone.LFO(window.generativeMusic.rng() / 10000 + 0.0001).set({
       phase: getRandomPhase(),
     });
     pianoGainLfo.connect(pianoGain.gain);
     pianoGainLfo.start();
 
-    const crossFadeLfo = new Tone.LFO(Math.random() / 10000 + 0.0001).set({
+    const crossFadeLfo = new Tone.LFO(window.generativeMusic.rng() / 10000 + 0.0001).set({
       phase: 90,
     });
     crossFadeLfo.connect(crossFade.fade);
     crossFadeLfo.start();
 
-    const stereoLfo = new Tone.LFO(Math.random() / 100 + 0.01, 0.5, 1).set({
+    const stereoLfo = new Tone.LFO(window.generativeMusic.rng() / 100 + 0.01, 0.5, 1).set({
       phase: getRandomPhase(),
     });
     stereoLfo.connect(stereoWidener.width);
     stereoLfo.start();
 
-    const autoLowPass = new Tone.AutoFilter(Math.random() / 100 + 0.01, 100, 1)
+    const autoLowPass = new Tone.AutoFilter(window.generativeMusic.rng() / 100 + 0.01, 100, 1)
       .set({ filter: { rolloff: -96 } })
       .connect(crossFade.a);
     autoLowPass.start();
 
     Tone.Transport.scheduleOnce(() => {
       changeChord();
-    }, `+${Math.random() * 10 + 10}`);
+    }, `+${window.generativeMusic.rng() * 10 + 10}`);
 
     droneStacks.forEach(([chord, volume, sampler]) => {
       volume.connect(autoLowPass);

@@ -20,8 +20,8 @@ const activate = async ({ sampleLibrary }) => {
   const activeSources = [];
 
   const playDanTranh = dest => {
-    const offset = Math.pow(Math.random(), 3) * 120;
-    const duration = Math.random() * 60 + 60;
+    const offset = Math.pow(window.generativeMusic.rng(), 3) * 120;
+    const duration = window.generativeMusic.rng() * 60 + 60;
     const source = new Tone.BufferSource(danTranh)
       .set({
         fadeIn: 5,
@@ -43,8 +43,8 @@ const activate = async ({ sampleLibrary }) => {
 
   const schedulePhrase = () => {
     Tone.Transport.scheduleOnce(() => {
-      const multiplier = Math.pow(Math.random(), 2);
-      PHRASE.slice(0, Math.ceil(Math.random() * PHRASE.length)).forEach(
+      const multiplier = Math.pow(window.generativeMusic.rng(), 2);
+      PHRASE.slice(0, Math.ceil(window.generativeMusic.rng() * PHRASE.length)).forEach(
         ([note, time], i) => {
           piano.triggerAttack(
             note,
@@ -53,21 +53,21 @@ const activate = async ({ sampleLibrary }) => {
         }
       );
       schedulePhrase();
-    }, `+${Math.random() * 60 + 30}`);
+    }, `+${window.generativeMusic.rng() * 60 + 30}`);
   };
 
   const scheduleChord = () => {
     Tone.Transport.scheduleOnce(() => {
       CHORD.forEach(note => {
-        piano.triggerAttack(note, `+${1 + Math.random() / 10 - 0.05}`);
+        piano.triggerAttack(note, `+${1 + window.generativeMusic.rng() / 10 - 0.05}`);
       });
       scheduleChord();
-    }, `+${Math.random() * 60 + 30}`);
+    }, `+${window.generativeMusic.rng() * 60 + 30}`);
   };
 
   const schedule = ({ destination }) => {
-    const danTranhFilter = new Tone.AutoFilter(Math.random() / 100 + 0.01, 200);
-    const pianoFilter = new Tone.AutoFilter(Math.random() / 100 + 0.01, 400);
+    const danTranhFilter = new Tone.AutoFilter(window.generativeMusic.rng() / 100 + 0.01, 200);
+    const pianoFilter = new Tone.AutoFilter(window.generativeMusic.rng() / 100 + 0.01, 400);
 
     [danTranhFilter, pianoFilter].forEach(filter => {
       filter.connect(destination);

@@ -21,7 +21,7 @@ const createPercussionSampler = async (prerenderOptions = {}) => {
 
   const triggerAttack = time => {
     const buffer = buffers.get(
-      Math.floor(Math.random() * instrumentSamples.length)
+      Math.floor(window.generativeMusic.rng() * instrumentSamples.length)
     );
     const source = new Tone.BufferSource(buffer)
       .set({
@@ -124,9 +124,9 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
   const drone = ({ destination }) => {
     const buffer = dideridooBuffers.get(
-      Math.floor(Math.random() * didgeridooSamples.length)
+      Math.floor(window.generativeMusic.rng() * didgeridooSamples.length)
     );
-    const playbackRate = Math.random() < 0.9 ? 1 : 0.5;
+    const playbackRate = window.generativeMusic.rng() < 0.9 ? 1 : 0.5;
     const source = new Tone.BufferSource(buffer)
       .set({
         fadeIn: 5,
@@ -151,8 +151,8 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
     const totalDelay = phrase.reduce((delay, note) => {
       violins.triggerAttack(note, `+${delay}`);
-      return delay + Math.random() * 20 + 20;
-    }, Math.random() * 5);
+      return delay + window.generativeMusic.rng() * 20 + 20;
+    }, window.generativeMusic.rng() * 5);
 
     Tone.Transport.scheduleOnce(() => {
       playViolinPhrase();
@@ -171,8 +171,8 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     bassdrum.triggerAttack(`+${1 + beatTime * 2}`);
 
     for (let i = 0; i < 32; i += 1) {
-      if (i === 0 || i === 2 || Math.random() < 0.3) {
-        darbukas[Math.floor(Math.random() * darbukas.length)].triggerAttack(
+      if (i === 0 || i === 2 || window.generativeMusic.rng() < 0.3) {
+        darbukas[Math.floor(window.generativeMusic.rng() * darbukas.length)].triggerAttack(
           `+${1 + beatTime * i}`
         );
       }
@@ -180,13 +180,13 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
     Tone.Transport.scheduleOnce(() => {
       if (up && beatTime > 0.6) {
-        percussion(beatTime * (1 - Math.random() * 0.02), false);
+        percussion(beatTime * (1 - window.generativeMusic.rng() * 0.02), false);
       } else if (!up && beatTime < 0.2) {
-        percussion(beatTime * (1 + Math.random() * 0.02), true);
+        percussion(beatTime * (1 + window.generativeMusic.rng() * 0.02), true);
       } else if (up) {
-        percussion(beatTime * (1 + Math.random() * 0.02), true);
+        percussion(beatTime * (1 + window.generativeMusic.rng() * 0.02), true);
       } else {
-        percussion(beatTime * (1 - Math.random() * 0.02), false);
+        percussion(beatTime * (1 - window.generativeMusic.rng() * 0.02), false);
       }
     }, `+${32 * beatTime}`);
   };
@@ -195,7 +195,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     percussionGain.connect(destination);
     violins.connect(destination);
     const percussionGainLfo = new Tone.LFO(
-      Math.random() / 1000 + 0.001,
+      window.generativeMusic.rng() / 1000 + 0.001,
       0,
       0.9
     ).set({ phase: 90 });
@@ -204,7 +204,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
     drone({ destination });
     playViolinPhrase();
-    percussion(Math.random() * 0.4 + 0.2, true);
+    percussion(window.generativeMusic.rng() * 0.4 + 0.2, true);
 
     return () => {
       activeSources.forEach(source => {

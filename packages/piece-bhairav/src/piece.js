@@ -31,15 +31,15 @@ const ragaBhairav = [
 function* makeRagaGenerator(raga) {
   function getNewPhrase() {
     const phrase = [];
-    let noteIdx = Math.floor(Math.random() * (raga.length - 4));
-    const maxPhraseLength = Math.ceil(Math.random() * 12);
-    const divisor = Math.random() + 0.5;
+    let noteIdx = Math.floor(window.generativeMusic.rng() * (raga.length - 4));
+    const maxPhraseLength = Math.ceil(window.generativeMusic.rng() * 12);
+    const divisor = window.generativeMusic.rng() + 0.5;
     for (
       let count = 0;
       phrase.length < maxPhraseLength &&
       noteIdx < raga.length &&
       noteIdx >= 0 &&
-      (phrase.length > 1 || Math.random() < 0.95);
+      (phrase.length > 1 || window.generativeMusic.rng() < 0.95);
       count += 1
     ) {
       const [interval, time] = raga[noteIdx];
@@ -51,8 +51,8 @@ function* makeRagaGenerator(raga) {
 
       phrase.push([interval, (time / divisor) * multiplier]);
 
-      const step = Math.ceil(Math.random() * 3);
-      noteIdx += Math.random() < 0.2 ? -step : step;
+      const step = Math.ceil(window.generativeMusic.rng() * 3);
+      noteIdx += window.generativeMusic.rng() < 0.2 ? -step : step;
     }
     return phrase;
   }
@@ -63,7 +63,7 @@ function* makeRagaGenerator(raga) {
     if (
       typeof phrase === 'undefined' ||
       phrase.length <= 1 ||
-      Math.random() < 0.5
+      window.generativeMusic.rng() < 0.5
     ) {
       phrase = getNewPhrase();
     }
@@ -102,7 +102,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   });
   cellos.set({ attack: 2, curve: 'linear' });
 
-  let tonic = Math.random() < 0.5 ? 'C#4' : 'C#5';
+  let tonic = window.generativeMusic.rng() < 0.5 ? 'C#4' : 'C#5';
 
   const playNote = (note, time = 0, velocity = 1) =>
     piano.triggerAttack(note, `+${1 + time}`, velocity);
@@ -111,7 +111,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     cellos.triggerAttack(note, '+1');
     Tone.Transport.scheduleOnce(() => {
       celloDrone(note);
-    }, `+${Math.random() * 10 + 5}`);
+    }, `+${window.generativeMusic.rng() * 10 + 5}`);
   };
 
   const playRaga = ragaGenerator => {
@@ -119,16 +119,16 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     const [interval, time] = value;
     const note = transpose(tonic, interval);
     playNote(note);
-    if (Math.random() < (interval === 0 || interval === 12 ? 0.5 : 0.1)) {
-      const lowNote = Math.random() < 0.5 ? 'C#3' : transpose(note, -12);
+    if (window.generativeMusic.rng() < (interval === 0 || interval === 12 ? 0.5 : 0.1)) {
+      const lowNote = window.generativeMusic.rng() < 0.5 ? 'C#3' : transpose(note, -12);
       playNote(lowNote);
     }
     Tone.Transport.scheduleOnce(() => {
-      if (time > 8 && Math.random() < 0.4) {
+      if (time > 8 && window.generativeMusic.rng() < 0.4) {
         tonic = tonic === 'C#4' ? 'C#5' : 'C#4';
       }
       playRaga(ragaGenerator);
-    }, `+${time + Math.random() - 0.5}`);
+    }, `+${time + window.generativeMusic.rng() - 0.5}`);
   };
 
   const schedule = ({ destination }) => {
@@ -138,10 +138,10 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
     Tone.Transport.scheduleOnce(() => {
       playRaga(ragaGenerator);
-    }, `+${Math.random() * 2 + 2}`);
+    }, `+${window.generativeMusic.rng() * 2 + 2}`);
 
     const celloFilter = new Tone.AutoFilter(
-      Math.random() / 100 + 0.01,
+      window.generativeMusic.rng() / 100 + 0.01,
       50,
       3
     ).connect(destination);
@@ -151,7 +151,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     ['C#2', 'C#1', 'G#1', 'G#2'].forEach(note => {
       Tone.Transport.scheduleOnce(() => {
         celloDrone(note);
-      }, `+${Math.random() * 5}`);
+      }, `+${window.generativeMusic.rng() * 5}`);
     });
 
     return () => {

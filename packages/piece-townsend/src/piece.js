@@ -41,7 +41,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
   const fluteGain = new Tone.Gain();
   flute.connect(fluteGain);
-  const intervalTimes = FLUTE_NOTES.map(() => Math.random() * 10 + 5);
+  const intervalTimes = FLUTE_NOTES.map(() => window.generativeMusic.rng() * 10 + 5);
   const shortestInterval = Math.min(...intervalTimes);
   const limiter = new Tone.Limiter();
   const activeSources = [];
@@ -49,7 +49,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   const playRandomChord = lastChord => {
     const nextChords = guitarBuffers.filter(chord => chord !== lastChord);
     const randomChord =
-      nextChords[Math.floor(Math.random() * nextChords.length)];
+      nextChords[Math.floor(window.generativeMusic.rng() * nextChords.length)];
     const source = new Tone.ToneBufferSource(randomChord).connect(limiter);
     activeSources.push(source);
     source.onended = () => {
@@ -61,14 +61,14 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     source.start('+1');
     Tone.Transport.scheduleOnce(() => {
       playRandomChord(randomChord);
-    }, `+${Math.random() * 10 + 5}`);
+    }, `+${window.generativeMusic.rng() * 10 + 5}`);
   };
 
   const schedule = ({ destination }) => {
     fluteGain.connect(destination);
     limiter.connect(destination);
     const fluteGainLfo = new Tone.LFO({
-      frequency: Math.random() / 100,
+      frequency: window.generativeMusic.rng() / 100,
       min: 0,
       max: 0.2,
     });
@@ -92,7 +92,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
     Tone.Transport.scheduleOnce(() => {
       playRandomChord();
-    }, Math.random() * 5 + 5);
+    }, window.generativeMusic.rng() * 5 + 5);
 
     return () => {
       fluteGainLfo.stop();

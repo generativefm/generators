@@ -19,18 +19,18 @@ const getNextNotesForNote = (notes, note) => {
 
 const generatePhrase = (
   notes,
-  phrase = [notes[Math.floor(Math.random() * notes.length)]]
+  phrase = [notes[Math.floor(window.generativeMusic.rng() * notes.length)]]
 ) => {
   if (
     phrase.length < MAX_PHRASE_LENGTH &&
-    Math.random() < PHRASE_P_BASE ** phrase.length
+    window.generativeMusic.rng() < PHRASE_P_BASE ** phrase.length
   ) {
     const lastNote = phrase[phrase.length - 1];
     const possibleNextNotes = getNextNotesForNote(notes, lastNote);
     return generatePhrase(
       notes,
       phrase.concat([
-        possibleNextNotes[Math.floor(Math.random() * possibleNextNotes.length)],
+        possibleNextNotes[Math.floor(window.generativeMusic.rng() * possibleNextNotes.length)],
       ])
     );
   }
@@ -149,7 +149,7 @@ const startInstrument = (instrument, instrumentConfig) => {
 
   Tone.Transport.scheduleRepeat(() => {
     playPhrase();
-  }, Math.random() * 10 + 10);
+  }, window.generativeMusic.rng() * 10 + 10);
 };
 
 const activate = async ({ sampleLibrary, onProgress }) => {
@@ -176,10 +176,10 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   }
 
   const schedule = ({ destination }) => {
-    const delayTime = 10 + Math.random() * 2;
+    const delayTime = 10 + window.generativeMusic.rng() * 2;
     const delay = new Tone.FeedbackDelay({
       delayTime,
-      feedback: 0.3 + Math.random() / 30,
+      feedback: 0.3 + window.generativeMusic.rng() / 30,
       wet: 0.5,
       maxDelay: delayTime,
     });

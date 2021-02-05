@@ -58,7 +58,7 @@ const activate = async ({ sampleLibrary }) => {
           const waitTime = parsedT * EIGHTH_NOTE_INTERVAL_S;
           piano.triggerAttack(
             name,
-            `+${waitTime + 1 + Math.random() * 0.05 - 0.025}`
+            `+${waitTime + 1 + window.generativeMusic.rng() * 0.05 - 0.025}`
           );
         });
       });

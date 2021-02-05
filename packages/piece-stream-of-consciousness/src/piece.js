@@ -99,18 +99,18 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     source.start('+1', 0, stirBuffer.duration - 5);
     Tone.Transport.scheduleOnce(() => {
       stir();
-    }, `+${stirBuffer.duration - 10 - Math.random() * 5}`);
+    }, `+${stirBuffer.duration - 10 - window.generativeMusic.rng() * 5}`);
   };
 
   const hitVol = new Tone.Volume(-4);
 
   const randomHit = (time = '+1') => {
     const randomBuffer = hitBuffers.get(
-      Math.floor(Math.random() * samples['snare-brush-hit-p'].length)
+      Math.floor(window.generativeMusic.rng() * samples['snare-brush-hit-p'].length)
     );
     const hitSource = new Tone.ToneBufferSource(randomBuffer)
       .set({
-        playbackRate: Math.random() * 0.1 + 0.95,
+        playbackRate: window.generativeMusic.rng() * 0.1 + 0.95,
         onended: () => {
           const i = activeSources.indexOf(hitSource);
           if (i >= 0) {
@@ -125,11 +125,11 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
   const randomRide = (time = '+1') => {
     const randomBuffer = rideBuffers.get(
-      Math.floor(Math.random() * samples['ride-brush-p'].length)
+      Math.floor(window.generativeMusic.rng() * samples['ride-brush-p'].length)
     );
     const source = new Tone.ToneBufferSource(randomBuffer)
       .set({
-        playbackRate: Math.random() * 0.1 + 0.95,
+        playbackRate: window.generativeMusic.rng() * 0.1 + 0.95,
         onended: () => {
           const i = activeSources.indexOf(source);
           if (i >= 0) {
@@ -181,8 +181,8 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   let measure = 0;
   const playMeasure = (
     reversePianoDestination,
-    bpm = Math.random() * 40 + 60,
-    up = Math.random() < 0.5
+    bpm = window.generativeMusic.rng() * 40 + 60,
+    up = window.generativeMusic.rng() < 0.5
   ) => {
     const beats = 8;
     const spb = (1 / bpm) * 60;
@@ -190,35 +190,35 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     const chordCopy = chord.slice(0);
     const arpeggio = [];
     while (chordCopy.length) {
-      const i = Math.floor(Math.random() * chordCopy.length);
+      const i = Math.floor(window.generativeMusic.rng() * chordCopy.length);
       const note = chordCopy[i];
       chordCopy.splice(i, 1);
       arpeggio.push(note);
     }
     for (let i = 0; i < beats; i += 1) {
-      const time = 1 + i * spb + (Math.random() * 0.005 - 0.0025);
+      const time = 1 + i * spb + (window.generativeMusic.rng() * 0.005 - 0.0025);
       if (i === 0) {
         synth.triggerAttackRelease('C2', 0.05, `+${time}`);
         chord
-          .filter(() => Math.random() < 0.9)
+          .filter(() => window.generativeMusic.rng() < 0.9)
           .forEach(note => {
             playReversePiano(
               note,
               `+${time}`,
-              spb * 2 + Math.random() * 0.5,
+              spb * 2 + window.generativeMusic.rng() * 0.5,
               reversePianoDestination
             );
           });
-        if (Math.random() < 0.25) {
+        if (window.generativeMusic.rng() < 0.25) {
           chord
-            .filter(() => Math.random() < 0.9)
+            .filter(() => window.generativeMusic.rng() < 0.9)
             .forEach(note => {
               const pc = getPitchClass(note);
               const oct = getOctave(note);
               playReversePiano(
                 `${pc}${oct + 1}`,
                 `+${time}`,
-                spb * 2 + Math.random() * 0.5,
+                spb * 2 + window.generativeMusic.rng() * 0.5,
                 reversePianoDestination
               );
             });
@@ -227,17 +227,17 @@ const activate = async ({ sampleLibrary, onProgress }) => {
         chordI = getRandomElement(nextChordIndicies);
       } else if (i === 2 || i === 6) {
         randomHit(`+${time}`);
-      } else if ((i === 3 || i === 7) && Math.random() < 0.3) {
+      } else if ((i === 3 || i === 7) && window.generativeMusic.rng() < 0.3) {
         randomHit(`+${time + spb / 2}`);
       }
-      if (i === 7 && Math.random() < 0.1) {
+      if (i === 7 && window.generativeMusic.rng() < 0.1) {
         synth.triggerAttackRelease('C2', 0.05, `+${time + spb / 2}`);
       }
       randomRide(`+${time}`);
       const note = arpeggio[i % arpeggio.length];
       const pc = getPitchClass(note);
       const oct = getOctave(note);
-      const pianoDelay = Math.random() * 0.1 - 0.05;
+      const pianoDelay = window.generativeMusic.rng() * 0.1 - 0.05;
       lowPiano.triggerAttack(`${pc}${oct + 3}`, `+${time + pianoDelay}`);
       lowPiano.triggerAttack(`${pc}${oct + 4}`, `+${time + pianoDelay}`);
     }
@@ -252,25 +252,25 @@ const activate = async ({ sampleLibrary, onProgress }) => {
       if (bpm >= 100) {
         playMeasure(
           reversePianoDestination,
-          bpm * (1 - Math.random() * 0.001),
+          bpm * (1 - window.generativeMusic.rng() * 0.001),
           false
         );
       } else if (bpm <= 60) {
         playMeasure(
           reversePianoDestination,
-          bpm * (1 + Math.random() * 0.001),
+          bpm * (1 + window.generativeMusic.rng() * 0.001),
           true
         );
       } else if (up) {
         playMeasure(
           reversePianoDestination,
-          bpm * (1 + Math.random() * 0.001),
+          bpm * (1 + window.generativeMusic.rng() * 0.001),
           true
         );
       } else {
         playMeasure(
           reversePianoDestination,
-          bpm * (1 - Math.random() * 0.001),
+          bpm * (1 - window.generativeMusic.rng() * 0.001),
           false
         );
       }
@@ -279,7 +279,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
   const schedule = ({ destination }) => {
     const percussionAutoFilter = new Tone.AutoFilter(
-      Math.random() / 500 + 0.005,
+      window.generativeMusic.rng() / 500 + 0.005,
       150,
       6
     ).connect(destination);
@@ -289,7 +289,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     synth.connect(percussionAutoFilter);
 
     const pianoAutoFilter = new Tone.AutoFilter(
-      Math.random() / 500 + 0.005,
+      window.generativeMusic.rng() / 500 + 0.005,
       150,
       6
     ).connect(destination);
@@ -298,7 +298,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     lowPiano.connect(pianoAutoFilter);
 
     const stirAutoFilter = new Tone.AutoFilter(
-      Math.random() / 500 + 0.005,
+      window.generativeMusic.rng() / 500 + 0.005,
       150,
       6
     );

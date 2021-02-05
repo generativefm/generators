@@ -11,7 +11,7 @@ function* makeValueOscillator(min, max) {
   let up = true;
   let value = up ? min : max;
   while (1) {
-    const delta = Math.random() * 0.2;
+    const delta = window.generativeMusic.rng() * 0.2;
     if (up) {
       value += delta;
     } else {
@@ -48,7 +48,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     vibraphone.triggerAttack(note, '+1');
     Tone.Transport.scheduleOnce(() => {
       play(note, timeGenerator);
-    }, `+${Math.random() * timeGenerator.next().value + timeGenerator.next().value}`);
+    }, `+${window.generativeMusic.rng() * timeGenerator.next().value + timeGenerator.next().value}`);
   };
 
   const schedule = ({ destination }) => {

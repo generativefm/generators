@@ -69,8 +69,8 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
   const tremoloChord = (
     transposition = 0,
-    bpm = Math.random() * (MAX_BPM - MIN_BPM) + MIN_BPM,
-    up = Math.random() < 0.5
+    bpm = window.generativeMusic.rng() * (MAX_BPM - MIN_BPM) + MIN_BPM,
+    up = window.generativeMusic.rng() < 0.5
   ) => {
     const notes = ['C3', 'E3', 'G3', 'B3'].map(transpose(transposition));
     const [bassNote] = notes;
@@ -79,11 +79,11 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     tremPiano.triggerAttack(notes, '+1');
 
     notes
-      .filter(() => Math.random() < 0.5)
+      .filter(() => window.generativeMusic.rng() < 0.5)
       .forEach(note => {
         piano.triggerAttack(
           transpose(note, 12),
-          `+${Math.random() * ((60 / bpm) * 3 - 1) + 1}`
+          `+${window.generativeMusic.rng() * ((60 / bpm) * 3 - 1) + 1}`
         );
       });
 
@@ -92,19 +92,19 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     });
 
     let semitoneChange = 0;
-    if (Math.random() < 0.25) {
+    if (window.generativeMusic.rng() < 0.25) {
       if (transposition === -10) {
         semitoneChange = 5;
       } else if (transposition === 10) {
         semitoneChange = -5;
       } else {
-        semitoneChange = Math.random() < 0.5 ? 5 : -5;
+        semitoneChange = window.generativeMusic.rng() < 0.5 ? 5 : -5;
       }
     }
 
     let nextBpm;
     let nextUp = up;
-    const pctDelta = Math.random() * 0.005;
+    const pctDelta = window.generativeMusic.rng() * 0.005;
     if (bpm <= MIN_BPM && !up) {
       nextBpm = bpm * (1 + pctDelta);
       nextUp = true;
@@ -131,15 +131,15 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     filter.connect(destination);
     synth.connect(destination);
     chorus.connect(destination);
-    const chorusWetLfo = new Tone.LFO(Math.random() / 1000 + 0.001).set({
-      phase: Math.random() * 360,
+    const chorusWetLfo = new Tone.LFO(window.generativeMusic.rng() / 1000 + 0.001).set({
+      phase: window.generativeMusic.rng() * 360,
     });
 
     const filterFreqLfo = new Tone.LFO(
-      Math.random() / 1000 + 0.001,
+      window.generativeMusic.rng() / 1000 + 0.001,
       200,
       1000
-    ).set({ phase: Math.random() * 360 });
+    ).set({ phase: window.generativeMusic.rng() * 360 });
     filterFreqLfo.connect(filter.frequency);
     filterFreqLfo.start();
 

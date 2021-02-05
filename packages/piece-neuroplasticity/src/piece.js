@@ -21,7 +21,7 @@ const activate = async ({ sampleLibrary }) => {
   const activeSources = [];
 
   const schedule = ({ destination }) => {
-    const autoFilter = new Tone.AutoFilter(Math.random() / 50, 200, 5)
+    const autoFilter = new Tone.AutoFilter(window.generativeMusic.rng() / 50, 200, 5)
       .start()
       .connect(destination);
     const delay = new Tone.FeedbackDelay({
@@ -32,7 +32,7 @@ const activate = async ({ sampleLibrary }) => {
     guitarVol.connect(delay);
     piano.connect(delay);
 
-    const initialDelays = GUITAR_NOTES.map(() => Math.random() * 45);
+    const initialDelays = GUITAR_NOTES.map(() => window.generativeMusic.rng() * 45);
     const minDelay = Math.min(...initialDelays);
 
     GUITAR_NOTES.forEach((note, i) => {
@@ -58,7 +58,7 @@ const activate = async ({ sampleLibrary }) => {
         bufferSource.start('+1', 0, 14);
         Tone.Transport.scheduleOnce(() => {
           play();
-        }, `+${Math.random() * 15 + 30}`);
+        }, `+${window.generativeMusic.rng() * 15 + 30}`);
       };
       Tone.Transport.scheduleOnce(() => {
         play();
@@ -67,18 +67,18 @@ const activate = async ({ sampleLibrary }) => {
 
     const playPiano = () => {
       const randomPianoNote =
-        PIANO_NOTES[Math.floor(Math.random() * PIANO_NOTES.length)];
+        PIANO_NOTES[Math.floor(window.generativeMusic.rng() * PIANO_NOTES.length)];
 
       piano.triggerAttack(randomPianoNote);
 
       Tone.Transport.scheduleOnce(() => {
         playPiano();
-      }, `+${Math.random() * 10 + 10}`);
+      }, `+${window.generativeMusic.rng() * 10 + 10}`);
     };
 
     Tone.Transport.scheduleOnce(() => {
       playPiano();
-    }, `+${Math.random() * 10 + 10}`);
+    }, `+${window.generativeMusic.rng() * 10 + 10}`);
 
     return () => {
       activeSources.forEach(source => {

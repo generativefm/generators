@@ -6,7 +6,7 @@ const octaved = ({ p, octaveChange, notes }) => source => {
   const noteSet = new Set(notes);
   return source.pipe(
     mergeMap(note =>
-      noteSet.has(note) && Math.random() < p
+      noteSet.has(note) && window.generativeMusic.rng() < p
         ? from([
             note,
             `${getPitchClass(note)}${getOctave(note) + octaveChange}`,

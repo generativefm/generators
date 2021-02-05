@@ -20,12 +20,12 @@ const OCTAVES = [3, 4, 5, 6];
 
 const getOffsetProgression = () => {
   const progression = [];
-  const startingStep = Math.random() < 0.5 ? 0 : 1;
-  const largestStep = Math.random() * (5 - startingStep) + startingStep;
+  const startingStep = window.generativeMusic.rng() < 0.5 ? 0 : 1;
+  const largestStep = window.generativeMusic.rng() * (5 - startingStep) + startingStep;
   for (
     let step = startingStep;
     step <= largestStep;
-    step += Math.random() < 0.5 ? 1 : 2
+    step += window.generativeMusic.rng() < 0.5 ? 1 : 2
   ) {
     const chord = [];
     for (let i = step; i >= 0; i -= 2) {
@@ -60,22 +60,22 @@ const getProgression = notes =>
     getOffsetProgression,
     makeOffsetProgressionToIndiciesProgression(
       notes,
-      Math.floor(Math.random() * notes.length)
+      Math.floor(window.generativeMusic.rng() * notes.length)
     ),
     makeIndiciesProgressionToNoteProgression(notes)
   )();
 
 const playProgression = (piano, notes) => {
   const progression = getProgression(notes);
-  const perChordDelay = Math.random() * 3 + 2;
+  const perChordDelay = window.generativeMusic.rng() * 3 + 2;
   progression.forEach((chord, i) => {
     chord.forEach(note =>
-      piano.triggerAttack(note, `+${i * perChordDelay + Math.random() / 10}`)
+      piano.triggerAttack(note, `+${i * perChordDelay + window.generativeMusic.rng() / 10}`)
     );
   });
   Tone.Transport.scheduleOnce(() => {
     playProgression(piano, notes);
-  }, `+${Math.random() * 3 + (progression.length + 1) * perChordDelay}`);
+  }, `+${window.generativeMusic.rng() * 3 + (progression.length + 1) * perChordDelay}`);
 };
 
 const activate = async ({ sampleLibrary, onProgress }) => {

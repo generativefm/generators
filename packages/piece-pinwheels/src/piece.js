@@ -72,7 +72,7 @@ const startPinwheelChain = instrument => {
         } else if (nextDelay > maxDelay) {
           if (spawnAnother) {
             Tone.Transport.scheduleOnce(() => {
-              if (Math.random() < P_SPAWN_TWO) {
+              if (window.generativeMusic.rng() < P_SPAWN_TWO) {
                 const nextPitchClass = getRandomElement(PITCH_CLASSES);
                 const shuffledOctaves = shuffle(OCTAVES);
                 const delay1 = getNewMaxDelay();

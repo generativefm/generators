@@ -49,12 +49,12 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   const sampledNotes = Object.keys(pianoSamples);
 
   const play = (dest, first = false) => {
-    const roll = Math.random();
+    const roll = window.generativeMusic.rng();
     const time = 5 + roll * 15;
     const p = 0.4 + roll * 0.5;
-    let notes = NOTES.filter(() => Math.random() < p);
+    let notes = NOTES.filter(() => window.generativeMusic.rng() < p);
     while (first && notes.length === 0) {
-      notes = NOTES.filter(() => Math.random() < p);
+      notes = NOTES.filter(() => window.generativeMusic.rng() < p);
     }
     const firstNote = first && getRandomElement(notes);
     notes.forEach(note => {
@@ -66,7 +66,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
       const source = new Tone.ToneBufferSource(buffer)
         .set({ playbackRate, onended: () => handleBufferSourceEnded(source) })
         .connect(dest);
-      const startTime = firstNote === note ? 1 : Math.random() * time;
+      const startTime = firstNote === note ? 1 : window.generativeMusic.rng() * time;
       const reverseBuffer = reversedBuffers.get(sampledNote);
       const reverseSource = new Tone.BufferSource(reverseBuffer)
         .set({
@@ -79,21 +79,21 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
       if (reverseBuffer.duration / playbackRate > time) {
         reverseSource.start(
-          `+${time + Math.random() / 10}`,
+          `+${time + window.generativeMusic.rng() / 10}`,
           reverseBuffer.duration - time * playbackRate
         );
       } else {
         reverseSource.start(
           `+${time * 2 -
             reverseBuffer.duration / playbackRate +
-            Math.random() / 10}`
+            window.generativeMusic.rng() / 10}`
         );
       }
     });
 
     Tone.Transport.scheduleOnce(() => {
       play(dest);
-    }, `+${time * 2 + Math.random() + 1}`);
+    }, `+${time * 2 + window.generativeMusic.rng() + 1}`);
   };
 
   const schedule = ({ destination }) => {

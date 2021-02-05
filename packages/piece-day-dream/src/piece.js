@@ -65,7 +65,7 @@ const activate = async ({ sampleLibrary }) => {
   const schedule = ({ destination }) => {
     const firstDelays = NOTES.map(
       () =>
-        Math.random() *
+        window.generativeMusic.rng() *
           ((NOON_SEMITONE_CHANGE + MIDNIGHT_SEMITONE_CHANGE) / 2) +
         15
     );
@@ -76,7 +76,7 @@ const activate = async ({ sampleLibrary }) => {
       const play = time => {
         Tone.Transport.scheduleOnce(() => {
           const semitoneChange = playNote({ note, destination });
-          play(Math.random() * (semitoneChange + 12) + 3);
+          play(window.generativeMusic.rng() * (semitoneChange + 12) + 3);
         }, `+${time}`);
       };
       play(firstDelays[i] - minFirstDelay);

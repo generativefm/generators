@@ -41,20 +41,20 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     piano.triggerAttack(note, '+1');
     Tone.Transport.scheduleOnce(() => {
       pianoChain();
-    }, `+${Math.random() * 10}`);
+    }, `+${window.generativeMusic.rng() * 10}`);
   };
 
   const violinDrone = note => {
     violins.triggerAttack(note, '+1');
     Tone.Transport.scheduleOnce(() => {
       violinDrone(note);
-    }, `+${Math.random() * 10}`);
+    }, `+${window.generativeMusic.rng() * 10}`);
   };
 
   const schedule = ({ destination }) => {
     masterVol.connect(destination);
     const filterLfo = new Tone.LFO(
-      Math.random() * 0.001 + 0.0005,
+      window.generativeMusic.rng() * 0.001 + 0.0005,
       100,
       2000
     ).set({

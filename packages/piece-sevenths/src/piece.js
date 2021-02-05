@@ -41,7 +41,7 @@ const makeScheduleChord = instrument => {
     const inversion = Math.floor(getRandomNumberBetween(0, 4));
     const notes = invert(chord(tonic), inversion);
     const chordTime =
-      Math.random() * (MAX_NEXT_CHORD_TIME_S - MIN_NEXT_CHORD_TIME_S) +
+      window.generativeMusic.rng() * (MAX_NEXT_CHORD_TIME_S - MIN_NEXT_CHORD_TIME_S) +
       MIN_NEXT_CHORD_TIME_S;
     const arpeggioTime = getRandomNumberBetween(
       MIN_ARPEGGIO_TIME_S,

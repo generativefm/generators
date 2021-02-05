@@ -59,15 +59,15 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   });
 
   const playPhrase = (phrase = getRandomElement(phrases)) => {
-    const noteTime = (Math.random() * 2 + 3) / phrase.length;
-    (Math.random() < 0.25 ? phrase.slice(0).reverse() : phrase)
-      .slice(0, Math.ceil(Math.random() * phrase.length - 1))
+    const noteTime = (window.generativeMusic.rng() * 2 + 3) / phrase.length;
+    (window.generativeMusic.rng() < 0.25 ? phrase.slice(0).reverse() : phrase)
+      .slice(0, Math.ceil(window.generativeMusic.rng() * phrase.length - 1))
       .forEach((notes, i) => {
         notes.forEach(note => {
           piano.triggerAttack(
             note,
-            `+${(1 + i + Math.random() / 20 - 0.025) * noteTime +
-              Math.random() / 10 -
+            `+${(1 + i + window.generativeMusic.rng() / 20 - 0.025) * noteTime +
+              window.generativeMusic.rng() / 10 -
               0.05}`
           );
         });
@@ -75,7 +75,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
     Tone.Transport.scheduleOnce(() => {
       playPhrase();
-    }, `+${Math.random() * 5 + 3}`);
+    }, `+${window.generativeMusic.rng() * 5 + 3}`);
   };
 
   const playVibes = () => {
@@ -85,10 +85,10 @@ const activate = async ({ sampleLibrary, onProgress }) => {
         vibeNotes.filter(note => note !== vibeNote1)
       );
       [vibeNote1, vibeNote2].forEach(note => {
-        vibes.triggerAttack(note, `+${1 + Math.random() / 10 - 0.05}`);
+        vibes.triggerAttack(note, `+${1 + window.generativeMusic.rng() / 10 - 0.05}`);
       });
       playVibes();
-    }, `+${Math.random() * 40 + 20}`);
+    }, `+${window.generativeMusic.rng() * 40 + 20}`);
   };
 
   const schedule = ({ destination }) => {

@@ -12,12 +12,12 @@ const NOTES = toss(['C', 'D', 'E', 'F', 'G', 'A', 'B'], OCTAVES);
 
 const MELODY_DISTANCE = 3;
 const melodyFromNote = (
-  note = NOTES[Math.floor(Math.random() * NOTES.length)]
+  note = NOTES[Math.floor(window.generativeMusic.rng() * NOTES.length)]
 ) => {
   const index = NOTES.findIndex(n => n === note);
   const min = Math.max(index - MELODY_DISTANCE, 0);
   const max = Math.min(index + MELODY_DISTANCE + 1, NOTES.length);
-  return NOTES[Math.floor(Math.random() * (max - min) + min)];
+  return NOTES[Math.floor(window.generativeMusic.rng() * (max - min) + min)];
 };
 
 const repeat = (fn, interval) => {
@@ -64,13 +64,13 @@ const activate = async ({ sampleLibrary, onProgress }) => {
       ([pc, octave]) => octave < 5 || pc === 'C'
     );
     const phrase = [
-      playableNotes[Math.floor(Math.random() * playableNotes.length)],
+      playableNotes[Math.floor(window.generativeMusic.rng() * playableNotes.length)],
     ];
-    for (let i = 1; i < Math.random() * 5 + 5; i += 1) {
+    for (let i = 1; i < window.generativeMusic.rng() * 5 + 5; i += 1) {
       phrase.push(melodyFromNote(phrase[phrase.length - 1]));
     }
 
-    const notesPerSecond = Math.random() * 2 + 5;
+    const notesPerSecond = window.generativeMusic.rng() * 2 + 5;
 
     repeat(() => {
       phrase.forEach((note, i) => {
@@ -78,7 +78,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
       });
     }, phrase.length / notesPerSecond);
     repeat(() => {
-      const index = Math.floor(Math.random() * phrase.length);
+      const index = Math.floor(window.generativeMusic.rng() * phrase.length);
       phrase[index] = melodyFromNote(phrase[index]);
     }, (phrase.length / notesPerSecond) * 2);
     violins.connect(volume);
@@ -86,11 +86,11 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     cello.connect(volume);
     cello.volume.value = -8;
     repeat(() => {
-      if (Math.random() < 0.9) {
-        const note = phrase[Math.floor(Math.random() * phrase.length)];
+      if (window.generativeMusic.rng() < 0.9) {
+        const note = phrase[Math.floor(window.generativeMusic.rng() * phrase.length)];
         violins.triggerAttack(note);
         const [pc] = note;
-        if (Math.random() < 0.2) {
+        if (window.generativeMusic.rng() < 0.2) {
           cello.triggerAttack(`${pc}${1}`);
         }
       }

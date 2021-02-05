@@ -80,11 +80,11 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
     Tone.Transport.scheduleOnce(() => {
       play(notes);
-    }, `+${buf.duration / playbackRate - (1 + Math.random() * 5)}`);
+    }, `+${buf.duration / playbackRate - (1 + window.generativeMusic.rng() * 5)}`);
   };
 
   const playCorAnglais = () => {
-    const note = `F${Math.floor(Math.random() * 2) + 3}`;
+    const note = `F${Math.floor(window.generativeMusic.rng() * 2) + 3}`;
     const buf = corAnglais.get(note);
     const source = new Tone.BufferSource(buf)
       .set({
@@ -105,7 +105,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
     Tone.Transport.scheduleOnce(() => {
       playCorAnglais();
-    }, `+${buf.duration * 10 + Math.random() * buf.duration * 10}`);
+    }, `+${buf.duration * 10 + window.generativeMusic.rng() * buf.duration * 10}`);
   };
 
   const schedule = ({ destination }) => {
@@ -119,13 +119,13 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     rPan.connect(delay);
     lPan.connect(delay);
 
-    const synthGainLfo = new Tone.LFO(Math.random() / 100 + 0.01).set({
+    const synthGainLfo = new Tone.LFO(window.generativeMusic.rng() / 100 + 0.01).set({
       phase: 90,
     });
     synthGainLfo.connect(synthGain.gain);
     synthGainLfo.start();
 
-    const autoFilter = new Tone.AutoFilter(Math.random() / 100 + 0.01, 75, 6);
+    const autoFilter = new Tone.AutoFilter(window.generativeMusic.rng() / 100 + 0.01, 75, 6);
     autoFilter.connect(compressor);
     autoFilter.start();
     vol.connect(autoFilter);
@@ -136,7 +136,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
     Tone.Transport.scheduleOnce(() => {
       playCorAnglais();
-    }, `+${Math.random() * 60}`);
+    }, `+${window.generativeMusic.rng() * 60}`);
 
     return () => {
       activeSources.forEach(source => {

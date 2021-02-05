@@ -8,7 +8,7 @@ const shuffle = array => {
   // While there remain elements to shuffle...
   while (currentIndex !== 0) {
     // Pick a remaining element...
-    randomIndex = Math.floor(Math.random() * currentIndex);
+    randomIndex = Math.floor(window.generativeMusic.rng() * currentIndex);
     currentIndex -= 1;
 
     // And swap it with the current element.

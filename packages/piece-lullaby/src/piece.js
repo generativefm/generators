@@ -15,40 +15,40 @@ import {
 import { sampleNames } from '../piece.gfm.manifest.json';
 
 const playProgression = piano => {
-  piano.triggerAttack('C4', `+${1 + Math.random() * 0.1 - 0.05}`);
-  piano.triggerAttack('G4', `+${1 + Math.random() * 0.1 - 0.05}`);
-  const t2 = 6 + Math.random() * 6;
-  piano.triggerAttack('C4', `+${t2 + Math.random() * 0.1 - 0.05}`);
-  piano.triggerAttack('A4', `+${t2 + Math.random() * 0.1 - 0.05}`);
-  const t3 = t2 + 1 + Math.random() * 4;
+  piano.triggerAttack('C4', `+${1 + window.generativeMusic.rng() * 0.1 - 0.05}`);
+  piano.triggerAttack('G4', `+${1 + window.generativeMusic.rng() * 0.1 - 0.05}`);
+  const t2 = 6 + window.generativeMusic.rng() * 6;
+  piano.triggerAttack('C4', `+${t2 + window.generativeMusic.rng() * 0.1 - 0.05}`);
+  piano.triggerAttack('A4', `+${t2 + window.generativeMusic.rng() * 0.1 - 0.05}`);
+  const t3 = t2 + 1 + window.generativeMusic.rng() * 4;
 
-  if (Math.random() < 0.9) {
-    piano.triggerAttack('C4', `+${t3 + Math.random() * 0.1 - 0.05}`);
-    piano.triggerAttack('F4', `+${t3 + Math.random() * 0.1 - 0.05}`);
+  if (window.generativeMusic.rng() < 0.9) {
+    piano.triggerAttack('C4', `+${t3 + window.generativeMusic.rng() * 0.1 - 0.05}`);
+    piano.triggerAttack('F4', `+${t3 + window.generativeMusic.rng() * 0.1 - 0.05}`);
   }
 
   const now = new Date();
   const minutes = now.getMinutes();
 
-  if (Math.random() < minutes / 60) {
-    piano.triggerAttack('C6', `+${1 + Math.random()}`);
+  if (window.generativeMusic.rng() < minutes / 60) {
+    piano.triggerAttack('C6', `+${1 + window.generativeMusic.rng()}`);
   }
 
-  if (Math.random() < 0.2) {
-    piano.triggerAttack('E6', `+${1 + Math.random() * t2}`);
+  if (window.generativeMusic.rng() < 0.2) {
+    piano.triggerAttack('E6', `+${1 + window.generativeMusic.rng() * t2}`);
   }
 
-  if (Math.random() < (minutes % 3) / 3) {
-    piano.triggerAttack('A6', `+${t2 + Math.random()}`);
+  if (window.generativeMusic.rng() < (minutes % 3) / 3) {
+    piano.triggerAttack('A6', `+${t2 + window.generativeMusic.rng()}`);
   }
 
-  if (Math.random() < (60 - minutes) / 60) {
-    piano.triggerAttack('C7', `+${t3 + Math.random()}`);
+  if (window.generativeMusic.rng() < (60 - minutes) / 60) {
+    piano.triggerAttack('C7', `+${t3 + window.generativeMusic.rng()}`);
   }
 
   Transport.scheduleOnce(() => {
     playProgression(piano);
-  }, `+${t3 + Math.random() * 10 + 5}`);
+  }, `+${t3 + window.generativeMusic.rng() * 10 + 5}`);
 };
 
 const activate = async ({ sampleLibrary, onProgress }) => {
@@ -78,12 +78,12 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   const activeSources = [];
 
   const playBirdSnippet = ({ destination }) => {
-    const startTime = Math.random() * (birdBuffer.duration - 6);
+    const startTime = window.generativeMusic.rng() * (birdBuffer.duration - 6);
     const duration = Math.max(
       6,
-      Math.random() * (birdBuffer.duration - startTime)
+      window.generativeMusic.rng() * (birdBuffer.duration - startTime)
     );
-    const playbackRate = Math.random() * 0.1 + 0.1;
+    const playbackRate = window.generativeMusic.rng() * 0.1 + 0.1;
     const source = new ToneBufferSource(birdBuffer).set({
       fadeIn: 3,
       fadeOut: 3,
@@ -100,7 +100,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     source.start('+1', startTime, duration / playbackRate, 0.33);
     Transport.scheduleOnce(() => {
       playBirdSnippet({ destination });
-    }, `+${duration + Math.random() * 5}`);
+    }, `+${duration + window.generativeMusic.rng() * 5}`);
   };
 
   if (samples['explosion']) {
@@ -123,7 +123,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   const playReverseExplosion = () => {
     const explosionSource = new ToneBufferSource(explosionBuffer)
       .set({
-        playbackRate: Math.random() * 0.1 + 0.05,
+        playbackRate: window.generativeMusic.rng() * 0.1 + 0.05,
         fadeOut: 3,
         onended: () => {
           const index = activeSources.indexOf(explosionSource);
@@ -138,13 +138,13 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
     Transport.scheduleOnce(() => {
       playReverseExplosion();
-    }, `+${Math.random() * 100 + 60}`);
+    }, `+${window.generativeMusic.rng() * 100 + 60}`);
   };
 
   const schedule = ({ destination }) => {
     explosionGain.connect(destination);
     const pianoAutoFilters = pianos.map(piano => {
-      const autoFilter = new AutoFilter(0.01 * Math.random() + 0.005).connect(
+      const autoFilter = new AutoFilter(0.01 * window.generativeMusic.rng() + 0.005).connect(
         destination
       );
       autoFilter.start();

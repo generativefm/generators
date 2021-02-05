@@ -5,6 +5,8 @@ const wrapActivate = activate => async options => {
   if (getContext() !== options.context) {
     setContext(options.context);
   }
+  window.generativeMusic = window.generativeMusic || {};
+  window.generativeMusic.rng = window.generativeMusic.rng || Math.random;
   const [deactivate, schedule] = await activate(options);
   return makeActiveStage({
     deactivate,

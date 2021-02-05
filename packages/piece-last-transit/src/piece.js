@@ -45,14 +45,14 @@ const activate = async ({ sampleLibrary }) => {
     source.start();
     Tone.Transport.scheduleOnce(() => {
       play({ sourceDestination, playbackRateLfo });
-    }, `+${bufferWithReverb.duration / 0.25 - Math.random()}`);
+    }, `+${bufferWithReverb.duration / 0.25 - window.generativeMusic.rng()}`);
   };
 
   const schedule = ({ destination }) => {
     vol.connect(destination);
-    const filter = new Tone.AutoFilter(Math.random() / 30).connect(vol);
+    const filter = new Tone.AutoFilter(window.generativeMusic.rng() / 30).connect(vol);
     filter.start();
-    const lfo = new Tone.LFO(Math.random() / 100, 0.05, 0.25);
+    const lfo = new Tone.LFO(window.generativeMusic.rng() / 100, 0.05, 0.25);
     lfo.start();
     play({ sourceDestination: filter, playbackRateLfo: lfo });
 

@@ -48,11 +48,11 @@ const activate = async ({ sampleLibrary }) => {
           .connect(droneDestination);
         source.start('+1');
       };
-      const autoFilter = new Tone.AutoFilter(Math.random() / 10, 150, 4)
+      const autoFilter = new Tone.AutoFilter(window.generativeMusic.rng() / 10, 150, 4)
         .connect(masterVol)
         .start();
 
-      const lfoMin = Math.random() / 100;
+      const lfoMin = window.generativeMusic.rng() / 100;
       const lfoMax = lfoMin * 10;
 
       const frequencyLfo = new Tone.LFO({ min: lfoMin, max: lfoMax });
@@ -64,7 +64,7 @@ const activate = async ({ sampleLibrary }) => {
       lastGain.connect(autoFilter);
 
       const lastGainLfo = new Tone.LFO({
-        frequency: Math.random() / 100,
+        frequency: window.generativeMusic.rng() / 100,
         phase: 90,
       });
       lastGainLfo.connect(lastGain.gain);
@@ -78,7 +78,7 @@ const activate = async ({ sampleLibrary }) => {
           drone(note, autoFilter, -36);
           Tone.Transport.scheduleOnce(() => {
             playDrone();
-          }, `+${Math.random() * 20 + 40}`);
+          }, `+${window.generativeMusic.rng() * 20 + 40}`);
         };
         playDrone();
       });

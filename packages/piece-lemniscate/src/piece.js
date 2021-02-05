@@ -22,11 +22,11 @@ const MAX_REPEAT_S = 80;
 const generateTiming = (instruments, getPlayProbability) => {
   notes.forEach(note => {
     const interval =
-      Math.random() * (MAX_REPEAT_S - MIN_REPEAT_S) + MIN_REPEAT_S;
+      window.generativeMusic.rng() * (MAX_REPEAT_S - MIN_REPEAT_S) + MIN_REPEAT_S;
     const delay = interval - MIN_REPEAT_S;
     Tone.Transport.scheduleRepeat(
       () => {
-        const random = Math.random();
+        const random = window.generativeMusic.rng();
         const probability = getPlayProbability();
         if (random <= probability) {
           instruments.forEach(instrument =>

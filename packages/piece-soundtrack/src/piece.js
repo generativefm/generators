@@ -46,26 +46,26 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
   const playProgression = () => {
     const secondNote = getRandomElement(SECOND_NOTES);
-    const secondNoteTime = Math.random() * 10 + 10 + 1;
+    const secondNoteTime = window.generativeMusic.rng() * 10 + 10 + 1;
     OCTAVES.forEach(octave => {
       cellos.triggerAttack(`C${octave}`, '+1');
-      if (Math.random() < 0.75) {
+      if (window.generativeMusic.rng() < 0.75) {
         glock.triggerAttack(
-          `C${Math.random() < 0.5 ? 5 : 6}`,
-          `+${1 + Math.random() * secondNoteTime}`
+          `C${window.generativeMusic.rng() < 0.5 ? 5 : 6}`,
+          `+${1 + window.generativeMusic.rng() * secondNoteTime}`
         );
       }
       cellos.triggerAttack(`${secondNote}${octave}`, `+${secondNoteTime}`);
-      if (Math.random() < 0.75) {
+      if (window.generativeMusic.rng() < 0.75) {
         glock.triggerAttack(
-          `${secondNote}${Math.random() < 0.5 ? 5 : 6}`,
-          `+${secondNoteTime + Math.random() * 10}`
+          `${secondNote}${window.generativeMusic.rng() < 0.5 ? 5 : 6}`,
+          `+${secondNoteTime + window.generativeMusic.rng() * 10}`
         );
       }
     });
     Tone.Transport.scheduleOnce(() => {
       playProgression();
-    }, `+${Math.random() * 20 + 30}`);
+    }, `+${window.generativeMusic.rng() * 20 + 30}`);
   };
 
   const schedule = ({ destination }) => {
