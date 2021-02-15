@@ -31,13 +31,12 @@ app.whenReady().then(() => {
   Object.keys(byId).reduce(
     (resultPromise, pieceId) =>
       resultPromise.then(results =>
-        getDecibels(pieceId).then(maxDb => {
-          results[pieceId] = maxDb;
+        getDecibels(pieceId).then(gain => {
+          results[pieceId] = gain;
           console.log(results);
           return results;
         })
       ),
     Promise.resolve({})
   );
-  getDecibels('zed');
 });
