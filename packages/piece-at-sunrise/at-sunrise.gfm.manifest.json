@@ -5,7 +5,11 @@
   "id": "at-sunrise",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["calm", "dream", "electronic"],
+  "tags": [
+    "calm",
+    "dream",
+    "electronic"
+  ],
   "releaseDate": "2019-08-25T00:00:00.000Z",
   "visualizationType": "squareCut",
   "sampleNames": [
@@ -13,5 +17,6 @@
       "at-sunrise__vcsl-vibraphone-soft-mallets-mp",
       "vcsl-vibraphone-soft-mallets-mp"
     ]
-  ]
+  ],
+  "bandcampUrl": "http://alexbainter.bandcamp.com/album/at-sunrise-excerpts"
 }

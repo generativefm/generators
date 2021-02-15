@@ -5,8 +5,13 @@
   "id": "uun",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["acoustic"],
+  "tags": [
+    "acoustic"
+  ],
   "releaseDate": "2019-11-03T00:00:00.000Z",
   "visualizationType": "squareCut",
-  "sampleNames": ["vsco2-piano-mf"]
+  "sampleNames": [
+    "vsco2-piano-mf"
+  ],
+  "bandcampUrl": "http://alexbainter.bandcamp.com/album/yesterday-excerpts"
 }

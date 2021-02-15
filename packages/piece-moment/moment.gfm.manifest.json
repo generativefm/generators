@@ -6,11 +6,24 @@
   "id": "moment",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["calm", "acoustic"],
+  "tags": [
+    "calm",
+    "acoustic"
+  ],
   "releaseDate": "2019-07-07T00:00:00.000Z",
   "sampleNames": [
-    ["moment__acoustic-guitar", "acoustic-guitar"],
-    ["moment__alex-hum-1", "alex-hum-1"],
-    ["moment__alex-hum-2", "alex-hum-2"]
-  ]
+    [
+      "moment__acoustic-guitar",
+      "acoustic-guitar"
+    ],
+    [
+      "moment__alex-hum-1",
+      "alex-hum-1"
+    ],
+    [
+      "moment__alex-hum-2",
+      "alex-hum-2"
+    ]
+  ],
+  "bandcampUrl": "http://alexbainter.bandcamp.com/album/moment-excerpts"
 }

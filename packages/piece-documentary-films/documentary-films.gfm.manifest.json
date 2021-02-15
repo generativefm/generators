@@ -5,12 +5,25 @@
   "id": "documentary-films",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["drone", "calm"],
+  "tags": [
+    "drone",
+    "calm"
+  ],
   "releaseDate": "2019-11-24T00:00:00.000Z",
   "visualizationType": "squareCut",
   "sampleNames": [
-    ["documentary-films__vsco2-trumpet-sus-mf", "vsco2-trumpet-sus-mf"],
-    ["documentary-films__vsco2-trombone-sus-mf", "vsco2-trombone-sus-mf"],
-    ["documentary-films__vsco2-tuba-sus-mf", "vsco2-tuba-sus-mf"]
-  ]
+    [
+      "documentary-films__vsco2-trumpet-sus-mf",
+      "vsco2-trumpet-sus-mf"
+    ],
+    [
+      "documentary-films__vsco2-trombone-sus-mf",
+      "vsco2-trombone-sus-mf"
+    ],
+    [
+      "documentary-films__vsco2-tuba-sus-mf",
+      "vsco2-tuba-sus-mf"
+    ]
+  ],
+  "bandcampUrl": "http://alexbainter.bandcamp.com/album/documentary-films-excerpts"
 }

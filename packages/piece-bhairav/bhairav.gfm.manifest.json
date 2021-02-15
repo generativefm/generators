@@ -6,10 +6,19 @@
   "id": "bhairav",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["acoustic"],
+  "tags": [
+    "acoustic"
+  ],
   "releaseDate": "2019-07-28T00:00:00.000Z",
   "sampleNames": [
-    ["bhairav__vsco2-piano-mf", "vsco2-piano-mf"],
-    ["bhairav__vsco2-cellos-susvib-mp", "vsco2-cellos-susvib-mp"]
-  ]
+    [
+      "bhairav__vsco2-piano-mf",
+      "vsco2-piano-mf"
+    ],
+    [
+      "bhairav__vsco2-cellos-susvib-mp",
+      "vsco2-cellos-susvib-mp"
+    ]
+  ],
+  "bandcampUrl": "http://alexbainter.bandcamp.com/album/bhairav-excerpts"
 }

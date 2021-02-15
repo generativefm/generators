@@ -5,11 +5,22 @@
   "id": "beneath-waves",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["dark", "drone", "electronic"],
+  "tags": [
+    "dark",
+    "drone",
+    "electronic"
+  ],
   "releaseDate": "2019-12-01T00:00:00.000Z",
   "visualizationType": "squareCut",
   "sampleNames": [
-    ["beneath-waves__sso-chorus-female", "sso-chorus-female"],
-    ["beneath-waves__sso-cor-anglais", "sso-cor-anglais"]
-  ]
+    [
+      "beneath-waves__sso-chorus-female",
+      "sso-chorus-female"
+    ],
+    [
+      "beneath-waves__sso-cor-anglais",
+      "sso-cor-anglais"
+    ]
+  ],
+  "bandcampUrl": "http://alexbainter.bandcamp.com/album/beneath-waves-excerpts"
 }

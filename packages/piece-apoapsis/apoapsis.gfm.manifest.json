@@ -6,10 +6,21 @@
   "id": "apoapsis",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["calm", "electronic", "dream"],
+  "tags": [
+    "calm",
+    "electronic",
+    "dream"
+  ],
   "releaseDate": "2019-02-01T00:00:00.000Z",
   "sampleNames": [
-    ["apoapsis__vsco2-violins-susvib", "vsco2-violins-susvib"],
-    ["apoapsis__vsco2-piano-mf", "vsco2-piano-mf"]
-  ]
+    [
+      "apoapsis__vsco2-violins-susvib",
+      "vsco2-violins-susvib"
+    ],
+    [
+      "apoapsis__vsco2-piano-mf",
+      "vsco2-piano-mf"
+    ]
+  ],
+  "bandcampUrl": "http://alexbainter.bandcamp.com/album/apoapsis-excerpts"
 }

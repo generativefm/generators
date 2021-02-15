@@ -6,10 +6,20 @@
   "id": "townsend",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["calm", "acoustic"],
+  "tags": [
+    "calm",
+    "acoustic"
+  ],
   "releaseDate": "2019-02-16T00:00:00.000Z",
   "sampleNames": [
-    ["townsend__vsco2-flute-susvib", "vsco2-flute-susvib"],
-    ["townsend__acoustic-guitar-chords-cmaj", "acoustic-guitar-chords-cmaj"]
-  ]
+    [
+      "townsend__vsco2-flute-susvib",
+      "vsco2-flute-susvib"
+    ],
+    [
+      "townsend__acoustic-guitar-chords-cmaj",
+      "acoustic-guitar-chords-cmaj"
+    ]
+  ],
+  "bandcampUrl": "http://alexbainter.bandcamp.com/album/drones-excerpts"
 }
