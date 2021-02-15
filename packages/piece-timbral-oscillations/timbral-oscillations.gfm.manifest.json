@@ -6,7 +6,15 @@
   "id": "timbral-oscillations",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["electronic"],
+  "tags": [
+    "electronic"
+  ],
   "releaseDate": "2019-01-02T00:00:00.000Z",
-  "sampleNames": [["timbral-oscillations__vsco2-piano-mf", "vsco2-piano-mf"]]
+  "sampleNames": [
+    [
+      "timbral-oscillations__vsco2-piano-mf",
+      "vsco2-piano-mf"
+    ]
+  ],
+  "bandcampUrl": "http://alexbainter.bandcamp.com/album/townsend-excerpts"
 }

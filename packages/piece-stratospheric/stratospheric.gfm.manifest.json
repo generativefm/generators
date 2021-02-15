@@ -6,10 +6,19 @@
   "id": "stratospheric",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["acoustic"],
+  "tags": [
+    "acoustic"
+  ],
   "releaseDate": "2019-08-04T00:00:00.000Z",
   "sampleNames": [
-    ["stratospheric__guitar-coil-spank", "guitar-coil-spank"],
-    ["stratospheric__guitar-dusty", "guitar-dusty"]
-  ]
+    [
+      "stratospheric__guitar-coil-spank",
+      "guitar-coil-spank"
+    ],
+    [
+      "stratospheric__guitar-dusty",
+      "guitar-dusty"
+    ]
+  ],
+  "bandcampUrl": "http://alexbainter.bandcamp.com/album/stratospheric-excerpts"
 }

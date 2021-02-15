@@ -6,11 +6,23 @@
   "id": "a-viable-system",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["acoustic"],
+  "tags": [
+    "acoustic"
+  ],
   "releaseDate": "2019-01-25T00:00:00.000Z",
   "sampleNames": [
-    ["a-viable-system__vsco2-piano-mf", "vsco2-piano-mf"],
-    ["a-viable-system__vsco2-contrabass-susvib", "vsco2-contrabass-susvib"],
-    ["a-viable-system__vsco2-violin-arcvib", "vsco2-violin-arcvib"]
-  ]
+    [
+      "a-viable-system__vsco2-piano-mf",
+      "vsco2-piano-mf"
+    ],
+    [
+      "a-viable-system__vsco2-contrabass-susvib",
+      "vsco2-contrabass-susvib"
+    ],
+    [
+      "a-viable-system__vsco2-violin-arcvib",
+      "vsco2-violin-arcvib"
+    ]
+  ],
+  "bandcampUrl": "http://alexbainter.bandcamp.com/album/a-viable-system-excerpts"
 }

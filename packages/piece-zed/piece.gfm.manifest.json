@@ -5,8 +5,21 @@
   "id": "zed",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["calm", "electronic"],
+  "tags": [
+    "calm",
+    "electronic"
+  ],
   "releaseDate": "2020-10-23T00:00:00.000Z",
   "visualizationType": "squareCut",
-  "sampleNames": [["zed__pad", ""], ["zed__noise", ""]]
+  "sampleNames": [
+    [
+      "zed__pad",
+      ""
+    ],
+    [
+      "zed__noise",
+      ""
+    ]
+  ],
+  "bandcampUrl": "http://alexbainter.bandcamp.com/album/zed-excerpts"
 }
