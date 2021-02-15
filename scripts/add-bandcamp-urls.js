@@ -36,14 +36,16 @@ Promise.all([getManifests(), getAlbumUrls()]).then(
       const manifest = require(relativePath.replace('./', '../'));
       const { id } = manifest;
       const urlIndex = unmatchedUrls.findIndex(url =>
-        url.startsWith(`http://alexbainter.bandcamp.com/album/${id}-`)
+        url.startsWith(`http://alexbainter.bandcamp.com/album/${id}-excerpts`)
       );
-      const [url] = unmatchedUrls.splice(urlIndex, 1);
-      if (!url) {
-        throw relativePath;
+      if (urlIndex < 0) {
+        console.log(relativePath);
+        return [relativePath, manifest];
       }
+      const [url] = unmatchedUrls.splice(urlIndex, 1);
       return [relativePath, Object.assign({}, manifest, { bandcampUrl: url })];
     });
+    console.log(unmatchedUrls);
     return Promise.all(
       newManifests.map(([relativePath, manifest]) =>
         fsp.writeFile(relativePath, JSON.stringify(manifest, null, 2))
