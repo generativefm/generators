@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-uun",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "generativeFmManifest": "uun.gfm.manifest.json",
   "repository": {
     "type": "git",

@@ -24,7 +24,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "5.0.1",
+  "version": "5.0.2",
   "dependencies": {
     "@babel/runtime": "^7.12.5",
     "@generative-music/utilities": "^5.0.1"

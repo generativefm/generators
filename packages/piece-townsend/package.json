@@ -21,7 +21,7 @@
   "peerDependencies": {
     "tone": "^14.7.39"
   },
-  "version": "5.0.1",
+  "version": "5.0.2",
   "gitHead": "8ed39368a8376ff9ea366fe8e1ab01820553a037",
   "dependencies": {
     "@babel/runtime": "^7.12.5",
