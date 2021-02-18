@@ -1,6 +1,6 @@
 {
   "name": "@generative-music/utilities",
-  "version": "4.7.0",
+  "version": "5.0.0",
   "description": "A collection of common utilities for Web Audio API generative music systems",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",

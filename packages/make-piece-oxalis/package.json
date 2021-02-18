@@ -1,6 +1,6 @@
 {
   "name": "@generative-music/make-piece-oxalis",
-  "version": "4.7.0",
+  "version": "5.0.0",
   "description": "Create variations of the \"Oxalis\" generative music system",
   "author": "Alex Bainter <alex@alexbainter.com> (https://alexbainter.com)",
   "homepage": "https://github.com/generative-music/pieces-alex-bainter#readme",
@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.12.5",
-    "@generative-music/utilities": "^4.7.0"
+    "@generative-music/utilities": "^5.0.0"
   },
   "peerDependencies": {
     "tone": "^14.7.58"
