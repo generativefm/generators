@@ -41,4 +41,4 @@ const activate = async ({ sampleLibrary }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate, ['vsco2-piano-mf']);
+export default wrapActivate(activate);

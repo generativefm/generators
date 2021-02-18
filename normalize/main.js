@@ -2,6 +2,7 @@
 
 const { app, BrowserWindow, ipcMain } = require('electron');
 const { byId } = require('../packages/pieces-alex-bainter');
+const gain = require('./gain');
 
 const RENDER_TIME = 60; //seconds
 
@@ -28,15 +29,17 @@ const getDecibels = pieceId =>
   });
 
 app.whenReady().then(() => {
-  Object.keys(byId).reduce(
-    (resultPromise, pieceId) =>
-      resultPromise.then(results =>
-        getDecibels(pieceId).then(gain => {
-          results[pieceId] = gain;
-          console.log(results);
-          return results;
-        })
-      ),
-    Promise.resolve({})
-  );
+  Object.keys(byId)
+    .filter(pieceId => typeof gain[pieceId] !== 'number')
+    .reduce(
+      (resultPromise, pieceId) =>
+        resultPromise.then(results =>
+          getDecibels(pieceId).then(gain => {
+            results[pieceId] = gain;
+            console.log(results);
+            return results;
+          })
+        ),
+      Promise.resolve({})
+    );
 });
