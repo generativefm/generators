@@ -5,6 +5,7 @@ import {
   toss,
 } from '@generative-music/utilities';
 import { sampleNames } from '../apoapsis.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const pianoNotes = toss(['C', 'E', 'G', 'B'], [3, 4, 5]);
 const violinNotes = toss(['C', 'E', 'G', 'B'], [2, 3, 4]);
@@ -102,4 +103,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['apoapsis'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

@@ -9,6 +9,7 @@ import {
 } from '@generative-music/utilities';
 import arpeggiateOnce from './arpeggiate-once';
 import { sampleNames } from '../impact.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const TONIC = 'A#';
 const CHORD = minor7th(TONIC);
@@ -122,4 +123,7 @@ const activate = async ({ sampleLibrary }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['impact'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

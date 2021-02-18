@@ -9,6 +9,7 @@ import {
   toss,
 } from '@generative-music/utilities';
 import { sampleNames } from '../substrate.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const OCTAVES = [3, 4];
 const getNotes = tonic =>
@@ -146,4 +147,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['substrate'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

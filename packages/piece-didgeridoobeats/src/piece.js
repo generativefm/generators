@@ -5,6 +5,7 @@ import {
   wrapActivate,
 } from '@generative-music/utilities';
 import { sampleNames } from '../didgeridoobeats.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const DRUM_LOOP_LENGTH_S = 75;
 const BEAT_SIXTEETHS_COUNT = 32;
@@ -210,4 +211,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['didgeridoobeats'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

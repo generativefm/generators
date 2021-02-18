@@ -6,6 +6,7 @@ import {
 } from '@generative-music/utilities';
 import combineNotesWithOctaves from './combine-notes-with-octaves';
 import { sampleNames } from '../lemniscate.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const TONIC = 'A#';
 const OCTAVES = [2, 3, 4, 5, 6];
@@ -106,4 +107,7 @@ const activate = async ({ sampleLibrary }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['lemniscate'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

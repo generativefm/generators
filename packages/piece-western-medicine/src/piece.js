@@ -5,6 +5,7 @@ import {
   wrapActivate,
 } from '@generative-music/utilities';
 import { sampleNames } from '../western-medicine.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const getCustomSampler = async ({ prerenderOptions, destination }) => {
   const buffers = await createPrerenderableSampledBuffers(prerenderOptions);
@@ -151,4 +152,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['western-medicine'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

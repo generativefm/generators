@@ -6,6 +6,7 @@ import {
   toss,
 } from '@generative-music/utilities';
 import { sampleNames } from '../bhairav.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const ragaBhairav = [
   [0, 2],
@@ -169,4 +170,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['bhairav'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

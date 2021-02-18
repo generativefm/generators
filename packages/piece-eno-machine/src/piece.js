@@ -8,6 +8,7 @@ import {
   major9th,
 } from '@generative-music/utilities';
 import { sampleNames } from '../eno-machine.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const OCTAVES = [3, 4, 5];
 const MIN_REPEAT_S = 20;
@@ -41,4 +42,7 @@ const activate = async ({ sampleLibrary }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['eno-machine'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

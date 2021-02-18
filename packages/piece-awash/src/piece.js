@@ -5,6 +5,7 @@ import {
   createPrerenderableBuffers,
 } from '@generative-music/utilities';
 import { sampleNames } from '../awash.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const NOTES = ['C3', 'D#3', 'G3', 'A#3', 'C4', 'D#4', 'G4', 'A#4'];
 
@@ -122,4 +123,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['awash'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

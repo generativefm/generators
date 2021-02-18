@@ -6,6 +6,7 @@ import {
   toss,
 } from '@generative-music/utilities';
 import { sampleNames } from '../enough.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const activate = async ({ sampleLibrary }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
@@ -73,4 +74,7 @@ const activate = async ({ sampleLibrary }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['enough'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

@@ -4,6 +4,7 @@ import {
   createPrerenderableSampler,
 } from '@generative-music/utilities';
 import { sampleNames } from '../at-sunrise.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const NOTES = ['C3', 'F3', 'G3', 'C4', 'F4', 'G4', 'C5', 'E5', 'G5', 'C6'];
 
@@ -79,4 +80,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['at-sunrise'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

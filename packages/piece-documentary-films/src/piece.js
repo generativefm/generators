@@ -6,6 +6,7 @@ import {
   sortNotes,
 } from '@generative-music/utilities';
 import { sampleNames } from '../documentary-films.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const phrases = [
   ['A#', 'F', 'G#', 'C#'],
@@ -129,4 +130,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['documentary-films'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

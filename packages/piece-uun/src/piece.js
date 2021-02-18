@@ -5,6 +5,7 @@ import {
   wrapActivate,
 } from '@generative-music/utilities';
 import { sampleNames } from '../uun.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 function* makeNoteGenerator(notes) {
   for (
@@ -93,4 +94,7 @@ const activate = async ({ sampleLibrary }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['uun'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

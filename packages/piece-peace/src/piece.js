@@ -4,6 +4,7 @@ import {
   wrapActivate,
 } from '@generative-music/utilities';
 import { sampleNames } from '../peace.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const NOTES = ['A3', 'C4', 'D4', 'E4', 'G4', 'A4'];
 
@@ -61,4 +62,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['peace'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

@@ -6,6 +6,7 @@ import {
   getOctave,
 } from '@generative-music/utilities';
 import { sampleNames } from '../moment.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const NOTES = ['C2', 'E2', 'G2', 'C3', 'E3', 'G3', 'C4', 'E4', 'G4'];
 
@@ -117,4 +118,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['moment'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

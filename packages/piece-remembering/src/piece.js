@@ -5,6 +5,7 @@ import {
   toss,
 } from '@generative-music/utilities';
 import { sampleNames } from '../remembering.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const PITCH_CLASSES = ['C', 'D', 'E', 'G', 'A', 'C'];
 const getPhrase = octave => {
@@ -70,4 +71,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['remembering'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

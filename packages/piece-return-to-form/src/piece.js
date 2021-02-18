@@ -12,6 +12,7 @@ import {
   toss,
 } from '@generative-music/utilities';
 import { sampleNames } from '../return-to-form.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const INTERVALS = [P1, M3, P4, P5];
 const STARTING_TONICS = ['C3', 'C4'];
@@ -84,4 +85,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['return-to-form'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

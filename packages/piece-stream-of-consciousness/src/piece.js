@@ -12,6 +12,7 @@ import {
   sampleNote,
 } from '@generative-music/utilities';
 import { sampleNames } from '../stream-of-consciousness.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const chords = [
   ['C3', 'E3', 'G3', 'B3'],
@@ -336,4 +337,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['stream-of-consciousness'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

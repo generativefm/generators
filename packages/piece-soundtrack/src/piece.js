@@ -6,6 +6,7 @@ import {
   toss,
 } from '@generative-music/utilities';
 import { sampleNames } from '../soundtrack.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const SECOND_NOTES = ['D', 'Eb', 'F', 'G', 'A'];
 const OCTAVES = [2, 3, 4];
@@ -93,4 +94,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['soundtrack'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

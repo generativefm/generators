@@ -10,6 +10,7 @@ import {
   toss,
 } from '@generative-music/utilities';
 import { sampleNames } from '../pinwheels.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const P_SPAWN_TWO = 0.33;
 const OCTAVES = [3, 4, 5];
@@ -126,4 +127,7 @@ const activate = async ({ sampleLibrary }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['pinwheels'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

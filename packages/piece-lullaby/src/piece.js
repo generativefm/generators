@@ -13,6 +13,7 @@ import {
   createPrerenderableBuffers,
 } from '@generative-music/utilities';
 import { sampleNames } from '../piece.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const playProgression = piano => {
   piano.triggerAttack('C4', `+${1 + window.generativeMusic.rng() * 0.1 - 0.05}`);
@@ -180,4 +181,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['lullaby'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

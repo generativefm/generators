@@ -14,6 +14,7 @@ import {
   toss,
 } from '@generative-music/utilities';
 import { sampleNames } from '../trees.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const MAJOR_SCALE_INTERVALS = [P1, M2, M3, P4, P5, M6, M7];
 const OCTAVES = [3, 4, 5, 6];
@@ -130,4 +131,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['trees'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

@@ -5,6 +5,7 @@ import {
   sampleNote,
 } from '@generative-music/utilities';
 import { sampleNames } from '../drones.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const NOTES = ['C4', 'G4', 'E4'];
 
@@ -104,4 +105,7 @@ const activate = async ({ sampleLibrary }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['drones'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

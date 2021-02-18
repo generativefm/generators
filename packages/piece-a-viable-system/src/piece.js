@@ -4,6 +4,7 @@ import {
   wrapActivate,
 } from '@generative-music/utilities';
 import { sampleNames } from '../a-viable-system.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const MAX_STEP_DISTANCE = 3;
 const MAX_PHRASE_LENGTH = 3;
@@ -206,4 +207,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['a-viable-system'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

@@ -5,6 +5,7 @@ import {
   wrapActivate,
 } from '@generative-music/utilities';
 import { sampleNames } from '../agua-ravine.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const phrase1 = [
   ['G4', 'B4', 'E5'],
@@ -109,4 +110,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['agua-ravine'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

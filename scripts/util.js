@@ -46,6 +46,7 @@ Promise.all(
           .concat([gainAdjustmentDeclaration, '\r', exportWithGain, '\r']);
 
         const newFileContent = newLines.join('\n');
+        return fsp.writeFile(filename, newFileContent);
       })
     )
 ).then(() => {

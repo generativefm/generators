@@ -68,6 +68,7 @@ const createPieceScriptConfig = dirname => ({
   },
   external: ['tone'],
   plugins: [
+    json(),
     commonJs(),
     babel({
       exclude: 'node_modules/**',
@@ -75,7 +76,6 @@ const createPieceScriptConfig = dirname => ({
       presets: ['@babel/preset-env'],
     }),
     nodeResolve({ extensions: ['.js', '.json'] }),
-    json(),
     terser(),
   ],
 });
@@ -133,6 +133,7 @@ const makeOxalisConfig = {
   ],
   external: ['tone', '@generative-music/utilities', /@babel\/runtime/],
   plugins: [
+    json(),
     babel({
       exclude: 'node_modules/**',
       babelHelpers: 'runtime',

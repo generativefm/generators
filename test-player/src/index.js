@@ -28,13 +28,12 @@ const meterInterval = setInterval(() => {
 const logInterval = setInterval(() => {
   console.log(maxDb);
 }, 1000);
-const gain = new Tone.Gain(3, 'decibels').connect(meter);
 
 activate({
   onProgress,
   context: toneContext,
   sampleLibrary: library,
-  destination: gain,
+  destination: meter,
 }).then(([deactivate, schedule]) => {
   console.log('activated');
 

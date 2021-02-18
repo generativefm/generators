@@ -7,6 +7,7 @@ import {
   getDistance,
 } from '@generative-music/utilities';
 import { sampleNames } from '../transmission.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const TREMOLO_PATTERN = [
   true,
@@ -166,4 +167,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['transmission'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

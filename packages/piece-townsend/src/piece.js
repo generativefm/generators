@@ -5,6 +5,7 @@ import {
   createPrerenderableBufferArray,
 } from '@generative-music/utilities';
 import { sampleNames } from '../townsend.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const FLUTE_NOTES = ['C3', 'C4', 'G3', 'G4'];
 
@@ -114,4 +115,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['townsend'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+
