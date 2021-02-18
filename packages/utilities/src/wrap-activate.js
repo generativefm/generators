@@ -9,7 +9,6 @@ const wrapActivate = (activate, { gain = 1 } = {}) => async options => {
   window.generativeMusic.rng = window.generativeMusic.rng || Math.random;
   const [deactivate, schedule] = await activate(options);
   const compressorNode = new Compressor();
-  console.log(gain);
   const gainNode = new Gain(gain).connect(compressorNode);
   compressorNode.connect(options.destination);
   return makeActiveStage({
