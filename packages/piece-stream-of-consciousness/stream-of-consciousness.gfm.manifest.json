@@ -5,14 +5,26 @@
   "id": "stream-of-consciousness",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["electronic"],
+  "tags": [
+    "electronic"
+  ],
   "releaseDate": "2020-02-27T00:00:00.000Z",
   "visualizationType": "squareCut",
   "sampleNames": [
-    ["stream-of-consciousness__snare-brush-stir", "snare-brush-stir"],
+    [
+      "stream-of-consciousness__snare-brush-stir",
+      "snare-brush-stir"
+    ],
     "snare-brush-hit-p",
     "ride-brush-p",
-    ["stream-of-consciousness__vsco2-piano-mf-reverse", "vsco2-piano-mf"],
-    ["stream-of-consciousness__vsco2-piano-mf-low", "vsco2-piano-mf"]
-  ]
+    [
+      "stream-of-consciousness__vsco2-piano-mf-reverse",
+      "vsco2-piano-mf"
+    ],
+    [
+      "stream-of-consciousness__vsco2-piano-mf-low",
+      "vsco2-piano-mf"
+    ]
+  ],
+  "bandcampUrl": "http://alexbainter.bandcamp.com/album/stream-of-consciousness-excerpts"
 }

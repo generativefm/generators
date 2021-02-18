@@ -6,7 +6,15 @@
   "id": "little-bells",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["acoustic"],
+  "tags": [
+    "acoustic"
+  ],
   "releaseDate": "2018-11-22T00:00:00.000Z",
-  "sampleNames": [["little-bells__vsco2-glock", "vsco2-glock"]]
+  "sampleNames": [
+    [
+      "little-bells__vsco2-glock",
+      "vsco2-glock"
+    ]
+  ],
+  "bandcampUrl": "http://alexbainter.bandcamp.com/album/little-bells-excerpts"
 }

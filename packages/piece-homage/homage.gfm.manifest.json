@@ -6,10 +6,18 @@
   "id": "homage",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["electronic", "drone", "calm"],
+  "tags": [
+    "electronic",
+    "drone",
+    "calm"
+  ],
   "releaseDate": "2019-06-30T00:00:00.000Z",
   "sampleNames": [
     "vsco2-piano-mf",
-    ["homage__vsco2-violins-susvib", "vsco2-violins-susvib"]
-  ]
+    [
+      "homage__vsco2-violins-susvib",
+      "vsco2-violins-susvib"
+    ]
+  ],
+  "bandcampUrl": "http://alexbainter.bandcamp.com/album/homage-excerpts"
 }

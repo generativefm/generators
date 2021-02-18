@@ -6,11 +6,23 @@
   "id": "observable-streams",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["acoustic"],
+  "tags": [
+    "acoustic"
+  ],
   "releaseDate": "2019-02-11T00:00:00.000Z",
   "sampleNames": [
-    ["observable-streams__vsco2-piano-mf", "vsco2-piano-mf"],
-    ["observable-streams__vsco2-violin-arcvib", "vsco2-violin-arcvib"],
-    ["observable-streams__sso-cor-anglais", "sso-cor-anglais"]
-  ]
+    [
+      "observable-streams__vsco2-piano-mf",
+      "vsco2-piano-mf"
+    ],
+    [
+      "observable-streams__vsco2-violin-arcvib",
+      "vsco2-violin-arcvib"
+    ],
+    [
+      "observable-streams__sso-cor-anglais",
+      "sso-cor-anglais"
+    ]
+  ],
+  "bandcampUrl": "http://alexbainter.bandcamp.com/album/observable-streams-excerpts"
 }

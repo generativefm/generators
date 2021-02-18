@@ -6,10 +6,17 @@
   "id": "buttafingers",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["drone", "electronic"],
+  "tags": [
+    "drone",
+    "electronic"
+  ],
   "releaseDate": "2019-03-31T00:00:00.000Z",
   "sampleNames": [
     "vcsl-wine-glasses-slow",
-    ["buttafingers__vcsl-claves", "vcsl-claves"]
-  ]
+    [
+      "buttafingers__vcsl-claves",
+      "vcsl-claves"
+    ]
+  ],
+  "bandcampUrl": "http://alexbainter.bandcamp.com/album/buttafingers-excerpts"
 }

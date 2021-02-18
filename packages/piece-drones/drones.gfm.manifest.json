@@ -6,7 +6,14 @@
   "id": "drones",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["drone", "electronic"],
+  "tags": [
+    "drone",
+    "electronic"
+  ],
   "releaseDate": "2019-03-13T00:00:00.000Z",
-  "sampleNames": ["vsco2-trumpet-sus-f", "vsco2-trumpet-sus-mf"]
+  "sampleNames": [
+    "vsco2-trumpet-sus-f",
+    "vsco2-trumpet-sus-mf"
+  ],
+  "bandcampUrl": "http://alexbainter.bandcamp.com/album/drones-ii-excerpts"
 }

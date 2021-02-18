@@ -5,12 +5,23 @@
   "id": "lullaby",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["dream", "calm", "electronic"],
+  "tags": [
+    "dream",
+    "calm",
+    "electronic"
+  ],
   "releaseDate": "2020-12-06T00:00:00.000Z",
   "visualizationType": "squareCut",
   "sampleNames": [
     "vsco2-piano-mf",
-    ["lullaby__birds", "birds"],
-    ["lullaby__explosion", "explosion"]
-  ]
+    [
+      "lullaby__birds",
+      "birds"
+    ],
+    [
+      "lullaby__explosion",
+      "explosion"
+    ]
+  ],
+  "bandcampUrl": "http://alexbainter.bandcamp.com/album/lullaby-excerpts"
 }

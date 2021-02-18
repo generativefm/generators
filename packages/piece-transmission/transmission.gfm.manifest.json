@@ -5,8 +5,16 @@
   "id": "transmission",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["electronic"],
+  "tags": [
+    "electronic"
+  ],
   "releaseDate": "2019-11-17T00:00:00.000Z",
   "visualizationType": "squareCut",
-  "sampleNames": [["transmission__vsco2-piano-mf", "vsco2-piano-mf"]]
+  "sampleNames": [
+    [
+      "transmission__vsco2-piano-mf",
+      "vsco2-piano-mf"
+    ]
+  ],
+  "bandcampUrl": "http://alexbainter.bandcamp.com/album/transmission-excerpts"
 }

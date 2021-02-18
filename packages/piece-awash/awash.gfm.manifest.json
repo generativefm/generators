@@ -6,10 +6,20 @@
   "id": "awash",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["electronic", "dream"],
+  "tags": [
+    "electronic",
+    "dream"
+  ],
   "releaseDate": "2019-05-05T00:00:00.000Z",
   "sampleNames": [
-    ["awash__vcsl-ocean-drum", "vcsl-ocean-drum"],
-    ["awash__dry-guitar-vib", "dry-guitar-vib"]
-  ]
+    [
+      "awash__vcsl-ocean-drum",
+      "vcsl-ocean-drum"
+    ],
+    [
+      "awash__dry-guitar-vib",
+      "dry-guitar-vib"
+    ]
+  ],
+  "bandcampUrl": "http://alexbainter.bandcamp.com/album/awash-excerpts"
 }

@@ -5,11 +5,22 @@
   "id": "soundtrack",
   "artistId": "alex-bainter",
   "isRecordable": true,
-  "tags": ["electronic", "drone", "dark"],
+  "tags": [
+    "electronic",
+    "drone",
+    "dark"
+  ],
   "releaseDate": "2019-10-06T00:00:00.000Z",
   "visualizationType": "squareCut",
   "sampleNames": [
-    ["soundtrack__vsco2-cellos-susvib-mp", "vsco2-cellos-susvib-mp"],
-    ["soundtrack__vsco2-glock", "vsco2-glock"]
-  ]
+    [
+      "soundtrack__vsco2-cellos-susvib-mp",
+      "vsco2-cellos-susvib-mp"
+    ],
+    [
+      "soundtrack__vsco2-glock",
+      "vsco2-glock"
+    ]
+  ],
+  "bandcampUrl": "http://alexbainter.bandcamp.com/album/soundtrack-excerpts"
 }
