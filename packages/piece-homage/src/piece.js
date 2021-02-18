@@ -10,7 +10,6 @@ import { sampleNames } from '../homage.gfm.manifest.json';
 
 const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
-  const masterVol = new Tone.Volume(5);
   const violinNotes = ['C3', 'C4'];
   const pianoNotes = [...major7th('C5'), ...major7th('C6'), 'C7'];
 
@@ -19,7 +18,6 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     pitchShift: -24,
     attack: 0,
   });
-  piano.connect(masterVol);
 
   const violins = await createPrerenderableSampler({
     samples,
@@ -32,7 +30,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     pitchShift: -24,
   });
 
-  const violinVolume = new Tone.Volume(-15).connect(masterVol);
+  const violinVolume = new Tone.Volume(-15);
   const filter = new Tone.Filter(50).connect(violinVolume);
   violins.connect(filter);
 
@@ -52,7 +50,6 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   };
 
   const schedule = ({ destination }) => {
-    masterVol.connect(destination);
     const filterLfo = new Tone.LFO(
       window.generativeMusic.rng() * 0.001 + 0.0005,
       100,
@@ -62,6 +59,8 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     });
     filterLfo.connect(filter.frequency);
     filterLfo.start();
+    piano.connect(destination);
+    violinVolume.connect(destination);
 
     violinNotes.forEach(note => violinDrone(note));
     pianoChain();

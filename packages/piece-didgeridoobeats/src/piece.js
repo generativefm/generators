@@ -29,8 +29,7 @@ const getPattern = (quarterP, eighthP, sixteethP) => {
 
 const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
-  const masterVol = new Tone.Volume(-5);
-  const drumGain = new Tone.Gain(0).connect(masterVol);
+  const drumGain = new Tone.Gain(0);
   const hatVolume = new Tone.Volume(-5).connect(drumGain);
 
   const activeSources = [];
@@ -39,7 +38,9 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     const instrumentSamples = samples[instrumentName];
     return createBuffers(instrumentSamples).then(buffers => {
       const randomBuffer = () =>
-        buffers.get(Math.floor(window.generativeMusic.rng() * instrumentSamples.length));
+        buffers.get(
+          Math.floor(window.generativeMusic.rng() * instrumentSamples.length)
+        );
 
       let currentBuffer = randomBuffer();
       return {
@@ -127,7 +128,9 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   const chorus = new Tone.Chorus();
 
   const playDigeridoo = dest => {
-    const index = Math.floor(window.generativeMusic.rng() * didgeridooSamples.length);
+    const index = Math.floor(
+      window.generativeMusic.rng() * didgeridooSamples.length
+    );
     const buffer = didgeridoo.get(index);
     let playbackRate = 1;
     if (window.generativeMusic.rng() < 0.1) {
@@ -154,7 +157,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   };
 
   const schedule = ({ destination }) => {
-    masterVol.connect(destination);
+    drumGain.connect(destination);
     const didgeridooAutoFilter = new Tone.AutoFilter({
       frequency: 0.06,
       octaves: 4,
@@ -169,14 +172,14 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     })
       .set({ wet: 0.7 })
       .start()
-      .connect(masterVol);
+      .connect(destination);
 
     drumGain.connect(drumsAutoFilter);
 
     const delay = new Tone.FeedbackDelay({
       feedback: 0.8,
       delayTime: 0.2,
-    }).chain(chorus, didgeridooAutoFilter, masterVol);
+    }).chain(chorus, didgeridooAutoFilter, destination);
 
     Tone.Transport.scheduleOnce(() => {
       playDrumLoop();
@@ -199,7 +202,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   };
 
   const deactivate = () => {
-    [masterVol, drumGain, hatVolume, chorus].forEach(node => {
+    [drumGain, hatVolume, chorus].forEach(node => {
       node.dispose();
     });
   };

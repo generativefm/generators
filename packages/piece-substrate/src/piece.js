@@ -53,7 +53,6 @@ const PITCH_CLASSES = [
 
 const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
-  const masterVol = new Tone.Volume(5);
   const getReverb = () =>
     new Tone.Reverb(20)
       .set({ wet: 0.5 })
@@ -85,18 +84,15 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     onProgress: val => onProgress(val * 0.5 + 0.5),
     pitchShift: -12,
   });
-  marimba
-    .set({
-      attack: 0.3,
-      curve: 'linear',
-    })
-    .connect(masterVol);
-  piano
-    .set({
-      attack: 0.25,
-      curve: 'linear',
-    })
-    .connect(masterVol);
+  marimba.set({
+    attack: 0.3,
+    curve: 'linear',
+  });
+
+  piano.set({
+    attack: 0.25,
+    curve: 'linear',
+  });
 
   const playAndScheduleNext = (noteGenerator, notes) => {
     const next = noteGenerator.next();
@@ -105,7 +101,10 @@ const activate = async ({ sampleLibrary, onProgress }) => {
       const pc = getPitchClass(next.value);
       const oct = getOctave(next.value);
       if (window.generativeMusic.rng() < 0.5) {
-        const delay = window.generativeMusic.rng() < 0.5 ? 1 : window.generativeMusic.rng() * 2 + 1;
+        const delay =
+          window.generativeMusic.rng() < 0.5
+            ? 1
+            : window.generativeMusic.rng() * 2 + 1;
         piano.triggerAttack(`${pc}${oct + 1}`, `+${delay}`);
       }
 
@@ -122,9 +121,12 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   };
 
   const schedule = ({ destination }) => {
-    masterVol.connect(destination);
+    marimba.connect(destination);
+    piano.connect(destination);
     const tonic =
-      PITCH_CLASSES[Math.floor(window.generativeMusic.rng() * PITCH_CLASSES.length)];
+      PITCH_CLASSES[
+        Math.floor(window.generativeMusic.rng() * PITCH_CLASSES.length)
+      ];
     const notes = shuffleArray(getNotes(tonic));
     const noteGenerator = makeNoteGenerator(notes);
 
