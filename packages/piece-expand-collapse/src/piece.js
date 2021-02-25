@@ -7,6 +7,7 @@ import {
   getRandomElement,
 } from '@generative-music/utilities';
 import { sampleNames } from '../expand-collapse.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const createReversedBuffers = (buffers, samplesByNote) =>
   new Tone.ToneAudioBuffers(
@@ -120,4 +121,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['expand-collapse'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

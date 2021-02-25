@@ -6,6 +6,7 @@ import {
   toss,
 } from '@generative-music/utilities';
 import { sampleNames } from '../little-bells.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const PITCH_CLASSES = ['F', 'G', 'G#', 'A', 'A#', 'B'];
 const BASE_P_TO_PLAY = 0.1;
@@ -119,4 +120,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['little-bells'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

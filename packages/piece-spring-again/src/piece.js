@@ -6,6 +6,7 @@ import {
   toss,
 } from '@generative-music/utilities';
 import { sampleNames } from '../spring-again.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const OCTAVES = [3, 4, 5];
 const NOTES = toss(['C', 'D', 'E', 'F', 'G', 'A', 'B'], OCTAVES);
@@ -111,4 +112,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['spring-again'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

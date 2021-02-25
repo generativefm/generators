@@ -6,6 +6,7 @@ import {
   getRandomElement,
 } from '@generative-music/utilities';
 import { sampleNames } from '../ritual.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const createPercussionSampler = async (prerenderOptions = {}) => {
   const buffers = await createPrerenderableBuffers(prerenderOptions);
@@ -231,4 +232,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['ritual'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

@@ -7,6 +7,7 @@ import {
   minor7th,
 } from '@generative-music/utilities';
 import { sampleNames } from '../day-dream.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const NOON_SEMITONE_CHANGE = 15;
 const MIDNIGHT_SEMITONE_CHANGE = 30;
@@ -94,4 +95,7 @@ const activate = async ({ sampleLibrary }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['day-dream'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

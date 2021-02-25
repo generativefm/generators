@@ -8,6 +8,7 @@ import {
   getOctave,
 } from '@generative-music/utilities';
 import { sampleNames } from '../420hz-gamma-waves-for-big-brain.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const getRandomPhase = () => window.generativeMusic.rng() * 360;
 
@@ -202,4 +203,7 @@ const activate = async ({ sampleLibrary }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['420hz-gamma-waves-for-big-brain'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

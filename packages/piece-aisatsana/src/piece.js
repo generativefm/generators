@@ -3,6 +3,7 @@ import * as Tone from 'tone';
 import { createSampler, wrapActivate } from '@generative-music/utilities';
 import instructions from './instructions.json';
 import { sampleNames } from '../aisatsana.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const BPM = 102;
 const SECONDS_PER_MINUTE = 60;
@@ -79,4 +80,7 @@ const activate = async ({ sampleLibrary }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['aisatsana'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

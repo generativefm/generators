@@ -4,6 +4,7 @@ import {
   wrapActivate,
 } from '@generative-music/utilities';
 import { sampleNames } from '../yesterday.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const randomIntBetween = (min, max) =>
   Math.floor(min + window.generativeMusic.rng() * (max - min));
@@ -93,4 +94,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['yesterday'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

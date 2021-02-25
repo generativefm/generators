@@ -6,6 +6,7 @@ import {
   createPrerenderedBuffer,
 } from '@generative-music/utilities';
 import { sampleNames } from '../piece.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const PITCH_CLASSES = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
 const OCTAVES = [3, 4];
@@ -217,4 +218,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['zed'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

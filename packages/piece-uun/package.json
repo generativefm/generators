@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-uun",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "4.8.1",
+  "version": "5.0.2",
   "generativeFmManifest": "uun.gfm.manifest.json",
   "repository": {
     "type": "git",
@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.12.5",
-    "@generative-music/utilities": "^4.7.0"
+    "@generative-music/utilities": "^5.0.1"
   },
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.12.1"

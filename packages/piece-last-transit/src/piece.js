@@ -5,6 +5,7 @@ import {
   wrapActivate,
 } from '@generative-music/utilities';
 import { sampleNames } from '../last-transit.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const activate = async ({ sampleLibrary }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
@@ -72,4 +73,7 @@ const activate = async ({ sampleLibrary }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['last-transit'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

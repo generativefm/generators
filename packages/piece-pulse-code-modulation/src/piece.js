@@ -8,6 +8,7 @@ import {
 } from '@generative-music/utilities';
 import getSimilarNotes from './get-similar-notes';
 import { sampleNames } from '../pulse-code-modulation.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const DRONE_OCTAVES = [4, 5];
 const PIANO_OCTAVES = [4, 5, 6];
@@ -206,4 +207,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['pulse-code-modulation'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

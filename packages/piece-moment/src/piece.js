@@ -6,12 +6,12 @@ import {
   getOctave,
 } from '@generative-music/utilities';
 import { sampleNames } from '../moment.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const NOTES = ['C2', 'E2', 'G2', 'C3', 'E3', 'G3', 'C4', 'E4', 'G4'];
 
 const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
-  const masterVol = new Tone.Volume(-5);
 
   const basePrerenderableOpts = {
     samples,
@@ -32,8 +32,6 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     })
   );
 
-  guitar.connect(masterVol);
-
   const hum1 = await createPrerenderableSampler(
     Object.assign({}, basePrerenderableOpts, {
       sourceInstrumentName: 'alex-hum-1',
@@ -50,7 +48,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
     })
   );
 
-  const compressor = new Tone.Compressor().connect(masterVol);
+  const compressor = new Tone.Compressor();
   const humVolume = new Tone.Volume(-15).connect(compressor);
 
   [hum1, hum2].forEach(humSampler => {
@@ -74,15 +72,21 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   };
 
   const schedule = ({ destination }) => {
-    masterVol.connect(destination);
+    guitar.connect(destination);
+    compressor.connect(destination);
     const firstDelays = NOTES.map(
-      note => window.generativeMusic.rng() * 20 * (getPitchClass(note) === 'E' ? 3 : 1)
+      note =>
+        window.generativeMusic.rng() *
+        20 *
+        (getPitchClass(note) === 'E' ? 3 : 1)
     );
     const minFirstDelay = Math.min(...firstDelays);
 
     NOTES.forEach((note, i) => {
       const pc = getPitchClass(note);
-      const play = (time = (window.generativeMusic.rng() * 20 + 5) * (pc === 'E' ? 3 : 1)) => {
+      const play = (
+        time = (window.generativeMusic.rng() * 20 + 5) * (pc === 'E' ? 3 : 1)
+      ) => {
         Tone.Transport.scheduleOnce(() => {
           const octave = getOctave(note);
           if (
@@ -108,12 +112,13 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   };
 
   const deactivate = () => {
-    [guitar, hum1, hum2, compressor, humVolume, masterVol].forEach(node =>
-      node.dispose()
-    );
+    [guitar, hum1, hum2, compressor, humVolume].forEach(node => node.dispose());
   };
 
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['moment'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

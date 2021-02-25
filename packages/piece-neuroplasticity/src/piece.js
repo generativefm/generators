@@ -6,6 +6,7 @@ import {
   toss,
 } from '@generative-music/utilities';
 import { sampleNames } from '../neuroplasticity.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const PIANO_NOTES = toss(['C#', 'D#'], [3, 4, 5, 6]);
 const GUITAR_NOTES = ['G2', 'C3', 'G3', 'C4'];
@@ -96,4 +97,7 @@ const activate = async ({ sampleLibrary }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['neuroplasticity'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

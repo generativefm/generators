@@ -4,6 +4,7 @@ import {
   wrapActivate,
 } from '@generative-music/utilities';
 import { sampleNames } from '../nakaii.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const phraseProto = [
   ['C4'],
@@ -110,4 +111,7 @@ const activate = async ({ sampleLibrary }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['nakaii'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

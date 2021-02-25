@@ -5,6 +5,7 @@ import {
   wrapActivate,
 } from '@generative-music/utilities';
 import { sampleNames } from '../eyes-closed.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const PHRASE = [['G#5', 1], ['F#5', 2], ['D#5', 3.5], ['C#5', 4], ['D#5', 4.5]];
 const CHORD = ['G#3', 'G#4'];
@@ -96,4 +97,7 @@ const activate = async ({ sampleLibrary }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['eyes-closed'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

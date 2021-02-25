@@ -1,6 +1,6 @@
 {
   "name": "@generative-music/piece-aisatsana",
-  "version": "4.8.1",
+  "version": "5.0.3",
   "description": "",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.12.5",
-    "@generative-music/utilities": "^4.7.0",
+    "@generative-music/utilities": "^5.0.1",
     "markov-chains": "^1.0.2"
   },
   "peerDependencies": {

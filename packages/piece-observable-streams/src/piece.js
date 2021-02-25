@@ -12,6 +12,7 @@ import {
 import { sampleNames } from '../observable-streams.gfm.manifest.json';
 import octaved from './operators/octaved';
 import shortTermThrottleByNote from './operators/short-term-throttle-by-note';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const TONIC = 'C';
 const SCALE = 'major';
@@ -232,4 +233,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['observable-streams'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

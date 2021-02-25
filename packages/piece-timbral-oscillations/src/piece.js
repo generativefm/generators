@@ -4,6 +4,7 @@ import {
   wrapActivate,
 } from '@generative-music/utilities';
 import { sampleNames } from '../timbral-oscillations.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const OCTAVES = [3, 4, 5, 6];
 const MAX_STEP_DISTANCE = 2;
@@ -163,4 +164,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['timbral-oscillations'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

@@ -9,6 +9,7 @@ import {
   P4,
 } from '@generative-music/utilities';
 import { sampleNames } from '../meditation.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const P_SECOND_NOTE = 0.3;
 const SECOND_NOTE_DELAY_MULTIPLIER_S = 15;
@@ -92,4 +93,7 @@ const activate = async ({ sampleLibrary }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['meditation'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

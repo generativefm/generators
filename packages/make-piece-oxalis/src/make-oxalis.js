@@ -5,6 +5,7 @@ import {
   getPitchClass,
   getOctave,
 } from '@generative-music/utilities';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const getReverb = () =>
   new Tone.Reverb(15)
@@ -90,7 +91,9 @@ const makeOxalis = ({ notes = [], renderedInstrumentPrefix = '' }) => {
     return [deactivate, schedule];
   };
 
-  return wrapActivate(activate);
+  const GAIN_ADJUSTMENT = gainAdjustments['oxalis-1'];
+
+  return wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
 };
 
 export default makeOxalis;

@@ -5,11 +5,11 @@ import {
   wrapActivate,
 } from '@generative-music/utilities';
 import { sampleNames } from '../animalia-chordata.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
   const activeSources = [];
-  const masterVol = new Tone.Volume(-7);
   const filter = new Tone.Filter(500);
   const compressor = new Tone.Compressor().connect(filter);
   const crossFade = new Tone.CrossFade().connect(compressor);
@@ -89,7 +89,6 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   };
 
   const schedule = ({ destination }) => {
-    masterVol.connect(destination);
     const feedbackDelay = new Tone.FeedbackDelay({
       delayTime: 0.7,
       feedback: 0.8,
@@ -103,7 +102,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
 
     play();
 
-    feedbackDelay.connect(masterVol);
+    feedbackDelay.connect(destination);
 
     return () => {
       activeSources.forEach(source => {
@@ -123,4 +122,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['animalia-chordata'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

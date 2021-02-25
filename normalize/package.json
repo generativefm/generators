@@ -1,0 +1,21 @@
+{
+  "name": "normalize",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@generative-music/fs-provider": "^1.0.0",
+    "@generative-music/samples-alex-bainter": "^2.3.0",
+    "@generative-music/web-library": "^0.2.1",
+    "@generative-music/web-provider": "^2.0.4",
+    "electron": "^11.2.3",
+    "tone": "^14.7.77"
+  }
+}

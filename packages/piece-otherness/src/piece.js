@@ -1,6 +1,7 @@
 import * as Tone from 'tone';
 import { createSampler, wrapActivate } from '@generative-music/utilities';
 import { sampleNames } from '../otherness.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const PITCH_CLASSES = [
   'C',
@@ -74,4 +75,7 @@ const activate = async ({ sampleLibrary }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['otherness'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

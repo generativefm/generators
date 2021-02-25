@@ -10,6 +10,7 @@ import {
   invert,
 } from '@generative-music/utilities';
 import { sampleNames } from '../sevenths.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const CHORDS = [major7th, minor7th, dominant7th];
 // eslint-disable-next-line no-magic-numbers
@@ -77,4 +78,7 @@ const activate = async ({ sampleLibrary }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['sevenths'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

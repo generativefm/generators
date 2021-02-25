@@ -5,18 +5,17 @@ import {
   sampleNote,
 } from '@generative-music/utilities';
 import { sampleNames } from '../drones.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const NOTES = ['C4', 'G4', 'E4'];
 
 const activate = async ({ sampleLibrary }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
-  const masterVol = new Tone.Volume(-12);
   const instrumentBuffers = await Promise.all(
     sampleNames.map(instrumentName => createBuffers(samples[instrumentName]))
   );
 
   const schedule = ({ destination }) => {
-    masterVol.connect(destination);
     const disposableNodes = [];
 
     instrumentBuffers.forEach((buffers, i) => {
@@ -48,8 +47,12 @@ const activate = async ({ sampleLibrary }) => {
           .connect(droneDestination);
         source.start('+1');
       };
-      const autoFilter = new Tone.AutoFilter(window.generativeMusic.rng() / 10, 150, 4)
-        .connect(masterVol)
+      const autoFilter = new Tone.AutoFilter(
+        window.generativeMusic.rng() / 10,
+        150,
+        4
+      )
+        .connect(destination)
         .start();
 
       const lfoMin = window.generativeMusic.rng() / 100;
@@ -94,7 +97,6 @@ const activate = async ({ sampleLibrary }) => {
   };
 
   const deactivate = () => {
-    masterVol.dispose();
     instrumentBuffers.forEach(buffers => {
       buffers.dispose();
     });
@@ -103,4 +105,7 @@ const activate = async ({ sampleLibrary }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['drones'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

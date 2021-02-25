@@ -1,6 +1,6 @@
 {
   "name": "@generative-music/piece-eno-machine",
-  "version": "4.8.1",
+  "version": "5.0.3",
   "description": "",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
@@ -22,7 +22,7 @@
   "homepage": "https://github.com/generative-music/piece-eno-machine#readme",
   "dependencies": {
     "@babel/runtime": "^7.12.5",
-    "@generative-music/utilities": "^4.7.0"
+    "@generative-music/utilities": "^5.0.1"
   },
   "peerDependencies": {
     "tone": "^14.7.39"

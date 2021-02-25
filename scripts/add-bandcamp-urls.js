@@ -31,21 +31,24 @@ const getAlbumUrls = () =>
 
 Promise.all([getManifests(), getAlbumUrls()]).then(
   ([manifestPaths, albumUrls]) => {
-    const unmatchedUrls = albumUrls.slice();
+    const unmatchedUrls = albumUrls.filter(
+      url => !url.includes('corruption-loops')
+    );
+    const unmatchedIds = [];
     const newManifests = manifestPaths.map(relativePath => {
       const manifest = require(relativePath.replace('./', '../'));
       const { id } = manifest;
       const urlIndex = unmatchedUrls.findIndex(url =>
         url.startsWith(`http://alexbainter.bandcamp.com/album/${id}-excerpts`)
       );
-      if (urlIndex < 0) {
-        console.log(relativePath);
-        return [relativePath, manifest];
+      if (urlIndex === -1) {
+        unmatchedIds.push(id);
+        return [relativePath, Object.assign({}, manifest)];
       }
       const [url] = unmatchedUrls.splice(urlIndex, 1);
       return [relativePath, Object.assign({}, manifest, { bandcampUrl: url })];
     });
-    console.log(unmatchedUrls);
+    console.log(unmatchedIds);
     return Promise.all(
       newManifests.map(([relativePath, manifest]) =>
         fsp.writeFile(relativePath, JSON.stringify(manifest, null, 2))

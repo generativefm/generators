@@ -20,11 +20,20 @@ const onProgress = value => {
   console.log(`${Math.round(value * 100)}%`);
 };
 
+const meter = new Tone.Meter().toDestination();
+let maxDb = -Infinity;
+const meterInterval = setInterval(() => {
+  maxDb = Math.max(maxDb, meter.getValue());
+});
+const logInterval = setInterval(() => {
+  console.log(maxDb);
+}, 1000);
+
 activate({
   onProgress,
   context: toneContext,
   sampleLibrary: library,
-  destination: toneContext.destination,
+  destination: meter,
 }).then(([deactivate, schedule]) => {
   console.log('activated');
 

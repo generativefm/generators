@@ -48,9 +48,21 @@ const esmFileContent = packageNames
 const cjsFileContent = [
   "'use strict;'",
   '',
+  `${packageNames
+    .map((packageName, i) => `var piece${i + 1} = require('${packageName}')`)
+    .join(';\n')}`,
   `module.exports = [\n${packageNames
-    .map(packageName => `  require('${packageName}')`)
-    .join(',\n')}\n];`,
+    .map((_, i) => `  piece${i + 1}`)
+    .join(',\n')}\n];
+  module.exports.byId = {\n${packageNames
+    .map(
+      (packageName, i) =>
+        `  ['${packageName.replace(
+          '@generative-music/piece-',
+          ''
+        )}']: piece${i + 1}`
+    )
+    .join(',\n')}\n};`,
 ].join('\n');
 
 fs.mkdir('./packages/pieces-alex-bainter/dist/', { recursive: true })

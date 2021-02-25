@@ -5,6 +5,7 @@ import {
   createPitchShiftedSampler,
 } from '@generative-music/utilities';
 import { sampleNames } from '../buttafingers.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const NOTES = ['C4', 'E4', 'F4', 'G4'];
 const PITCH_CHANGES = [-36, -24];
@@ -148,4 +149,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['buttafingers'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

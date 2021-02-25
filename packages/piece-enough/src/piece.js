@@ -6,6 +6,7 @@ import {
   toss,
 } from '@generative-music/utilities';
 import { sampleNames } from '../enough.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const activate = async ({ sampleLibrary }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
@@ -17,18 +18,21 @@ const activate = async ({ sampleLibrary }) => {
     release: 5,
     curve: 'linear',
   });
-  const masterVol = new Tone.Volume(-10);
-  const delayVolume = new Tone.Volume(-28).connect(masterVol);
-  const compressor = new Tone.Compressor().connect(masterVol);
+  const delayVolume = new Tone.Volume(-28);
+  const compressor = new Tone.Compressor();
 
   const notes = toss(['A#'], [3, 4])
     .map(minor7th)
     .flat();
 
   const playChord = (first = false) => {
-    let chord = notes.filter(() => window.generativeMusic.rng() < 0.5).slice(0, 4);
+    let chord = notes
+      .filter(() => window.generativeMusic.rng() < 0.5)
+      .slice(0, 4);
     while (first && chord.length === 0) {
-      chord = notes.filter(() => window.generativeMusic.rng() < 0.5).slice(0, 4);
+      chord = notes
+        .filter(() => window.generativeMusic.rng() < 0.5)
+        .slice(0, 4);
     }
     const immediateNoteIndex = first
       ? Math.floor(window.generativeMusic.rng() * chord.length)
@@ -45,7 +49,6 @@ const activate = async ({ sampleLibrary }) => {
   };
 
   const schedule = ({ destination }) => {
-    masterVol.connect(destination);
     const delay = new Tone.FeedbackDelay({
       feedback: 0.5,
       delayTime: 10,
@@ -53,6 +56,9 @@ const activate = async ({ sampleLibrary }) => {
     }).connect(delayVolume);
     corAnglais.connect(compressor);
     compressor.connect(delay);
+    compressor.connect(destination);
+    delayVolume.connect(destination);
+
     playChord(true);
 
     return () => {
@@ -68,4 +74,7 @@ const activate = async ({ sampleLibrary }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['enough'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+

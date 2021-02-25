@@ -26,10 +26,13 @@ activate(activationOptions).then(([deactivate, schedule]) => {
 });
 ```
 
-In addition, environments which support the ESM `import` syntax may access the named `byId` export, which is an object containing all of the individual `@generative-music/piece-*` systems by their IDs:
+A `byId` export is also available, which is an object containing all of the individual `@generative-music/piece-*` systems by their IDs:
 
 ```javascript
-import { byId } from '@generative-music/pieces-alex-bainter';
+// choose the import style which matches your environment
+import { byId } from '@generative-music/pieces-alex-bainter'; // an actual named export
+const { byId } = require('@generative-music/pieces-alex-bainter'); // just an extra property on the exported 'pieces' array
+
 const activate = byId.zed;
 
 activate(activationOptions).then(([deactivate, schedule]) => {

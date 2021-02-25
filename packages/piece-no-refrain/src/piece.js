@@ -5,6 +5,7 @@ import {
   toss,
 } from '@generative-music/utilities';
 import { sampleNames } from '../no-refrain.gfm.manifest.json';
+import gainAdjustments from '../../../normalize/gain.json';
 
 const activate = async ({ sampleLibrary, onProgress }) => {
   const samples = await sampleLibrary.request(Tone.context, sampleNames);
@@ -85,4 +86,7 @@ const activate = async ({ sampleLibrary, onProgress }) => {
   return [deactivate, schedule];
 };
 
-export default wrapActivate(activate);
+const GAIN_ADJUSTMENT = gainAdjustments['no-refrain'];
+
+export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
+
