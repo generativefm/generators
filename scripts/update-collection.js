@@ -16,13 +16,13 @@ const missingDeps = packageNames.filter(
 );
 
 if (missingDeps.length > 0) {
-  spawn(
-    'npm',
-    ['i', '--prefix', './packages/pieces-alex-bainter'].concat(
-      missingDeps.map(packageName => packageName)
-    ),
-    { stdio: 'inherit' }
-  );
+  // spawn(
+  //   'npm',
+  //   ['i', '--prefix', './packages/pieces-alex-bainter'].concat(
+  //     missingDeps.map(packageName => packageName)
+  //   ),
+  //   { stdio: 'inherit' }
+  // );
 }
 
 const esmFileContent = packageNames
