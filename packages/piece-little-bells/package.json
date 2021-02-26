@@ -1,11 +1,11 @@
 {
   "name": "@generative-music/piece-little-bells",
-  "version": "5.0.2",
+  "version": "5.1.0",
   "description": "",
   "main": "dist/cjs.js",
   "dependencies": {
     "@babel/runtime": "^7.12.5",
-    "@generative-music/utilities": "^5.0.1"
+    "@generative-music/utilities": "^5.1.0"
   },
   "peerDependencies": {
     "tone": "^14.7.39"

@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-splash",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "0.0.0",
+  "version": "5.1.0",
   "generativeFmManifest": "piece.gfm.manifest.json",
   "repository": {
     "type": "git",
@@ -25,8 +25,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "devDependencies": {},
   "dependencies": {
-    "@generative-music/utilities": "^5.0.1"
+    "@generative-music/utilities": "^5.1.0"
   }
 }
