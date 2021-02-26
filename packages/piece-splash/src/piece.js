@@ -30,13 +30,12 @@ const buildPhrase = ({ length, notes, transposition }) => {
   return phrase.map(transpose(transposition));
 };
 
-const activate = async ({ destination, sampleLibrary }) => {
+const activate = async ({ sampleLibrary }) => {
   const samples = await sampleLibrary.request(Tone.getContext(), sampleNames);
   const sampler = await createPitchShiftedSampler({
     samplesByNote: samples['vsco2-piano-mf'],
     pitchShift: -24,
   });
-  sampler.connect(destination);
 
   const playPhrase = ({
     isFirst = false,
@@ -76,7 +75,9 @@ const activate = async ({ destination, sampleLibrary }) => {
     }, `+${num / 2 + 7 + window.generativeMusic.rng() * 7}`);
   };
 
-  const schedule = () => {
+  const schedule = ({ destination }) => {
+    sampler.connect(destination);
+
     playPhrase({ isFirst: true });
 
     return () => {
@@ -92,5 +93,7 @@ const activate = async ({ destination, sampleLibrary }) => {
 };
 
 const GAIN_ADJUSTMENT = gainAdjustments[id];
+
+console.log(GAIN_ADJUSTMENT, ' gain');
 
 export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
