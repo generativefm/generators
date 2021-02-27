@@ -2,7 +2,7 @@
 
 A collection of generative music systems for [Generative.fm](https://generative.fm).
 
-The documentation here is incomplete but hopefully it can help you get started.
+The documentation here is incomplete but hopefully it can help you get started. Please see [Generative.fm Open-source Objectives](https://gist.github.com/metalex9/11923b7faa710215dc7ab39a0e056a65).
 
 ## Installation
 
