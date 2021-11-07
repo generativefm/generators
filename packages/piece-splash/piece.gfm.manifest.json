@@ -1,0 +1,13 @@
+{
+  "title": "Splash",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "splash",
+  "artistId": "alex-bainter",
+  "isRecordable": true,
+  "tags": ["calm"],
+  "releaseDate": "2021-02-26T00:00:00.000Z",
+  "visualizationType": "squareCut",
+  "sampleNames": ["vsco2-piano-mf"],
+  "bandcampUrl": "http://alexbainter.bandcamp.com/album/splash-excerpts"
+}
