@@ -1,0 +1,31 @@
+{
+  "name": "@generative-music/piece-skyline",
+  "main": "dist/cjs.js",
+  "module": "dist/esm.js",
+  "version": "5.1.1",
+  "generativeFmManifest": "piece.gfm.manifest.json",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/generative-music/pieces-alex-bainter.git"
+  },
+  "files": [
+    "dist",
+    "image.png",
+    "piece.gfm.manifest.json"
+  ],
+  "author": "Alex Bainter <alex@alexbainter.com> (https://alexbainter.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/generative-music/pieces-alex-bainter/issues"
+  },
+  "homepage": "https://github.com/generative-music/pieces-alex-bainter#readme",
+  "peerDependencies": {
+    "tone": "14.*.*"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@generative-music/utilities": "^5.1.0"
+  }
+}

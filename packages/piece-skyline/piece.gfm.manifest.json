@@ -1,0 +1,16 @@
+{
+  "title": "Skyline",
+  "makePiece": "./dist/esm.js",
+  "image": "./image.png",
+  "id": "skyline",
+  "artistId": "alex-bainter",
+  "isRecordable": true,
+  "tags": ["drone", "electronic"],
+  "releaseDate": "2021-11-07T00:00:00.000Z",
+  "sampleNames": [
+    ["skyline__itslucid-lofi-hats", "itslucid-lofi-hats"],
+    ["skyline__itslucid-lofi-kicks", "itslucid-lofi-kicks"],
+    ["skyline__itslucid-lofi-snare", "itslucid-lofi-snare"],
+    ["skyline__vsco2-violins-susvib", "vsco2-violins-susvib"]
+  ]
+}
