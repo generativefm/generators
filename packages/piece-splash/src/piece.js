@@ -94,6 +94,4 @@ const activate = async ({ sampleLibrary }) => {
 
 const GAIN_ADJUSTMENT = gainAdjustments[id];
 
-console.log(GAIN_ADJUSTMENT, ' gain');
-
 export default wrapActivate(activate, { gain: GAIN_ADJUSTMENT });
