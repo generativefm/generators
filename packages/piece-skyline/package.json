@@ -2,7 +2,7 @@
   "name": "@generative-music/piece-skyline",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
-  "version": "5.2.0",
+  "version": "5.2.2",
   "generativeFmManifest": "piece.gfm.manifest.json",
   "repository": {
     "type": "git",

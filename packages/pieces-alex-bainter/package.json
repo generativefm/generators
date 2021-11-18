@@ -1,6 +1,6 @@
 {
   "name": "@generative-music/pieces-alex-bainter",
-  "version": "5.2.1",
+  "version": "5.2.2",
   "description": "A collection of generative music systems by Alex Bainter",
   "main": "dist/cjs.js",
   "module": "dist/esm.js",
@@ -70,7 +70,7 @@
     "@generative-music/piece-return-to-form": "^5.2.0",
     "@generative-music/piece-ritual": "^5.2.0",
     "@generative-music/piece-sevenths": "^5.2.0",
-    "@generative-music/piece-skyline": "^5.2.0",
+    "@generative-music/piece-skyline": "^5.2.2",
     "@generative-music/piece-soundtrack": "^5.2.0",
     "@generative-music/piece-splash": "^5.2.0",
     "@generative-music/piece-spring-again": "^5.2.0",
